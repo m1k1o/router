@@ -3,7 +3,7 @@ using PacketDotNet.Utils;
 using System;
 using System.Collections.Generic;
 
-namespace Protocols
+namespace RIP
 {
     public sealed class RIPPacket
     {

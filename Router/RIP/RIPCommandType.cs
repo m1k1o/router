@@ -1,4 +1,4 @@
-﻿namespace Protocols
+﻿namespace RIP
 {
     public enum RIPCommandType : byte
     {

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Net;
 
-namespace Protocols
+namespace RIP
 {
     public class RTE
     {
