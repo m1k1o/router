@@ -7,8 +7,8 @@ namespace Protocols
 {
     class ARP
     {
-        static public const string RequestTargetMac = "00-00-00-00-00-00";
-        static public const string RequestDestinationMac = "FF-FF-FF-FF-FF-FF";
+        public const string RequestTargetMac = "00-00-00-00-00-00";
+        public const string RequestDestinationMac = "FF-FF-FF-FF-FF-FF";
 
         static private void Send(
             ARPOperation Operation,

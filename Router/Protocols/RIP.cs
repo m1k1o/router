@@ -9,9 +9,9 @@ namespace Protocols
 {
     class RIP
     {
-        static public const int PortUDP = 520;
-        static public const string MulticastIp = "224.0.0.9";
-        static public const string MulticastMac = "01-00-5E-00-00-09";
+        public const int PortUDP = 520;
+        public const string MulticastIp = "224.0.0.9";
+        public const string MulticastMac = "01-00-5E-00-00-09";
 
         static public void Send(RIPCommandType CommandType, List<RTE> RTEs, Interface Interface)
         {
