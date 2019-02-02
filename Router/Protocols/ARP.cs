@@ -7,10 +7,10 @@ namespace Protocols
 {
     class ARP
     {
-        public const string RequestTargetMac = "00-00-00-00-00-00";
-        public const string RequestDestinationMac = "FF-FF-FF-FF-FF-FF";
+        static public const string RequestTargetMac = "00-00-00-00-00-00";
+        static public const string RequestDestinationMac = "FF-FF-FF-FF-FF-FF";
 
-        private void Send(
+        static private void Send(
             ARPOperation Operation,
             PhysicalAddress SenderMac,
             IPAddress SenderIp,
@@ -28,7 +28,7 @@ namespace Protocols
             Interface.SendPacket(ethernetPacket.PayloadPacket);
         }
 
-        public void SendRequest(
+        static public void SendRequest(
             IPAddress TargetIp,
             Interface Interface
         )
@@ -44,7 +44,7 @@ namespace Protocols
            );
         }
 
-        public void SendProxyResponse(
+        static public void SendProxyResponse(
             IPAddress SenderIp,
             PhysicalAddress TargetMac,
             IPAddress TargetIp,
@@ -62,7 +62,7 @@ namespace Protocols
            );
         }
 
-        public void SendResponse(
+        static public void SendResponse(
             PhysicalAddress TargetMac,
             IPAddress TargetIp,
             Interface Interface
@@ -79,7 +79,7 @@ namespace Protocols
            );
         }
 
-        public ARPPacket Parse(Packet packet)
+        static public ARPPacket Parse(Packet packet)
         {
             return (ARPPacket) packet.Extract(typeof(ARPPacket));
         }
