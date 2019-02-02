@@ -23,7 +23,7 @@ namespace Protocols
             var ipPacket = new IPv4Packet(Interface.IpAddress, IPAddress.Parse(MulticastIp));
             ipPacket.PayloadPacket = udpPacket;
 
-            var ethernetPacket = new EthernetPacket(Interface.MacAddress, PhysicalAddress.Parse(MulticastMac), EthernetPacketType.IpV4);
+            var ethernetPacket = new EthernetPacket(Interface.PhysicalAddress, PhysicalAddress.Parse(MulticastMac), EthernetPacketType.IpV4);
             ethernetPacket.PayloadPacket = ipPacket;
         }
 
