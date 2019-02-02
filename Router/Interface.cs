@@ -11,7 +11,7 @@ namespace Router
         private IPAddress ipAddress;
         private PhysicalAddress physicalAddress;
 
-        public IPAddress IpAddress {
+        public IPAddress IPAddress {
             get => ipAddress;
 
             set

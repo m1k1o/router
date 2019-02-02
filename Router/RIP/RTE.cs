@@ -47,7 +47,7 @@ namespace RIP
             }
         }
 
-        public IPAddress IpAddress
+        public IPAddress IPAddress
         {
             get
             {
@@ -127,11 +127,11 @@ namespace RIP
             }
         }
 
-        public RTE(IPAddress IpAddress, IPAddress SubnetMask, IPAddress NextHop, uint Metric)
+        public RTE(IPAddress IPAddress, IPAddress SubnetMask, IPAddress NextHop, uint Metric)
         {
             AddressFamilyIdentifier = 2;
             RouteTag = 0;
-            this.IpAddress = IpAddress;
+            this.IPAddress = IPAddress;
             this.SubnetMask = SubnetMask;
             this.NextHop = NextHop;
             this.Metric = Metric;

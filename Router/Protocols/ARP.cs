@@ -36,7 +36,7 @@ namespace Protocols
             Send(
                 ARPOperation.Request,
                 Interface.PhysicalAddress,
-                Interface.IpAddress,
+                Interface.IPAddress,
                 PhysicalAddress.Parse(RequestTargetMac),
                 TargetIp,
                 PhysicalAddress.Parse(RequestDestinationMac),
@@ -71,7 +71,7 @@ namespace Protocols
             Send(
                 ARPOperation.Response,
                 Interface.PhysicalAddress,
-                Interface.IpAddress,
+                Interface.IPAddress,
                 TargetMac,
                 TargetIp,
                 TargetMac,
