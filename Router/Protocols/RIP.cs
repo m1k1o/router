@@ -20,10 +20,10 @@ namespace Protocols
             var udpPacket = new UdpPacket(PortUDP, PortUDP);
             udpPacket.PayloadData = ripPacket.Export();
 
-            var ipPacket = new IPv4Packet(Interface.GetIp(), IPAddress.Parse(MulticastIp));
+            var ipPacket = new IPv4Packet(Interface.IpAddress, IPAddress.Parse(MulticastIp));
             ipPacket.PayloadPacket = udpPacket;
 
-            var ethernetPacket = new EthernetPacket(Interface.GetMac(), PhysicalAddress.Parse(MulticastMac), EthernetPacketType.IpV4);
+            var ethernetPacket = new EthernetPacket(Interface.MacAddress, PhysicalAddress.Parse(MulticastMac), EthernetPacketType.IpV4);
             ethernetPacket.PayloadPacket = ipPacket;
         }
 

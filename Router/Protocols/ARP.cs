@@ -20,7 +20,7 @@ namespace Protocols
             Interface Interface
         )
         {
-            var ethernetPacket = new EthernetPacket(Interface.GetMac(), DestionationMac, EthernetPacketType.Arp);
+            var ethernetPacket = new EthernetPacket(Interface.MacAddress, DestionationMac, EthernetPacketType.Arp);
 
             var arpPacket = new ARPPacket(Operation, TargetMac, TargetIp, SenderMac, SenderIp);
             ethernetPacket.PayloadPacket = arpPacket;
@@ -35,8 +35,8 @@ namespace Protocols
         {
             Send(
                 ARPOperation.Request,
-                Interface.GetMac(),
-                Interface.GetIp(),
+                Interface.MacAddress,
+                Interface.IpAddress,
                 PhysicalAddress.Parse(RequestTargetMac),
                 TargetIp,
                 PhysicalAddress.Parse(RequestDestinationMac),
@@ -53,7 +53,7 @@ namespace Protocols
         {
             Send(
                 ARPOperation.Response,
-                Interface.GetMac(),
+                Interface.MacAddress,
                 SenderIp,
                 TargetMac,
                 TargetIp,
@@ -70,8 +70,8 @@ namespace Protocols
         {
             Send(
                 ARPOperation.Response,
-                Interface.GetMac(),
-                Interface.GetIp(),
+                Interface.MacAddress,
+                Interface.IpAddress,
                 TargetMac,
                 TargetIp,
                 TargetMac,

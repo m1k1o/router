@@ -1,35 +1,54 @@
-using System;
 using System.Net;
 using System.Net.NetworkInformation;
 using PacketDotNet;
+using SharpPcap;
 
 namespace Router
 {
     internal class Interface
     {
+        private ICaptureDevice Device;
+        private IPAddress ipAddress;
+        private PhysicalAddress physicalAddress;
+
+        public IPAddress IpAddress {
+            get => ipAddress;
+
+            set
+            {
+                // Update RT
+                ipAddress = value;
+            }
+        }
+
+        public PhysicalAddress PhysicalAddress
+        {
+            get => physicalAddress;
+
+            set
+            {
+                physicalAddress = value;
+            }
+        }
+
+        public Interface(ICaptureDevice Device)
+        {
+            this.Device = Device;
+        }
+
         internal void Open()
         {
-            throw new NotImplementedException();
+            Device.Open();
         }
 
         internal void Close()
         {
-            throw new NotImplementedException();
+            Device.Close();
         }
 
         internal void SendPacket(Packet payloadPacket)
         {
-            throw new NotImplementedException();
-        }
-
-        internal PhysicalAddress GetMac()
-        {
-            throw new NotImplementedException();
-        }
-
-        internal IPAddress GetIp()
-        {
-            throw new NotImplementedException();
+            Device.SendPacket(payloadPacket);
         }
     }
 }
