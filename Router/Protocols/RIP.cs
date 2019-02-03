@@ -27,9 +27,38 @@ namespace Protocols
             ethernetPacket.PayloadPacket = ipPacket;
         }
 
-        static public RIPPacket Parse(byte[] Data)
+        static public RIPPacket Parse(EthernetPacket packet, Interface Interface = null)
         {
-            return new RIPPacket(Data);
+            // RIP Multicast or Unicast MAC
+            if (!Equals(packet.DestinationHwAddress, MulticastMac) && !(Interface == null || !Equals(packet.DestinationHwAddress, Interface.PhysicalAddress)))
+            {
+                return null;
+            }
+
+            var ipPacket = (IPv4Packet)packet.Extract(typeof(IPv4Packet));
+            if (ipPacket == null)
+            {
+                return null;
+            }
+
+            // RIP Multicast or Unicast IP
+            if (!Equals(ipPacket.DestinationAddress, MulticastIp) && !(Interface == null || !Equals(ipPacket.DestinationAddress, Interface.IPAddress)))
+            {
+                return null;
+            }
+
+            var udpPacket = (UdpPacket)packet.Extract(typeof(UdpPacket));
+            if (udpPacket == null)
+            {
+                return null;
+            }
+
+            if (udpPacket.DestinationPort != PortUDP)
+            {
+                return null;
+            }
+
+            return new RIPPacket(udpPacket.PayloadData);
         }
     }
 }
