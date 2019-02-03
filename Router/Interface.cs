@@ -7,7 +7,9 @@ namespace Router
 {
     internal class Interface
     {
-        private ICaptureDevice Device;
+        private ICaptureDevice ICaptureDevice;
+        public ICaptureDevice Device { get => ICaptureDevice; }
+
         private IPAddress ipAddress;
         private PhysicalAddress physicalAddress;
 
@@ -31,9 +33,11 @@ namespace Router
             }
         }
 
-        public Interface(ICaptureDevice Device)
+        public string Name { get => Device.Name; }
+
+        public Interface(ICaptureDevice ICaptureDevice)
         {
-            this.Device = Device;
+            this.ICaptureDevice = ICaptureDevice;
         }
 
         internal void Open()
@@ -46,9 +50,9 @@ namespace Router
             Device.Close();
         }
 
-        internal void SendPacket(Packet payloadPacket)
+        internal void SendPacket(byte[] Data)
         {
-            Device.SendPacket(payloadPacket);
+            Device.SendPacket(Data);
         }
     }
 }
