@@ -1,4 +1,6 @@
-﻿using SharpPcap;
+﻿using PacketDotNet;
+using RIP;
+using SharpPcap;
 using System;
 using System.Collections.Generic;
 using System.Threading;
@@ -13,12 +15,12 @@ namespace Router
         private List<Interface> Available = new List<Interface>();
 
         private static object QueueLock = new object();
-        private static List<CaptureEventArgs> PacketQueue = new List<CaptureEventArgs>();
+        private static List<Handler> HandlerQueue = new List<Handler>();
 
         private static bool PacketProcessingStop = false;
         private Thread PacketProcessingThread;
 
-        public bool Running = false;
+        public bool Running { get; private set; } = false;
 
         public Interfaces()
         {
@@ -28,14 +30,6 @@ namespace Router
             foreach (var Device in CaptureDeviceList.Instance)
             {
                 Available.Add(new Interface(Device));
-            }
-        }
-
-        public void TurnOff()
-        {
-            if (Running)
-            {
-                Close();
             }
         }
 
@@ -159,15 +153,25 @@ namespace Router
 
         private static void OnPacketArrival(object sender, CaptureEventArgs e)
         {
-            /*
-            var Handler = new Handler();
-            Handler.SetInterface(Instance.GetInterfaceByName(e.Device.Name));
-            Handler.Ethernet(e.Packet);
-            */
+            var Handler = new Handler(e.Packet, Instance.GetInterfaceByName(e.Device.Name));
 
+            // Unsupported packet
+            if (!Handler.Exists())
+            {
+                return;
+            }
+
+            // Async processing
+            if (Handler.CheckType(typeof(RIPPacket)) || Handler.CheckType(typeof(ARPPacket)))
+            {
+                Handler.Execute();
+                return;
+            }
+
+            // Queued processing
             lock (QueueLock)
             {
-                PacketQueue.Add(e);
+                HandlerQueue.Add(Handler);
             }
         }
 
@@ -179,7 +183,7 @@ namespace Router
 
                 lock (QueueLock)
                 {
-                    if (PacketQueue.Count != 0)
+                    if (HandlerQueue.Count != 0)
                     {
                         shouldSleep = false;
                     }
@@ -191,19 +195,17 @@ namespace Router
                 }
                 else // should process the queue
                 {
-                    List<CaptureEventArgs> ourQueue;
+                    List<Handler> ourQueue;
                     lock (QueueLock)
                     {
                         // swap queues, giving the capture callback a new one
-                        ourQueue = PacketQueue;
-                        PacketQueue = new List<CaptureEventArgs>();
+                        ourQueue = HandlerQueue;
+                        HandlerQueue = new List<Handler>();
                     }
 
                     foreach (var e in ourQueue)
                     {
-                        var Handler = new Handler();
-                        Handler.SetInterface(Instance.GetInterfaceByName(e.Device.Name));
-                        Handler.Ethernet(e.Packet);
+                        e.Execute();
                     }
                 }
             }

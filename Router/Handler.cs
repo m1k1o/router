@@ -2,10 +2,6 @@
 using RIP;
 using SharpPcap;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Router
 {
@@ -13,14 +9,14 @@ namespace Router
     {
         private Interface Interface;
 
-        public void SetInterface(Interface Interface)
+        private Type PacketType;
+        private Action PacketHandler;
+
+        public Handler(RawCapture RawCapture, Interface Interface)
         {
             this.Interface = Interface;
-        }
 
-        public void Ethernet(RawCapture Capture)
-        {
-            var packet = (EthernetPacket)PacketDotNet.Packet.ParsePacket(Capture.LinkLayerType, Capture.Data);
+            var packet = (EthernetPacket)PacketDotNet.Packet.ParsePacket(RawCapture.LinkLayerType, RawCapture.Data);
             if (packet == null)
             {
                 throw new Exception("Packet is not Ethernet Packet.");
@@ -29,28 +25,54 @@ namespace Router
             // My packet?
             if(Equals(packet.SourceHwAddress, Interface.PhysicalAddress))
             {
+                PacketType = null;
                 return;
             }
 
-            var ripPacket = Protocols.RIP.Parse(packet);
-            if (ripPacket != null)
-            {
-                RIP(ripPacket);
-                return;
-            }
-
-            var arpPacket = (ARPPacket)packet.Extract(typeof(ARPPacket));
+            ARPPacket arpPacket = (ARPPacket)packet.Extract(typeof(ARPPacket));
             if (arpPacket != null)
             {
-                ARP(arpPacket);
+                PacketType = typeof(ARPPacket);
+                PacketHandler = () => ARP(arpPacket);
                 return;
             }
 
-            var ipPacket = (IPv4Packet)packet.Extract(typeof(IPv4Packet));
+            RIPPacket ripPacket = Protocols.RIP.Parse(packet);
+            if (ripPacket != null)
+            {
+                PacketType = typeof(RIPPacket);
+                PacketHandler = () => RIP(ripPacket);
+                return;
+            }
+
+            IPv4Packet ipPacket = (IPv4Packet)packet.Extract(typeof(IPv4Packet));
             if (ipPacket != null)
             {
-                IP(ipPacket);
+                PacketType = typeof(IPv4Packet);
+                PacketHandler = () => IP(ipPacket);
                 return;
+            }
+
+            // Other packets ignore
+            PacketType = null;
+            return;
+        }
+
+        public bool Exists()
+        {
+            return PacketHandler != null;
+        }
+
+        public bool CheckType(Type Type)
+        {
+            return Equals(Type, PacketType);
+        }
+
+        public void Execute()
+        {
+            if(PacketType != null)
+            {
+                PacketHandler();
             }
         }
 
