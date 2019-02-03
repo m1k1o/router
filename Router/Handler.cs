@@ -8,6 +8,7 @@ namespace Router
     class Handler
     {
         private Interface Interface;
+        private EthernetPacket EthernetPacket;
 
         private Type PacketType;
         private Action PacketHandler;
@@ -17,6 +18,8 @@ namespace Router
             this.Interface = Interface;
 
             var packet = (EthernetPacket)PacketDotNet.Packet.ParsePacket(RawCapture.LinkLayerType, RawCapture.Data);
+            EthernetPacket = packet;
+
             if (packet == null)
             {
                 throw new Exception("Packet is not Ethernet Packet.");
