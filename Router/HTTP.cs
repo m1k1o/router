@@ -57,7 +57,7 @@ namespace Router
                        "</html>";
             }
 
-            String ClassName = "Router.Controllers." + Args[1];
+            String ClassName = Args[1];
             String MethodName = Args[2];
 
             try
@@ -65,7 +65,7 @@ namespace Router
                 // Find a type you want to instantiate: you need to know the assembly it's in for it, we assume that all is is one assembly for simplicity
                 // You should be careful, because ClassName should be full name, which means it should include all the namespaces, like "ConsoleApplication.MyClass"
                 // Not just "MyClass"
-                Type type = Assembly.GetExecutingAssembly().GetType(ClassName);
+                Type type = Assembly.GetExecutingAssembly().GetType("Router.Controllers." + ClassName);
                 if (type == null)
                 {
                     throw new Exception("Class '"+ ClassName+"' not found.");
@@ -81,15 +81,13 @@ namespace Router
                 // Create an instance of the type
                 object instance = Activator.CreateInstance(type);
 
-                // I've assumed that method we want to call is declared like this
-                // public void MyMethod() { ... }
-                // So we pass an instance to call it on and empty parameter list
-                return (String) method.Invoke(instance, new object[0]);
+                // So we pass an instance to call it on and parameter list
+                return (String) method.Invoke(instance, new object[] { Data });
             }
             catch (Exception e)
             {
                 var obj = new JSONObject();
-                obj.push("error", e.Message);
+                obj.Push("error", e.Message);
                 return obj.ToString();
             }
         }

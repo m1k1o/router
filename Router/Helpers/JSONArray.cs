@@ -4,7 +4,7 @@
     {
         private string Data = "";
 
-        public void push(string value)
+        public void Push(string value)
         {
             if (Data != "")
             {
@@ -14,7 +14,7 @@
             Data += JSON.Escape(value);
         }
 
-        public void push(int value)
+        public void Push(int value)
         {
             if (Data != "")
             {
@@ -24,7 +24,7 @@
             Data += value.ToString();
         }
 
-        public void push(bool value)
+        public void Push(bool value)
         {
             if (Data != "")
             {
@@ -34,7 +34,7 @@
             Data += value ? "true" : "false";
         }
 
-        public void push(JSONArray value)
+        public void Push(JSONArray value)
         {
             if (Data != "")
             {
@@ -44,7 +44,7 @@
             Data += value.ToString();
         }
 
-        public void push(JSONObject value)
+        public void Push(JSONObject value)
         {
             if (Data != "")
             {
@@ -52,6 +52,11 @@
             }
 
             Data += value.ToString();
+        }
+
+        public void Empty()
+        {
+            Data = "";
         }
 
         public override string ToString()
