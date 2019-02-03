@@ -17,6 +17,7 @@
         public string Escape(string value)
         {
             value = value.Replace(System.Environment.NewLine, "\\n");
+            value = value.Replace("\\", "\\\\");
             return "\"" + value + "\"";
         }
 
