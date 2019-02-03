@@ -7,47 +7,17 @@ namespace Router
 {
     internal class Interface
     {
-        private ICaptureDevice ICaptureDevice;
-        public ICaptureDevice Device { get => ICaptureDevice; }
+        public ICaptureDevice Device { get; private set; }
 
-        private IPAddress ipAddress;
-        private PhysicalAddress physicalAddress;
+        public IPAddress IPAddress { get; set; }
 
-        public IPAddress IPAddress {
-            get => ipAddress;
-
-            set
-            {
-                // Update RT
-                ipAddress = value;
-            }
-        }
-
-        public PhysicalAddress PhysicalAddress
-        {
-            get => physicalAddress;
-
-            set
-            {
-                physicalAddress = value;
-            }
-        }
+        public PhysicalAddress PhysicalAddress { get; set; }
 
         public string Name { get => Device.Name; }
 
         public Interface(ICaptureDevice ICaptureDevice)
         {
-            this.ICaptureDevice = ICaptureDevice;
-        }
-
-        internal void Open()
-        {
-            Device.Open();
-        }
-
-        internal void Close()
-        {
-            Device.Close();
+            Device = ICaptureDevice;
         }
 
         internal void SendPacket(byte[] Data)
