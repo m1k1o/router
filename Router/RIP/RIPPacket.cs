@@ -1,9 +1,7 @@
-﻿using PacketDotNet;
-using PacketDotNet.Utils;
-using System;
+﻿using System;
 using System.Collections.Generic;
 
-namespace RIP
+namespace Router.RIP
 {
     public sealed class RIPPacket
     {

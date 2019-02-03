@@ -1,9 +1,8 @@
 using PacketDotNet;
 using System.Net;
 using System.Net.NetworkInformation;
-using Router;
 
-namespace Protocols
+namespace Router.Protocols
 {
     class ARP
     {

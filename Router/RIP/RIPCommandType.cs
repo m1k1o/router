@@ -1,4 +1,4 @@
-﻿namespace RIP
+﻿namespace Router.RIP
 {
     public enum RIPCommandType : byte
     {

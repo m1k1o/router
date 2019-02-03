@@ -1,11 +1,10 @@
 using PacketDotNet;
 using System.Net;
 using System.Net.NetworkInformation;
-using Router;
-using RIP;
 using System.Collections.Generic;
+using Router.RIP;
 
-namespace Protocols
+namespace Router.Protocols
 {
     class RIP
     {

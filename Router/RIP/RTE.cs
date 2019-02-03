@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Net;
 
-namespace RIP
+namespace Router.RIP
 {
     public class RTE
     {
