@@ -10,8 +10,7 @@ namespace Router
     class Interfaces
     {
         internal static Interfaces Instance { get; } = new Interfaces();
-
-        private List<Interface> Selected = new List<Interface>();
+        
         private List<Interface> Available = new List<Interface>();
 
         private static object QueueLock = new object();
@@ -40,8 +39,7 @@ namespace Router
                 throw new Exception("Router is already running.");
             }
 
-            Interface Device = GetInterfaceById(ID);
-            Selected.Add(Device);
+            GetInterfaceById(ID).Selected = true;
         }
 
         public void UnselectInterface(int ID)
@@ -51,24 +49,12 @@ namespace Router
                 throw new Exception("Router is already running.");
             }
 
-            Interface Device = GetInterfaceById(ID);
-            Selected.Remove(Device);
+            GetInterfaceById(ID).Selected = false;
         }
 
         public Interface GetInterfaceById(int ID)
         {
-            var i = 1;
-            foreach (var Int in Available)
-            {
-                if (i == ID)
-                {
-                    return Int;
-                }
-
-                i++;
-            }
-
-            throw new Exception("No interface Found.");
+            return Available[ID];
         }
 
         public Interface GetInterfaceByName(string Name)
@@ -89,11 +75,6 @@ namespace Router
 
         public List<Interface> GetInteraces()
         {
-            return Selected;
-        }
-
-        public List<Interface> GetAllInteraces()
-        {
             return Available;
         }
 
@@ -103,6 +84,11 @@ namespace Router
 
             foreach (var Interface in Interfaces)
             {
+                if (!Interface.Selected)
+                {
+                    continue;
+                }
+
                 Interface.Device.Open(DeviceMode.Promiscuous, 1);
                 Interface.Device.OnPacketArrival += new PacketArrivalEventHandler(OnPacketArrival);
                 Interface.Device.OnCaptureStopped += new CaptureStoppedEventHandler(OnCaptureStopped);
@@ -129,6 +115,11 @@ namespace Router
 
             foreach (var Interface in Interfaces)
             {
+                if (!Interface.Selected)
+                {
+                    continue;
+                }
+
                 try
                 {
                     Interface.Device.StopCapture();

@@ -13,6 +13,8 @@ namespace Router
 
         public PhysicalAddress PhysicalAddress { get; set; }
 
+        public bool Selected { get; set; } = false;
+
         public string Name { get => Device.Name; }
 
         public Interface(ICaptureDevice ICaptureDevice)
