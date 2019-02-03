@@ -17,6 +17,8 @@ namespace Router
 
         public string Name { get => Device.Name; }
 
+        public string Description { get => Device.Description; }
+
         public Interface(ICaptureDevice ICaptureDevice)
         {
             Device = ICaptureDevice;
