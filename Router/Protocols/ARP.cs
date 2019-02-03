@@ -23,9 +23,9 @@ namespace Protocols
             var ethernetPacket = new EthernetPacket(Interface.PhysicalAddress, DestionationMac, EthernetPacketType.Arp);
 
             var arpPacket = new ARPPacket(Operation, TargetMac, TargetIp, SenderMac, SenderIp);
-            ethernetPacket.PayloadPacket = arpPacket;
+            ethernetPacket.PayloadData = arpPacket.Bytes;
 
-            Interface.SendPacket(ethernetPacket.PayloadPacket);
+            Interface.SendPacket(ethernetPacket.Bytes);
         }
 
         static public void SendRequest(
