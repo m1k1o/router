@@ -34,21 +34,11 @@ namespace Router
 
         public void SelectInterface(int ID)
         {
-            if (Running)
-            {
-                throw new Exception("Router is already running.");
-            }
-
             GetInterfaceById(ID).Selected = true;
         }
 
         public void UnselectInterface(int ID)
         {
-            if (Running)
-            {
-                throw new Exception("Router is already running.");
-            }
-
             GetInterfaceById(ID).Selected = false;
         }
 
