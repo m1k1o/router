@@ -82,13 +82,16 @@ namespace Router
                 object instance = Activator.CreateInstance(type);
 
                 // So we pass an instance to call it on and parameter list
-                return (String) method.Invoke(instance, new object[] { Data });
+                object response = method.Invoke(instance, new object[] { Data });
+                return new JSON(response).ToString();
+            }
+            catch (TargetInvocationException e)
+            {
+                return new JSONError(e.InnerException.Message).ToString();
             }
             catch (Exception e)
             {
-                var obj = new JSONObject();
-                obj.Push("error", e.Message);
-                return obj.ToString();
+                return new JSONError(e.Message).ToString();
             }
         }
 
@@ -102,6 +105,8 @@ namespace Router
         }
         static void Main(string[] args)
         {
+            var Preload = Interfaces.Instance;
+
             var HTTP = new HTTP("http://localhost:5000/");
             HTTP.listen();
         }

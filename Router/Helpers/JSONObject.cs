@@ -1,62 +1,23 @@
 ﻿namespace Router.Helpers
 {
-    class JSONObject
+    class JSONObject : JSON
     {
-        private string Data = "";
+        public JSONObject(string Key = null, object Value = null)
+        {
+            if (Key != null)
+            {
+                Push(Key, Value);
+            }
+        }
 
-        public void Push(string key, string value)
+        public void Push(string key, object value)
         {
             if (Data != "")
             {
                 Data += ",";
             }
 
-            Data += JSON.Escape(key) + ":" + JSON.Escape(value);
-        }
-
-        public void Push(string key, int value)
-        {
-            if (Data != "")
-            {
-                Data += ",";
-            }
-
-            Data += JSON.Escape(key) + ":" + value.ToString();
-        }
-
-        public void Push(string key, bool value)
-        {
-            if (Data != "")
-            {
-                Data += ",";
-            }
-
-            Data += JSON.Escape(key) + ":" + (value ? "true" : "false");
-        }
-
-        public void Push(string key, JSONObject value)
-        {
-            if (Data != "")
-            {
-                Data += ",";
-            }
-
-            Data += JSON.Escape(key) + ":" + value.ToString();
-        }
-
-        public void Push(string key, JSONArray value)
-        {
-            if (Data != "")
-            {
-                Data += ",";
-            }
-
-            Data += JSON.Escape(key) + ":" + value.ToString();
-        }
-
-        public void Empty()
-        {
-            Data = "";
+            Data += Escape(key) + ":" + Escape(value);
         }
 
         public override string ToString()

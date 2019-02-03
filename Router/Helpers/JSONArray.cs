@@ -1,62 +1,28 @@
-﻿namespace Router.Helpers
+﻿using System.Collections.Generic;
+
+namespace Router.Helpers
 {
-    class JSONArray
+    class JSONArray : JSON
     {
-        private string Data = "";
+        public JSONArray(List<object> List = null)
+        {
+            if(List != null)
+            {
+                foreach (var Row in List)
+                {
+                    Push(Row);
+                }
+            }
+        }
 
-        public void Push(string value)
+        public void Push(object value)
         {
             if (Data != "")
             {
                 Data += ",";
             }
 
-            Data += JSON.Escape(value);
-        }
-
-        public void Push(int value)
-        {
-            if (Data != "")
-            {
-                Data += ",";
-            }
-
-            Data += value.ToString();
-        }
-
-        public void Push(bool value)
-        {
-            if (Data != "")
-            {
-                Data += ",";
-            }
-
-            Data += value ? "true" : "false";
-        }
-
-        public void Push(JSONArray value)
-        {
-            if (Data != "")
-            {
-                Data += ",";
-            }
-
-            Data += value.ToString();
-        }
-
-        public void Push(JSONObject value)
-        {
-            if (Data != "")
-            {
-                Data += ",";
-            }
-
-            Data += value.ToString();
-        }
-
-        public void Empty()
-        {
-            Data = "";
+            Data += Escape(value);
         }
 
         public override string ToString()
