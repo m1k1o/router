@@ -30,7 +30,12 @@ namespace Router
                 Available.Add(new Interface(Device));
             }
         }
-        
+
+        public Interface GetInterfaceById(string ID)
+        {
+            return Available[Int32.Parse(ID)];
+        }
+
         public Interface GetInterfaceById(int ID)
         {
             return Available[ID];

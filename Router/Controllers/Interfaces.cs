@@ -28,43 +28,53 @@ namespace Router.Controllers
 
         public JSON Start(string Data)
         {
-            if (string.IsNullOrEmpty(Data))
+            // Validate
+            Interface Interface;
+            try
             {
-                return new JSONError("No ID specified.");
+                Interface = Instance.GetInterfaceById(Data);
+            }
+            catch (Exception e)
+            {
+                return new JSONError(e.Message);
             }
 
-            var ID = Int32.Parse(Data);
-            var Iface = Instance.GetInterfaceById(ID);
-
-            if (Iface.IPAddress == null || Iface.Mask == null)
+            if (Interface.IPAddress == null || Interface.Mask == null)
             {
                 return new JSONError("You must first set IP and Mask.");
             }
 
-            if (!Iface.Running)
+            // Save
+            if (!Interface.Running)
             {
-                Iface.Start();
+                Interface.Start();
             }
 
-            return new JSONObject("running", Iface.Running);
+            // Answer
+            return new JSONObject("running", Interface.Running);
         }
 
         public JSON Stop(string Data)
         {
-            if (string.IsNullOrEmpty(Data))
+            // Validate
+            Interface Interface;
+            try
             {
-                return new JSONError("No ID specified.");
+                Interface = Instance.GetInterfaceById(Data);
+            }
+            catch (Exception e)
+            {
+                return new JSONError(e.Message);
             }
 
-            var ID = Int32.Parse(Data);
-            var Iface = Instance.GetInterfaceById(ID);
-
-            if (Iface.Running)
+            // Save
+            if (!Interface.Running)
             {
-                Iface.Stop();
+                Interface.Start();
             }
 
-            return new JSONObject("running", Iface.Running);
+            // Answer
+            return new JSONObject("running", Interface.Running);
         }
         
         public JSON Edit(string Data)
@@ -77,10 +87,12 @@ namespace Router.Controllers
                 return new JSONError("Expected InterfaceID, IPAddress, Mask.");
             }
 
+            Interface Interface;
             IPAddress IP;
             IPAddress Mask;
             try
             {
+                Interface = Instance.GetInterfaceById(Rows[0]);
                 IP = IPAddress.Parse(Rows[1]);
                 Mask = IPAddress.Parse(Rows[2]);
             }
@@ -89,16 +101,20 @@ namespace Router.Controllers
                 return new JSONError(e.Message);
             }
 
+            if (string.IsNullOrEmpty(Rows[0]))
+            {
+                return new JSONError("No ID specified.");
+            }
+
             // Save
-            var ID = Int32.Parse(Rows[0]);
-            var iface = Instance.GetInterfaceById(ID);
-            iface.IPAddress = IP;
-            iface.Mask = Mask;
-            
-            return Interface(iface);
+            Interface.IPAddress = IP;
+            Interface.Mask = Mask;
+
+            // Answer
+            return this.Interface(Interface);
         }
 
-        public JSON Show(string Data)
+        public JSON Show(string Data = null)
         {
             var obj = new JSONObject();
 
@@ -113,17 +129,19 @@ namespace Router.Controllers
             return obj;
         }
 
-        public JSON Get(string Data)
+        public JSON Get(string Data = null)
         {
-            if (string.IsNullOrEmpty(Data))
+            Interface Interface;
+            try
             {
-                return new JSONError("No ID specified.");
+                Interface = Instance.GetInterfaceById(Data);
+            }
+            catch (Exception e)
+            {
+                return new JSONError(e.Message);
             }
 
-            var ID = Int32.Parse(Data);
-            var Iface = Instance.GetInterfaceById(ID);
-
-            return Interface(Iface);
+            return this.Interface(Interface);
         }
     }
 }
