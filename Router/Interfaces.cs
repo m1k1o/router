@@ -25,6 +25,7 @@ namespace Router
         {
             // Print SharpPcap version
             Console.WriteLine("SharpPcap {0}.", SharpPcap.Version.VersionString);
+            Console.WriteLine("Loading...");
 
             foreach (var Device in CaptureDeviceList.Instance)
             {
