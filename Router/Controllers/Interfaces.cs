@@ -12,67 +12,6 @@ namespace Router.Controllers
     {
         static private readonly Router.Interfaces Instance = Router.Interfaces.Instance;
 
-        public bool Running(string Data)
-        {
-            return Instance.Running;
-        }
-
-        public JSON Start(string Data)
-        {
-            if (Instance.Running)
-            {
-                return new JSONError("Router is already running.");
-            }
-
-            Instance.Open();
-            return new JSON(true);
-        }
-
-        public JSON Stop(string Data)
-        {
-            if (!Instance.Running)
-            {
-                return new JSONError("Router is not running.");
-            }
-
-            Instance.Close();
-            return new JSON(true);
-        }
-
-        public JSON Select(string Data)
-        {
-            if (Instance.Running)
-            {
-                return new JSONError("Router is already running.");
-            }
-
-            if (string.IsNullOrEmpty(Data))
-            {
-                return new JSONError("No ID specified.");
-            }
-
-            var ID = Int32.Parse(Data);
-            Instance.SelectInterface(ID);
-            return new JSON(true);
-        }
-        
-        public JSON Unselect(string Data)
-        {
-            if (Instance.Running)
-            {
-                return new JSONError("Router is already running.");
-            }
-
-            if (string.IsNullOrEmpty(Data))
-            {
-                return new JSONError("No ID specified.");
-            }
-
-            var ID = Int32.Parse(Data);
-            Instance.UnselectInterface(ID);
-            return new JSON(true);
-        }
-
         private JSON Interface(Interface Interface)
         {
             var obj = new JSONObject();
@@ -80,21 +19,57 @@ namespace Router.Controllers
             obj.Push("name", Interface.Name);
             obj.Push("friendly_name", Interface.FriendlyName);
             obj.Push("description", Interface.Description);
-            obj.Push("selected", Interface.Selected);
+            obj.Push("selected", Interface.Running);
             obj.Push("ip", Interface.IPAddress);
             obj.Push("mask", Interface.Mask);
             obj.Push("mac", Interface.PhysicalAddress);
             return obj;
         }
 
+        public JSON Start(string Data)
+        {
+            if (string.IsNullOrEmpty(Data))
+            {
+                return new JSONError("No ID specified.");
+            }
+
+            var ID = Int32.Parse(Data);
+            var Iface = Instance.GetInterfaceById(ID);
+
+            if (!Iface.Running)
+            {
+                Iface.Start();
+            }
+
+            return new JSONObject("running", Iface.Running);
+        }
+
+        public JSON Stop(string Data)
+        {
+            if (string.IsNullOrEmpty(Data))
+            {
+                return new JSONError("No ID specified.");
+            }
+
+            var ID = Int32.Parse(Data);
+            var Iface = Instance.GetInterfaceById(ID);
+
+            if (Iface.Running)
+            {
+                Iface.Stop();
+            }
+
+            return new JSONObject("running", Iface.Running);
+        }
+        
         public JSON Edit(string Data)
         {
             var Rows = Data.Split('\n');
 
             // Validate
-            if (Rows.Length != 4)
+            if (Rows.Length != 3)
             {
-                return new JSONError("Expected 4 pieces of data.");
+                return new JSONError("Expected InterfaceID, IPAddress, Mask.");
             }
 
             IPAddress IP;
@@ -114,7 +89,6 @@ namespace Router.Controllers
             var iface = Instance.GetInterfaceById(ID);
             iface.IPAddress = IP;
             iface.Mask = Mask;
-            iface.Selected = (Rows[1] == "true");
             
             return Interface(iface);
         }
@@ -130,6 +104,19 @@ namespace Router.Controllers
             }
 
             return arr;
+        }
+
+        public JSON Get(string Data)
+        {
+            if (string.IsNullOrEmpty(Data))
+            {
+                return new JSONError("No ID specified.");
+            }
+
+            var ID = Int32.Parse(Data);
+            var Iface = Instance.GetInterfaceById(ID);
+
+            return Interface(Iface);
         }
     }
 }

@@ -10,7 +10,7 @@ namespace Router
     class Interfaces
     {
         internal static Interfaces Instance { get; } = new Interfaces();
-        
+
         private List<Interface> Available = new List<Interface>();
 
         private static object QueueLock = new object();
@@ -18,8 +18,6 @@ namespace Router
 
         private static bool PacketProcessingStop = false;
         private Thread PacketProcessingThread;
-
-        public bool Running { get; private set; } = false;
 
         public Interfaces()
         {
@@ -32,17 +30,7 @@ namespace Router
                 Available.Add(new Interface(Device));
             }
         }
-
-        public void SelectInterface(int ID)
-        {
-            GetInterfaceById(ID).Selected = true;
-        }
-
-        public void UnselectInterface(int ID)
-        {
-            GetInterfaceById(ID).Selected = false;
-        }
-
+        
         public Interface GetInterfaceById(int ID)
         {
             return Available[ID];
@@ -69,71 +57,12 @@ namespace Router
             return Available;
         }
 
-        public void Open()
-        {
-            var Interfaces = GetInteraces();
-
-            foreach (var Interface in Interfaces)
-            {
-                if (!Interface.Selected)
-                {
-                    continue;
-                }
-
-                Interface.Device.Open(DeviceMode.Promiscuous, 1);
-                Interface.Device.OnPacketArrival += new PacketArrivalEventHandler(OnPacketArrival);
-                Interface.Device.OnCaptureStopped += new CaptureStoppedEventHandler(OnCaptureStopped);
-                Interface.Device.StartCapture();
-            }
-
-            // start the background thread
-            PacketProcessingThread = new Thread(BackgroundThread);
-            PacketProcessingThread.Start();
-            PacketProcessingStop = false;
-
-            Running = true;
-        }
-
-        public void Close()
-        {
-            // ask the background thread to shut down
-            PacketProcessingStop = true;
-
-            // wait for the background thread to terminate
-            PacketProcessingThread.Join();
-
-            var Interfaces = GetInteraces();
-
-            foreach (var Interface in Interfaces)
-            {
-                if (!Interface.Selected)
-                {
-                    continue;
-                }
-
-                try
-                {
-                    Interface.Device.StopCapture();
-                }
-                catch { };
-
-                try
-                {
-
-                    Interface.Device.Close();
-                }
-                catch { };
-            }
-
-            Running = false;
-        }
-
-        private static void OnCaptureStopped(object sender, CaptureStoppedEventStatus e)
+        internal static void OnCaptureStopped(object sender, CaptureStoppedEventStatus e)
         {
             Console.WriteLine("Capture stopped...");
         }
 
-        private static void OnPacketArrival(object sender, CaptureEventArgs e)
+        internal static void OnPacketArrival(object sender, CaptureEventArgs e)
         {
             var Handler = new Handler(e.Packet, Instance.GetInterfaceByName(e.Device.Name));
 

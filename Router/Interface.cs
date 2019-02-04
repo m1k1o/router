@@ -15,7 +15,7 @@ namespace Router
 
         public PhysicalAddress PhysicalAddress { get; private set; }
 
-        public bool Selected { get; set; } = false;
+        public bool Running { get; set; } = false;
 
         public string Name { get => Device.Name; }
 
@@ -31,6 +31,34 @@ namespace Router
             Device.Open();
             PhysicalAddress = Device.MacAddress;
             Device.Close();
+        }
+
+        public void Start()
+        {
+            Device.Open(DeviceMode.Promiscuous, 1);
+            Device.OnPacketArrival += new PacketArrivalEventHandler(Interfaces.OnPacketArrival);
+            Device.OnCaptureStopped += new CaptureStoppedEventHandler(Interfaces.OnCaptureStopped);
+            Device.StartCapture();
+
+            Running = true;
+        }
+
+        public void Stop()
+        {
+            try
+            {
+                Device.StopCapture();
+            }
+            catch { };
+
+            try
+            {
+
+                Device.Close();
+            }
+            catch { };
+
+            Running = false;
         }
 
         internal void SendPacket(byte[] Data)
