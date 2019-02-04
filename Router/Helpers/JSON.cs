@@ -1,4 +1,7 @@
-﻿namespace Router.Helpers
+﻿using System.Net.NetworkInformation;
+using System.Text.RegularExpressions;
+
+namespace Router.Helpers
 {
     class JSON
     {
@@ -46,6 +49,13 @@
             if (value is int || value is JSON)
             {
                 return value.ToString();
+            }
+
+            if(value is PhysicalAddress)
+            {
+                var regex = "(.{2})(.{2})(.{2})(.{2})(.{2})(.{2})";
+                var replace = "$1:$2:$3:$4:$5:$6";
+                return "\"" + Regex.Replace(value.ToString(), regex, replace) + "\"";
             }
 
             return Escape(value.ToString());
