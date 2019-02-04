@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -54,7 +55,7 @@ namespace Router.Controllers
             Instance.SelectInterface(ID);
             return new JSON(true);
         }
-
+        
         public JSON Unselect(string Data)
         {
             if (Instance.Running)
@@ -72,25 +73,60 @@ namespace Router.Controllers
             return new JSON(true);
         }
 
+        private JSON Interface(Interface Interface)
+        {
+            var obj = new JSONObject();
+            obj.Push("id", Instance.GetInteraces().IndexOf(Interface));
+            obj.Push("name", Interface.Name);
+            obj.Push("friendly_name", Interface.FriendlyName);
+            obj.Push("description", Interface.Description);
+            obj.Push("selected", Interface.Selected);
+            obj.Push("ip", Interface.IPAddress);
+            obj.Push("mask", Interface.Mask);
+            obj.Push("mac", Interface.PhysicalAddress);
+            return obj;
+        }
+
+        public JSON Edit(string Data)
+        {
+            var Rows = Data.Split('\n');
+
+            // Validate
+            if (Rows.Length != 4)
+            {
+                return new JSONError("Expected 4 pieces of data.");
+            }
+
+            IPAddress IP;
+            IPAddress Mask;
+            try
+            {
+                IP = IPAddress.Parse(Rows[2]);
+                Mask = IPAddress.Parse(Rows[3]);
+            }
+            catch (Exception e)
+            {
+                return new JSONError(e.Message);
+            }
+
+            // Save
+            var ID = Int32.Parse(Rows[0]);
+            var iface = Instance.GetInterfaceById(ID);
+            iface.IPAddress = IP;
+            iface.Mask = Mask;
+            iface.Selected = (Rows[1] == "true");
+            
+            return Interface(iface);
+        }
+
         public JSON Show(string Data)
         {
             var arr = new JSONArray();
-            var obj = new JSONObject();
 
             var Interfaces = Instance.GetInteraces();
-
-            int i = 0;
-            foreach(var Interface in Interfaces)
+            foreach(var Iface in Interfaces)
             {
-                obj.Empty();
-
-                obj.Push("id", i);
-                obj.Push("name", Interface.Name);
-                obj.Push("description", Interface.Description);
-                obj.Push("selected", Interface.Selected);
-
-                arr.Push(obj);
-                i++;
+                arr.Push(Interface(Iface));
             }
 
             return arr;
