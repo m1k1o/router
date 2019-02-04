@@ -19,7 +19,7 @@ namespace Router
         private static bool PacketProcessingStop = false;
         private Thread PacketProcessingThread;
 
-        public Interfaces()
+        private Interfaces()
         {
             // Print SharpPcap version
             Console.WriteLine("SharpPcap {0}.", SharpPcap.Version.VersionString);
@@ -29,6 +29,25 @@ namespace Router
             {
                 Available.Add(new Interface(Device));
             }
+
+            StartProcessing();
+        }
+
+        public void StartProcessing()
+        {
+            // start the background thread
+            PacketProcessingThread = new Thread(BackgroundThread);
+            PacketProcessingThread.Start();
+            PacketProcessingStop = false;
+        }
+
+        public void StopProcessing()
+        {
+            // ask the background thread to shut down
+            PacketProcessingStop = true;
+
+            // wait for the background thread to terminate
+            PacketProcessingThread.Join();
         }
 
         public Interface GetInterfaceById(string ID)
