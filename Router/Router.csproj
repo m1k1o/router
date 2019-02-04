@@ -51,6 +51,7 @@
     <Compile Include="ARP.cs" />
     <Compile Include="ARPEntry.cs" />
     <Compile Include="ARPTable.cs" />
+    <Compile Include="Controllers\ARP.cs" />
     <Compile Include="Controllers\Interfaces.cs" />
     <Compile Include="Handler.cs" />
     <Compile Include="Helpers\JSON.cs" />

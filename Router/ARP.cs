@@ -41,7 +41,10 @@ namespace Router
             // Is packet valid request?
             if (
                 Equals(DestinationMac, PhysicalAddress.Parse("FF-FF-FF-FF-FF-FF")) &&
-                Equals(ARPPacket.TargetHardwareAddress, PhysicalAddress.Parse("00-00-00-00-00-00"))
+                (
+                    Equals(ARPPacket.TargetHardwareAddress, PhysicalAddress.Parse("00-00-00-00-00-00")) ||
+                    Equals(ARPPacket.TargetHardwareAddress, PhysicalAddress.Parse("FF-FF-FF-FF-FF-FF"))
+                )
             )
             {
                 // Am i asked?
@@ -75,14 +78,7 @@ namespace Router
                 return PhysicalAddress;
             }
 
-            PhysicalAddress = Fetch(IPAddress, Interface);
-            if (PhysicalAddress == null)
-            {
-                return null;
-            }
-
-            ARPTable.Instance.Push(IPAddress, PhysicalAddress);
-            return PhysicalAddress;
+            return Fetch(IPAddress, Interface);
         }
 
         static public PhysicalAddress Fetch(IPAddress IPAddress, Interface Interface)

@@ -87,6 +87,7 @@ namespace Router
         public void ARP(ARPPacket ARPPacket)
         {
             Console.WriteLine("Got ARP.");
+            Router.ARP.OnReceived(EthernetPacket.DestinationHwAddress, ARPPacket, Interface);
         }
 
         public void IP(IPv4Packet IPv4Packet)
