@@ -36,6 +36,11 @@ namespace Router.Controllers
             var ID = Int32.Parse(Data);
             var Iface = Instance.GetInterfaceById(ID);
 
+            if (Iface.IPAddress == null || Iface.Mask == null)
+            {
+                return new JSONError("You must first set IP and Mask.");
+            }
+
             if (!Iface.Running)
             {
                 Iface.Start();
@@ -76,8 +81,8 @@ namespace Router.Controllers
             IPAddress Mask;
             try
             {
-                IP = IPAddress.Parse(Rows[2]);
-                Mask = IPAddress.Parse(Rows[3]);
+                IP = IPAddress.Parse(Rows[1]);
+                Mask = IPAddress.Parse(Rows[2]);
             }
             catch (Exception e)
             {
