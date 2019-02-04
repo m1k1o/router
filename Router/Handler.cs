@@ -26,7 +26,7 @@ namespace Router
             }
 
             // My packet?
-            if(Equals(packet.SourceHwAddress, Interface.PhysicalAddress))
+            if (Equals(packet.SourceHwAddress, Interface.PhysicalAddress))
             {
                 PacketType = null;
                 return;
@@ -73,7 +73,7 @@ namespace Router
 
         public void Execute()
         {
-            if(PacketType != null)
+            if (PacketType != null)
             {
                 PacketHandler();
             }
