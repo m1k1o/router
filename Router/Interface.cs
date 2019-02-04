@@ -11,17 +11,26 @@ namespace Router
 
         public IPAddress IPAddress { get; set; }
 
-        public PhysicalAddress PhysicalAddress { get; set; }
+        public IPAddress Mask { get; set; }
+
+        public PhysicalAddress PhysicalAddress { get; private set; }
 
         public bool Selected { get; set; } = false;
 
         public string Name { get => Device.Name; }
 
+        public string FriendlyName { get => Device.ToString().Split('\n')[1].Substring(14); }
+        
         public string Description { get => Device.Description; }
 
         public Interface(ICaptureDevice ICaptureDevice)
         {
             Device = ICaptureDevice;
+
+            // Get MAC from only opened device
+            Device.Open();
+            PhysicalAddress = Device.MacAddress;
+            Device.Close();
         }
 
         internal void SendPacket(byte[] Data)
