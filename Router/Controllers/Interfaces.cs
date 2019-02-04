@@ -15,11 +15,11 @@ namespace Router.Controllers
         private JSON Interface(Interface Interface)
         {
             var obj = new JSONObject();
-            obj.Push("id", Instance.GetInteraces().IndexOf(Interface));
+            //obj.Push("id", Instance.GetInteraces().IndexOf(Interface));
             obj.Push("name", Interface.Name);
             obj.Push("friendly_name", Interface.FriendlyName);
             obj.Push("description", Interface.Description);
-            obj.Push("selected", Interface.Running);
+            obj.Push("running", Interface.Running);
             obj.Push("ip", Interface.IPAddress);
             obj.Push("mask", Interface.Mask);
             obj.Push("mac", Interface.PhysicalAddress);
@@ -100,15 +100,17 @@ namespace Router.Controllers
 
         public JSON Show(string Data)
         {
-            var arr = new JSONArray();
+            var obj = new JSONObject();
 
             var Interfaces = Instance.GetInteraces();
+
+            int i = 0;
             foreach(var Iface in Interfaces)
             {
-                arr.Push(Interface(Iface));
+                obj.Push((i++).ToString(), Interface(Iface));
             }
 
-            return arr;
+            return obj;
         }
 
         public JSON Get(string Data)
