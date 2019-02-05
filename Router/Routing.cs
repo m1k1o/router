@@ -27,7 +27,7 @@ namespace Router
                 return;
             }
 
-            if (!RoutingEntry.HasInterface())
+            if (!RoutingEntry.HasInterface)
             {
                 Console.WriteLine("No Interface after RoutingTable Lookup for {0}.", IPPacket.DestinationAddress);
                 return;
@@ -36,7 +36,7 @@ namespace Router
             IPAddress ARPRequestIP;
             
             // Next Hop IP
-            if (!RoutingEntry.HasNextHopIP())
+            if (!RoutingEntry.HasNextHopIP)
             {
                 ARPRequestIP = RoutingEntry.NextHopIP;
             } else
