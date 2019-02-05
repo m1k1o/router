@@ -7,6 +7,8 @@ namespace Router.RIP
     {
         private byte[] Data = new Byte[24];
 
+        public byte[] Bytes { get => Data; }
+
         public byte CommandType
         {
             get
@@ -83,8 +85,8 @@ namespace Router.RIP
                 int offset = 4;
                 foreach (RTE item in value)
                 {
-                    
-                    byte[] Src = item.Export();
+
+                    byte[] Src = item.Bytes;
                     Array.Copy(Data, offset, Src, 0, 20);
                     offset += 20;
                 }
@@ -102,11 +104,6 @@ namespace Router.RIP
         public RIPPacket(byte[] Data)
         {
             Array.Copy(Data, 0, this.Data, 0, Data.Length);
-        }
-
-        public byte[] Export()
-        {
-            return Data;
         }
     }
 }

@@ -7,6 +7,8 @@ namespace Router.RIP
     {
         private byte[] Data = new Byte[20];
 
+        public byte[] Bytes { get => Data; }
+
         public ushort AddressFamilyIdentifier
         {
             get
@@ -140,11 +142,6 @@ namespace Router.RIP
         public RTE(byte[] Data)
         {
             Array.Copy(Data, 0, this.Data, 0, 20);
-        }
-
-        public byte[] Export()
-        {
-            return Data;
         }
     }
 }
