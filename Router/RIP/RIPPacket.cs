@@ -90,7 +90,7 @@ namespace Router.RIP
                 }
             }
         }
-        
+
         public RIPPacket(RIPCommandType CommandType, List<RTE> RTEs)
         {
             this.CommandType = (byte)CommandType;
