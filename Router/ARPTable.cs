@@ -9,36 +9,32 @@ namespace Router
     {
         internal static ARPTable Instance { get; } = new ARPTable();
 
-        public int TTL = 128;
+        public TimeSpan CacheTimeout = TimeSpan.FromSeconds(128);
 
         private List<ARPEntry> Entries = new List<ARPEntry>();
 
         public void Push(IPAddress IPAddress, PhysicalAddress PhysicalAddress)
         {
-            long timeStamp = ((DateTimeOffset)DateTime.UtcNow).ToUnixTimeSeconds();
-
             foreach (var Entry in Entries)
             {
                 if (Equals(Entry.IPAddress, IPAddress))
                 {
                     Entry.PhysicalAddress = PhysicalAddress;
-                    Entry.TTL = timeStamp + TTL;
+                    Entry.Expires = DateTime.Now + CacheTimeout;
                     return;
                 }
             }
 
-            Entries.Add(new ARPEntry(IPAddress, PhysicalAddress, timeStamp + TTL));
+            Entries.Add(new ARPEntry(IPAddress, PhysicalAddress, DateTime.Now + CacheTimeout));
         }
 
         public PhysicalAddress Find(IPAddress IPAddress)
         {
-            long timeStamp = ((DateTimeOffset)DateTime.UtcNow).ToUnixTimeSeconds();
-
             foreach (var Entry in Entries)
             {
                 if (Equals(Entry.IPAddress, IPAddress))
                 {
-                    if (Entry.TTL < timeStamp)
+                    if (DateTime.Now > Entry.Expires)
                     {
                         return null;
                     }

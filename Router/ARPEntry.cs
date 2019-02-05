@@ -1,4 +1,5 @@
-﻿using System.Net;
+﻿using System;
+using System.Net;
 using System.Net.NetworkInformation;
 
 namespace Router
@@ -7,13 +8,13 @@ namespace Router
     {
         public IPAddress IPAddress;
         public PhysicalAddress PhysicalAddress;
-        public long TTL;
+        public DateTime Expires;
 
-        public ARPEntry(IPAddress IPAddress, PhysicalAddress PhysicalAddress, long TTL)
+        public ARPEntry(IPAddress IPAddress, PhysicalAddress PhysicalAddress, DateTime Expires)
         {
             this.IPAddress = IPAddress;
             this.PhysicalAddress = PhysicalAddress;
-            this.TTL = TTL;
+            this.Expires = Expires;
         }
     }
 }

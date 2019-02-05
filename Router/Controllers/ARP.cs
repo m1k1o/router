@@ -12,28 +12,49 @@ namespace Router.Controllers
     {
         static private readonly ARPTable ARPTable = ARPTable.Instance;
 
-        public JSON TTL(string Data = null)
+        public JSON Settings(string Data = null)
         {
-            if (string.IsNullOrEmpty(Data))
+            if (!string.IsNullOrEmpty(Data))
             {
-                // Answer
-                return new JSONObject("ttl", ARPTable.TTL);
+                var Rows = Data.Split('\n');
+
+                // Validate
+                if (Rows.Length != 4)
+                {
+                    return new JSONError("Expected ProxyEnabled, TTL, Timeout, Interval.");
+                }
+
+                bool ProxyEnabled;
+                TimeSpan CacheTimeout;
+                TimeSpan Timeout;
+                TimeSpan Interval;
+                try
+                {
+                    ProxyEnabled = Rows[0] == "true";
+                    CacheTimeout = TimeSpan.FromSeconds(Int32.Parse(Rows[1]));
+                    Timeout = TimeSpan.FromMilliseconds(Int32.Parse(Rows[2]));
+                    Interval = TimeSpan.FromMilliseconds(Int32.Parse(Rows[3]));
+                }
+                catch (Exception e)
+                {
+                    return new JSONError(e.Message);
+                }
+
+                // Set
+                Router.ARP.ProxyEnabled = ProxyEnabled;
+                ARPTable.CacheTimeout = CacheTimeout;
+                Router.ARP.Timeout = Timeout;
+                Router.ARP.Interval = Interval;
             }
 
-            // Set new TTL
-            try
-            {
-                ARPTable.TTL = Int32.Parse(Data);
-            }
-            catch (Exception e)
-            {
-                return new JSONError(e.Message);
-            }
-
-            // Answer
-            return new JSONObject("ttl", ARPTable.TTL);
+            var obj = new JSONObject();
+            obj.Push("proxy_enabled", Router.ARP.ProxyEnabled);
+            obj.Push("cache_timeout", ARPTable.CacheTimeout.TotalSeconds);
+            obj.Push("timeout", Router.ARP.Timeout.TotalMilliseconds);
+            obj.Push("interval", Router.ARP.Interval.TotalMilliseconds);
+            return obj;
         }
-
+        
         public JSON Lookup(string Data)
         {
             var Rows = Data.Split('\n');
@@ -70,16 +91,14 @@ namespace Router.Controllers
 
         public JSON Table(string Data = null)
         {
-            long timeStamp = ((DateTimeOffset)DateTime.UtcNow).ToUnixTimeSeconds();
-
             var arr = new JSONArray();
             var obj = new JSONObject();
 
             var Rows = ARPTable.GetEntries();
             foreach (var Row in Rows)
             {
-                var TTL = Row.TTL - timeStamp;
-                if (TTL < 0)
+                var CacheTimeout = (int) (Row.Expires - DateTime.Now).TotalSeconds;
+                if (CacheTimeout < 0)
                 {
                     continue;
                 }
@@ -88,7 +107,7 @@ namespace Router.Controllers
 
                 obj.Push("ip", Row.IPAddress);
                 obj.Push("mac", Row.PhysicalAddress);
-                obj.Push("ttl", TTL);
+                obj.Push("cache_timeout", CacheTimeout);
 
                 arr.Push(obj);
             }

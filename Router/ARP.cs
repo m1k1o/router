@@ -1,4 +1,5 @@
 ﻿using PacketDotNet;
+using Router.Helpers;
 using SharpPcap;
 using System;
 using System.Net;
@@ -9,18 +10,12 @@ namespace Router
 {
     class ARP
     {
-        static private TimeSpan Timeout = new TimeSpan(0, 0, 3);
-        static private TimeSpan Interval = new TimeSpan(0, 0, 1);
+        static public TimeSpan Timeout = TimeSpan.FromMilliseconds(1500);
+        static public TimeSpan Interval = TimeSpan.FromMilliseconds(500);
 
         static ManualResetEvent BlocingWaiting = new ManualResetEvent(false);
 
-        public static bool ProxyARP {
-            get => false;
-            set
-            {
-                throw new NotImplementedException();
-            }
-        }
+        public static bool ProxyEnabled { get; set; }
 
         static public void OnReceived(PhysicalAddress DestinationMac, ARPPacket ARPPacket, Interface Interface)
         {
@@ -54,19 +49,17 @@ namespace Router
                     return;
                 }
 
-                // Porxy ARP
-                if (!ProxyARP)
+                // Is Porxy ARP turned on? And is request from outside of this interface?
+                if (!ProxyEnabled || !Interface.IPNetwork.Contains(Interface.IPAddress))
                 {
                     return;
                 }
 
-                // Lookup in Routing table
-                throw new NotImplementedException();
-
-                //if(/* in routing table */)
-                //{
-                //    Protocols.ARP.SendProxyResponse(ARPPacket.TargetProtocolAddress, ARPPacket.SenderHardwareAddress, ARPPacket.SenderProtocolAddress, Interface);
-                //}
+                // Exists this IP in RoutingTable?
+                if (RoutingTable.Instance.Exists(ARPPacket.TargetProtocolAddress))
+                {
+                    Protocols.ARP.SendProxyResponse(ARPPacket.TargetProtocolAddress, ARPPacket.SenderHardwareAddress, ARPPacket.SenderProtocolAddress, Interface);
+                }
             }
         }
         
