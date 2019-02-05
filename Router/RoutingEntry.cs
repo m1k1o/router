@@ -18,6 +18,16 @@ namespace Router
             this.ADistance = ADistance;
         }
 
+        public bool HasNextHopIP()
+        {
+            return NextHopIP != null && NextHopIP is IPAddress;
+        }
+
+        public bool HasInterface()
+        {
+            return Interface != null && Interface is Interface;
+        }
+
         public override int GetHashCode()
         {
             unchecked

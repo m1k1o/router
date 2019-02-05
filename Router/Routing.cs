@@ -11,7 +11,7 @@ namespace Router
 {
     class Routing
     {
-        static public void OnReceived(IPv4Packet IPPacket, Interface Interface)
+        static public void OnReceived(IPv4Packet IPPacket)
         {
             IPPacket.TimeToLive--;
             if(IPPacket.TimeToLive <= 0)
@@ -27,7 +27,7 @@ namespace Router
                 return;
             }
 
-            if (RoutingEntry.Interface == null)
+            if (!RoutingEntry.HasInterface())
             {
                 Console.WriteLine("No Interface after RoutingTable Lookup for {0}.", IPPacket.DestinationAddress);
                 return;
@@ -36,7 +36,7 @@ namespace Router
             IPAddress ARPRequestIP;
             
             // Next Hop IP
-            if (RoutingEntry.NextHopIP != null)
+            if (!RoutingEntry.HasNextHopIP())
             {
                 ARPRequestIP = RoutingEntry.NextHopIP;
             } else
@@ -44,7 +44,7 @@ namespace Router
                 ARPRequestIP = IPPacket.DestinationAddress;
             }
 
-            PhysicalAddress DestionationMac = ARP.Lookup(ARPRequestIP, Interface);
+            PhysicalAddress DestionationMac = ARP.Lookup(ARPRequestIP, RoutingEntry.Interface);
             if (DestionationMac == null)
             {
                 Console.WriteLine("No DestionationMac after ARP Lookup for {0}.", ARPRequestIP);
@@ -52,9 +52,9 @@ namespace Router
             }
 
             // Send
-            var ethernetPacket = new EthernetPacket(Interface.PhysicalAddress, DestionationMac, EthernetPacketType.IpV4);
+            var ethernetPacket = new EthernetPacket(RoutingEntry.Interface.PhysicalAddress, DestionationMac, EthernetPacketType.IpV4);
             ethernetPacket.PayloadData = IPPacket.Bytes;
-            Interface.SendPacket(ethernetPacket.Bytes);
+            RoutingEntry.Interface.SendPacket(ethernetPacket.Bytes);
         }
     }
 }

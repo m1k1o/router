@@ -96,7 +96,7 @@ namespace Router
             if(Equals(EthernetPacket.DestinationHwAddress, Interface.PhysicalAddress))
             {
                 Console.WriteLine("Packet is for me, Routing.");
-                Router.Routing.OnReceived(IPv4Packet, Interface);
+                Router.Routing.OnReceived(IPv4Packet);
             }
         }
     }
