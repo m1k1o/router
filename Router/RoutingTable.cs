@@ -14,6 +14,19 @@ namespace Router
 
         private List<RoutingEntry> Entries = new List<RoutingEntry>();
 
+        public void Push(Interface Interface, IPNetwork IPNetwork)
+        {
+            var index = Entries.FindIndex(Entry => Entry.Interface == Interface && Entry.ADistance == ADistance.DirectlyConnected);
+            if (index != -1)
+            {
+                Entries[index].IPNetwork = IPNetwork;
+                Entries[index].NextHopIP = null;
+                return;
+            }
+
+            Entries.Add(new RoutingEntry(IPNetwork, null, Interface, ADistance.DirectlyConnected));
+        }
+
         public void Push(RoutingEntry RoutingEntry)
         {
             var index = Entries.FindIndex(Entry => Entry.IPNetwork == RoutingEntry.IPNetwork && Entry.ADistance == RoutingEntry.ADistance);

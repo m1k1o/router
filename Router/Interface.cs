@@ -17,6 +17,7 @@ namespace Router
         public PhysicalAddress PhysicalAddress { get; private set; }
 
         public bool Running { get; set; } = false;
+
         public int ID { get; private set; }
 
         public string Name { get => Device.Name; }
@@ -38,8 +39,10 @@ namespace Router
 
         public void SetIP(IPAddress IPAddress, IPAddress SubnetMask)
         {
-            this.IPNetwork = IPNetwork.Parse(IPAddress, SubnetMask);
+            IPNetwork = IPNetwork.Parse(IPAddress, SubnetMask);
             this.IPAddress = IPAddress;
+
+            RoutingTable.Instance.Push(this, IPNetwork);
         }
 
         public void Start()
@@ -78,6 +81,51 @@ namespace Router
         public override string ToString()
         {
             return ID.ToString();
+        }
+
+        public bool Equals(Interface Interface)
+        {
+            if (Interface is null)
+            {
+                return false;
+            }
+
+            if (ReferenceEquals(this, Interface))
+            {
+                return true;
+            }
+
+            return Equals(Interface.Name, Name);
+        }
+
+        public override bool Equals(object obj)
+        {
+            return obj.GetType() == GetType() && Equals(obj as Interface);
+        }
+
+        public override int GetHashCode()
+        {
+            return Name.GetHashCode();
+        }
+
+        public static bool operator ==(Interface obj1, Interface obj2)
+        {
+            if (obj1 is null || obj2 is null)
+            {
+                return false;
+            }
+
+            if (ReferenceEquals(obj1, obj2))
+            {
+                return true;
+            }
+
+            return obj1.Equals(obj2);
+        }
+
+        public static bool operator !=(Interface obj1, Interface obj2)
+        {
+            return !(obj1 == obj2);
         }
     }
 }
