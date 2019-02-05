@@ -1,6 +1,7 @@
 using System.Net;
 using System.Net.NetworkInformation;
 using PacketDotNet;
+using Router.Helpers;
 using SharpPcap;
 
 namespace Router
@@ -9,9 +10,9 @@ namespace Router
     {
         public ICaptureDevice Device { get; private set; }
 
-        public IPAddress IPAddress { get; set; }
+        public IPAddress IPAddress { get; private set; }
 
-        public IPAddress Mask { get; set; }
+        public IPNetwork IPNetwork { get; private set; }
 
         public PhysicalAddress PhysicalAddress { get; private set; }
 
@@ -31,6 +32,12 @@ namespace Router
             Device.Open();
             PhysicalAddress = Device.MacAddress;
             Device.Close();
+        }
+
+        public void SetIP(IPAddress IPAddress, IPAddress SubnetMask)
+        {
+            this.IPNetwork = IPNetwork.Parse(IPAddress, SubnetMask);
+            this.IPAddress = IPAddress;
         }
 
         public void Start()

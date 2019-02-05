@@ -21,7 +21,7 @@ namespace Router.Controllers
             obj.Push("description", Interface.Description);
             obj.Push("running", Interface.Running);
             obj.Push("ip", Interface.IPAddress);
-            obj.Push("mask", Interface.Mask);
+            obj.Push("mask", Interface.IPNetwork.SubnetMask);
             obj.Push("mac", Interface.PhysicalAddress);
             return obj;
         }
@@ -39,7 +39,7 @@ namespace Router.Controllers
                 return new JSONError(e.Message);
             }
 
-            if (Interface.IPAddress == null || Interface.Mask == null)
+            if (Interface.IPNetwork == null)
             {
                 return new JSONError("You must first set IP and Mask.");
             }
@@ -80,8 +80,6 @@ namespace Router.Controllers
         public JSON Edit(string Data)
         {
             var Rows = Data.Split('\n');
-
-            // Validate
             if (Rows.Length != 3)
             {
                 return new JSONError("Expected InterfaceID, IPAddress, Mask.");
@@ -95,22 +93,15 @@ namespace Router.Controllers
                 Interface = Instance.GetInterfaceById(Rows[0]);
                 IP = IPAddress.Parse(Rows[1]);
                 Mask = IPAddress.Parse(Rows[2]);
+
+                // Save
+                Interface.SetIP(IP, Mask);
             }
             catch (Exception e)
             {
                 return new JSONError(e.Message);
             }
 
-            if (string.IsNullOrEmpty(Rows[0]))
-            {
-                return new JSONError("No ID specified.");
-            }
-
-            // Save
-            Interface.IPAddress = IP;
-            Interface.Mask = Mask;
-
-            // Answer
             return this.Interface(Interface);
         }
 
