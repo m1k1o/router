@@ -21,7 +21,7 @@ namespace Router.Controllers
             obj.Push("description", Interface.Description);
             obj.Push("running", Interface.Running);
             obj.Push("ip", Interface.IPAddress);
-            obj.Push("mask", Interface.IPNetwork.SubnetMask);
+            obj.Push("mask", Interface.IPNetwork is IPNetwork ? Interface.IPNetwork.SubnetMask : null);
             obj.Push("mac", Interface.PhysicalAddress);
             return obj;
         }
@@ -44,7 +44,6 @@ namespace Router.Controllers
                 return new JSONError("You must first set IP and Mask.");
             }
 
-            // Save
             if (!Interface.Running)
             {
                 Interface.Start();
@@ -67,10 +66,9 @@ namespace Router.Controllers
                 return new JSONError(e.Message);
             }
 
-            // Save
-            if (!Interface.Running)
+            if (Interface.Running)
             {
-                Interface.Start();
+                Interface.Stop();
             }
 
             // Answer
