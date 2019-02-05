@@ -77,7 +77,7 @@ namespace Router
         public void Stop()
         {
             // Remove directly connected
-            RoutingTable.Instance.Push(this, IPNetwork);
+            RoutingTable.Instance.Remove(this, IPNetwork);
 
             try
             {
