@@ -16,7 +16,7 @@ namespace Router
             IPPacket.TimeToLive--;
             if(IPPacket.TimeToLive <= 0)
             {
-                Console.WriteLine("TTL <= 0; drop packet.");
+                Console.WriteLine("TimeToLive reached 0, dropping packet.");
                 return;
             }
 
@@ -33,21 +33,10 @@ namespace Router
                 return;
             }
 
-            IPAddress ARPRequestIP;
-            
-            // Next Hop IP
-            if (!RoutingEntry.HasNextHopIP)
-            {
-                ARPRequestIP = RoutingEntry.NextHopIP;
-            } else
-            {
-                ARPRequestIP = IPPacket.DestinationAddress;
-            }
-
-            PhysicalAddress DestionationMac = ARP.Lookup(ARPRequestIP, RoutingEntry.Interface);
+            PhysicalAddress DestionationMac = ARP.Lookup(RoutingEntry.NextHopIP, RoutingEntry.Interface);
             if (DestionationMac == null)
             {
-                Console.WriteLine("No DestionationMac after ARP Lookup for {0}.", ARPRequestIP);
+                Console.WriteLine("No DestionationMac after ARP Lookup for {0}.", RoutingEntry.NextHopIP);
                 return;
             }
 

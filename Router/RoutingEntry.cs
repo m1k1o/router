@@ -22,6 +22,8 @@ namespace Router
 
         public bool HasInterface => Interface != null && Interface is Interface;
 
+        public RoutingEntry Clone() => new RoutingEntry(IPNetwork, NextHopIP, Interface, ADistance);
+
         public override int GetHashCode()
         {
             unchecked
@@ -31,6 +33,7 @@ namespace Router
                 return hashCode;
             }
         }
+
         public override string ToString()
         {
             return ADistance.ToString() + " " + IPNetwork.ToString();

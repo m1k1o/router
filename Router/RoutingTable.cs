@@ -14,6 +14,8 @@ namespace Router
 
         private List<RoutingEntry> Entries = new List<RoutingEntry>();
 
+        static int LookupMaxTries = 128;
+
         public void Push(Interface Interface, IPNetwork IPNetwork)
         {
             var index = Entries.FindIndex(Entry => Entry.Interface == Interface && Entry.ADistance == ADistance.DirectlyConnected);
@@ -44,7 +46,7 @@ namespace Router
             return Entries.Find(Entry => Entry.IPNetwork == IPNetwork && Entry.ADistance == ADistance);
         }
 
-        public RoutingEntry Lookup(IPAddress IPAddress)
+        public RoutingEntry BestMatch(IPAddress IPAddress)
         {
             RoutingEntry BestMatch = null;
             foreach (var Entry in Entries)
@@ -54,18 +56,50 @@ namespace Router
                     continue;
                 }
 
-                if(BestMatch == null || BestMatch.IPNetwork >= Entry.IPNetwork || BestMatch.ADistance < Entry.ADistance)
+                if (BestMatch == null || BestMatch.IPNetwork >= Entry.IPNetwork || BestMatch.ADistance < Entry.ADistance)
                 {
-                    if(BestMatch != null && BestMatch.NextHopIP == null)
-                    {
-                        Entry.NextHopIP = BestMatch.NextHopIP;
-                    }
-
                     BestMatch = Entry;
                 }
             }
 
             return BestMatch;
+        }
+
+        public RoutingEntry Lookup(IPAddress TargetIP)
+        {
+            RoutingEntry ResultRoute = null;
+            IPAddress NextHopIp = TargetIP;
+
+            int MaxTries = LookupMaxTries;
+            while (MaxTries-- > 0)
+            {
+                RoutingEntry Found = BestMatch(NextHopIp);
+                if (Found == null)
+                {
+                    break;
+                }
+
+                if (Found.HasNextHopIP)
+                {
+                    NextHopIp = Found.NextHopIP;
+                }
+
+                ResultRoute = Found;
+
+                if (Found.HasInterface || !Found.HasNextHopIP)
+                {
+                    break;
+                }
+            }
+
+            if (ResultRoute == null)
+            {
+                return null;
+            }
+
+            ResultRoute = ResultRoute.Clone();
+            ResultRoute.NextHopIP = NextHopIp;
+            return ResultRoute;
         }
 
         public bool Remove(IPNetwork IPNetwork, ADistance ADistance)
