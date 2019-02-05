@@ -60,8 +60,6 @@ namespace Router
         {
             IPNetwork = IPNetwork.Parse(IPAddress, SubnetMask);
             this.IPAddress = IPAddress;
-
-            RoutingTable.Instance.Push(this, IPNetwork);
         }
 
         public void Start()
@@ -71,11 +69,16 @@ namespace Router
             Device.OnCaptureStopped += new CaptureStoppedEventHandler(Interfaces.OnCaptureStopped);
             Device.StartCapture();
 
+            // Push directly connected
+            RoutingTable.Instance.Push(this, IPNetwork);
             Running = true;
         }
 
         public void Stop()
         {
+            // Remove directly connected
+            RoutingTable.Instance.Push(this, IPNetwork);
+
             try
             {
                 Device.StopCapture();

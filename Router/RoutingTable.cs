@@ -102,6 +102,18 @@ namespace Router
             return ResultRoute;
         }
 
+        public bool Remove(Interface Interface, IPNetwork IPNetwork)
+        {
+            var index = Entries.FindIndex(Entry => Entry.IPNetwork == IPNetwork && Entry.Interface == Interface && Entry.ADistance == ADistance.DirectlyConnected);
+            if (index != -1)
+            {
+                Entries.RemoveAt(index);
+                return true;
+            }
+
+            return false;
+        }
+
         public bool Remove(IPNetwork IPNetwork, ADistance ADistance)
         {
             var index = Entries.FindIndex(Entry => Entry.IPNetwork == IPNetwork && Entry.ADistance == ADistance);
