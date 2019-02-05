@@ -5,7 +5,7 @@ namespace Router.RIP
 {
     public class RTE
     {
-        public byte[] Bytes { get; private set; } = new Byte[20];
+        private byte[] Data = new Byte[20];
 
         public ushort AddressFamilyIdentifier
         {
@@ -14,7 +14,7 @@ namespace Router.RIP
                 var len = 2;
                 var offset = 0;
                 byte[] Dst = new Byte[len];
-                Array.Copy(Bytes, offset, Dst, 0, len);
+                Array.Copy(Data, offset, Dst, 0, len);
                 return BitConverter.ToUInt16(Dst, 0);
             }
 
@@ -23,7 +23,7 @@ namespace Router.RIP
                 var len = 2;
                 var offset = 0;
                 byte[] Src = BitConverter.GetBytes(value);
-                Array.Copy(Src, 0, Bytes, offset, len);
+                Array.Copy(Src, 0, Data, offset, len);
             }
         }
 
@@ -34,7 +34,7 @@ namespace Router.RIP
                 var len = 2;
                 var offset = 2;
                 byte[] Dst = new Byte[len];
-                Array.Copy(Bytes, offset, Dst, 0, len);
+                Array.Copy(Data, offset, Dst, 0, len);
                 return BitConverter.ToUInt16(Dst, 0);
             }
 
@@ -43,7 +43,7 @@ namespace Router.RIP
                 var len = 2;
                 var offset = 2;
                 byte[] Src = BitConverter.GetBytes(value);
-                Array.Copy(Src, 0, Bytes, offset, len);
+                Array.Copy(Src, 0, Data, offset, len);
             }
         }
 
@@ -54,7 +54,7 @@ namespace Router.RIP
                 var len = 4;
                 var offset = 4;
                 byte[] Dst = new Byte[len];
-                Array.Copy(Bytes, offset, Dst, 0, len);
+                Array.Copy(Data, offset, Dst, 0, len);
                 return new IPAddress(Dst);
             }
 
@@ -63,7 +63,7 @@ namespace Router.RIP
                 var len = 4;
                 var offset = 4;
                 byte[] Src = value.GetAddressBytes();
-                Array.Copy(Src, 0, Bytes, offset, len);
+                Array.Copy(Src, 0, Data, offset, len);
             }
         }
 
@@ -74,7 +74,7 @@ namespace Router.RIP
                 var len = 4;
                 var offset = 8;
                 byte[] Dst = new Byte[len];
-                Array.Copy(Bytes, offset, Dst, 0, len);
+                Array.Copy(Data, offset, Dst, 0, len);
                 return new IPAddress(Dst);
             }
 
@@ -83,7 +83,7 @@ namespace Router.RIP
                 var len = 4;
                 var offset = 8;
                 byte[] Src = value.GetAddressBytes();
-                Array.Copy(Src, 0, Bytes, offset, len);
+                Array.Copy(Src, 0, Data, offset, len);
             }
         }
 
@@ -94,7 +94,7 @@ namespace Router.RIP
                 var len = 4;
                 var offset = 12;
                 byte[] Dst = new Byte[len];
-                Array.Copy(Bytes, offset, Dst, 0, len);
+                Array.Copy(Data, offset, Dst, 0, len);
                 return new IPAddress(Dst);
             }
 
@@ -103,7 +103,7 @@ namespace Router.RIP
                 var len = 4;
                 var offset = 12;
                 byte[] Src = value.GetAddressBytes();
-                Array.Copy(Src, 0, Bytes, offset, len);
+                Array.Copy(Src, 0, Data, offset, len);
             }
         }
 
@@ -114,7 +114,7 @@ namespace Router.RIP
                 var len = 4;
                 var offset = 16;
                 byte[] Dst = new Byte[len];
-                Array.Copy(Bytes, offset, Dst, 0, len);
+                Array.Copy(Data, offset, Dst, 0, len);
                 return BitConverter.ToUInt32(Dst, 0);
             }
 
@@ -123,7 +123,7 @@ namespace Router.RIP
                 var len = 4;
                 var offset = 16;
                 byte[] Src = BitConverter.GetBytes(value);
-                Array.Copy(Src, 0, Bytes, offset, len);
+                Array.Copy(Src, 0, Data, offset, len);
             }
         }
 
@@ -137,9 +137,14 @@ namespace Router.RIP
             this.Metric = Metric;
         }
 
-        public RTE(byte[] Bytes)
+        public RTE(byte[] Data)
         {
-            Array.Copy(Bytes, 0, this.Bytes, 0, 20);
+            Array.Copy(Data, 0, this.Data, 0, 20);
+        }
+
+        public byte[] Export()
+        {
+            return Data;
         }
     }
 }

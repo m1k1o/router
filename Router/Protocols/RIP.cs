@@ -17,7 +17,7 @@ namespace Router.Protocols
             var ripPacket = new RIPPacket(CommandType, RTEs);
 
             var udpPacket = new UdpPacket(PortUDP, PortUDP);
-            udpPacket.PayloadData = ripPacket.Bytes;
+            udpPacket.PayloadData = ripPacket.Export();
 
             var ipPacket = new IPv4Packet(Interface.IPAddress, IPAddress.Parse(MulticastIp));
             ipPacket.PayloadPacket = udpPacket;
