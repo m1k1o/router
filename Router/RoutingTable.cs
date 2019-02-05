@@ -56,7 +56,7 @@ namespace Router
 
                 if(BestMatch == null || BestMatch.IPNetwork >= Entry.IPNetwork || BestMatch.ADistance < Entry.ADistance)
                 {
-                    if(BestMatch != null && BestMatch.NextHopIP == null)
+                    if(BestMatch.NextHopIP == null)
                     {
                         Entry.NextHopIP = BestMatch.NextHopIP;
                     }
