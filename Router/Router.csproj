@@ -53,6 +53,7 @@
     <Compile Include="ARPTable.cs" />
     <Compile Include="Controllers\ARP.cs" />
     <Compile Include="Controllers\Interfaces.cs" />
+    <Compile Include="Controllers\Routing.cs" />
     <Compile Include="Handler.cs" />
     <Compile Include="Helpers\JSON.cs" />
     <Compile Include="Helpers\JSONError.cs" />
