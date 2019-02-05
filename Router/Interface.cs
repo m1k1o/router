@@ -3,6 +3,8 @@ using System.Net.NetworkInformation;
 using PacketDotNet;
 using Router.Helpers;
 using SharpPcap;
+using SharpPcap.LibPcap;
+using SharpPcap.WinPcap;
 
 namespace Router
 {
@@ -15,6 +17,8 @@ namespace Router
         public IPNetwork IPNetwork { get; private set; }
 
         public PhysicalAddress PhysicalAddress { get; private set; }
+
+        public IPAddress DeviceIP { get; private set; } = null;
 
         public bool Running { get; set; } = false;
 
@@ -34,6 +38,21 @@ namespace Router
             // Get MAC from only opened device
             Device.Open();
             PhysicalAddress = Device.MacAddress;
+
+            var ZeroIp = IPAddress.Parse("0.0.0.0");
+            foreach (PcapAddress addr in (Device as WinPcapDevice).Addresses)
+            {
+                if (
+                    addr.Addr != null &&
+                    addr.Addr.ipAddress != null &&
+                    addr.Addr.ipAddress.AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork &&
+                    !Equals(addr.Addr.ipAddress, ZeroIp)
+                )
+                {
+                    DeviceIP = addr.Addr.ipAddress;
+                }
+            }
+
             Device.Close();
         }
 

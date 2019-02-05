@@ -93,11 +93,19 @@ namespace Router
         public void IP(IPv4Packet IPv4Packet)
         {
             Console.WriteLine("Got IPV4.");
-            if(Equals(EthernetPacket.DestinationHwAddress, Interface.PhysicalAddress))
+            if (Equals(EthernetPacket.DestinationHwAddress, Interface.PhysicalAddress))
             {
-                Console.WriteLine("Packet is for me, Routing.");
-                Router.Routing.OnReceived(IPv4Packet);
+                return;
             }
+
+            if (Interface.DeviceIP == null || Equals(IPv4Packet.DestinationAddress, Interface.DeviceIP))
+            {
+                Console.WriteLine("Packet is for Device.");
+                return;
+            }
+
+            Console.WriteLine("Routing to {0}.", IPv4Packet.DestinationAddress);
+            Routing.OnReceived(IPv4Packet);
         }
     }
 }
