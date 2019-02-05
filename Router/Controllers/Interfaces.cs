@@ -15,7 +15,7 @@ namespace Router.Controllers
         private JSON Interface(Interface Interface)
         {
             var obj = new JSONObject();
-            //obj.Push("id", Instance.GetInteraces().IndexOf(Interface));
+            //obj.Push("id", Interface.ID);
             obj.Push("name", Interface.Name);
             obj.Push("friendly_name", Interface.FriendlyName);
             obj.Push("description", Interface.Description);
@@ -108,11 +108,9 @@ namespace Router.Controllers
             var obj = new JSONObject();
 
             var Interfaces = Instance.GetInteraces();
-
-            int i = 0;
             foreach(var Iface in Interfaces)
             {
-                obj.Push((i++).ToString(), Interface(Iface));
+                obj.Push(Iface.ToString(), Interface(Iface));
             }
 
             return obj;

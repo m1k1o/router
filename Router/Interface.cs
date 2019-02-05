@@ -17,6 +17,7 @@ namespace Router
         public PhysicalAddress PhysicalAddress { get; private set; }
 
         public bool Running { get; set; } = false;
+        public int ID { get; private set; }
 
         public string Name { get => Device.Name; }
 
@@ -24,9 +25,10 @@ namespace Router
         
         public string Description { get => Device.Description; }
 
-        public Interface(ICaptureDevice ICaptureDevice)
+        public Interface(ICaptureDevice ICaptureDevice, int ID)
         {
             Device = ICaptureDevice;
+            this.ID = ID;
 
             // Get MAC from only opened device
             Device.Open();
@@ -71,6 +73,11 @@ namespace Router
         internal void SendPacket(byte[] Data)
         {
             Device.SendPacket(Data);
+        }
+
+        public override string ToString()
+        {
+            return ID.ToString();
         }
     }
 }
