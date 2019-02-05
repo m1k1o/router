@@ -29,7 +29,7 @@ namespace Router.Protocols
         static public RIPPacket Parse(EthernetPacket packet, Interface Interface = null)
         {
             // RIP Multicast or Unicast MAC
-            if (!Equals(packet.DestinationHwAddress, MulticastMac) && !(Interface == null || !Equals(packet.DestinationHwAddress, Interface.PhysicalAddress)))
+            if (!Equals(packet.DestinationHwAddress, MulticastMac) && !(Interface != null || !Equals(packet.DestinationHwAddress, Interface.PhysicalAddress)))
             {
                 return null;
             }
@@ -41,7 +41,7 @@ namespace Router.Protocols
             }
 
             // RIP Multicast or Unicast IP
-            if (!Equals(ipPacket.DestinationAddress, MulticastIp) && !(Interface == null || !Equals(ipPacket.DestinationAddress, Interface.IPAddress)))
+            if (!Equals(ipPacket.DestinationAddress, MulticastIp) && !(Interface != null || !Equals(ipPacket.DestinationAddress, Interface.IPAddress)))
             {
                 return null;
             }
