@@ -69,6 +69,7 @@
     <Compile Include="RIP\RIPCommandType.cs" />
     <Compile Include="RIP\RIPPacket.cs" />
     <Compile Include="RIP\RTE.cs" />
+    <Compile Include="Routing.cs" />
     <Compile Include="RoutingTable.cs" />
     <Compile Include="RoutingEntry.cs" />
   </ItemGroup>
