@@ -5,18 +5,18 @@ namespace Router.RIP
 {
     public sealed class RIPPacket
     {
-        private byte[] Data = new Byte[24];
+        public byte[] Bytes { get; private set; } = new Byte[24];
 
         public byte CommandType
         {
             get
             {
-                return Data[0];
+                return Bytes[0];
             }
 
             set
             {
-                Data[0] = (byte)value;
+                Bytes[0] = (byte)value;
             }
         }
 
@@ -24,12 +24,12 @@ namespace Router.RIP
         {
             get
             {
-                return Data[1];
+                return Bytes[1];
             }
 
             set
             {
-                Data[1] = (byte)value;
+                Bytes[1] = (byte)value;
             }
         }
 
@@ -40,7 +40,7 @@ namespace Router.RIP
                 var len = 2;
                 var offset = 2;
                 byte[] Dst = new Byte[len];
-                Array.Copy(Data, offset, Dst, 0, len);
+                Array.Copy(Bytes, offset, Dst, 0, len);
                 return BitConverter.ToUInt16(Dst, 0);
             }
 
@@ -49,7 +49,7 @@ namespace Router.RIP
                 var len = 2;
                 var offset = 2;
                 byte[] Src = BitConverter.GetBytes(value);
-                Array.Copy(Src, 0, Data, offset, len);
+                Array.Copy(Src, 0, Bytes, offset, len);
             }
         }
 
@@ -57,7 +57,7 @@ namespace Router.RIP
         {
             get
             {
-                var bytes = Data.Length;
+                var bytes = Bytes.Length;
                 var routes = (bytes - 4) / 20;
                 Console.Write(routes.ToString());
 
@@ -65,7 +65,7 @@ namespace Router.RIP
                 for (int i = 0; i < routes; i++)
                 {
                     byte[] Dst = new Byte[20];
-                    Array.Copy(Data, 4 + i * 5, Dst, 0, 20);
+                    Array.Copy(Bytes, 4 + i * 5, Dst, 0, 20);
                     ret.Add(new RTE(Dst));
                 }
 
@@ -75,7 +75,7 @@ namespace Router.RIP
             set
             {
                 int newSize = 4 + (value.Count * 20);
-                if(newSize != Data.Length)
+                if(newSize != Bytes.Length)
                 {
                     Array.Resize(ref Data, 4 + (value.Count * 20));
                 }
@@ -83,9 +83,9 @@ namespace Router.RIP
                 int offset = 4;
                 foreach (RTE item in value)
                 {
-                    
-                    byte[] Src = item.Export();
-                    Array.Copy(Data, offset, Src, 0, 20);
+
+                    byte[] Src = item.Bytes;
+                    Array.Copy(Bytes, offset, Src, 0, 20);
                     offset += 20;
                 }
             }
@@ -99,14 +99,9 @@ namespace Router.RIP
             this.RTEs = RTEs;
         }
 
-        public RIPPacket(byte[] Data)
+        public RIPPacket(byte[] Bytes)
         {
-            Array.Copy(Data, 0, this.Data, 0, Data.Length);
-        }
-
-        public byte[] Export()
-        {
-            return Data;
+            Array.Copy(Bytes, 0, this.Bytes, 0, Bytes.Length);
         }
     }
 }
