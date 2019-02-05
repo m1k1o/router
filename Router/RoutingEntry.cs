@@ -27,6 +27,10 @@ namespace Router
                 return hashCode;
             }
         }
+        public override string ToString()
+        {
+            return ADistance.ToString() + " " + IPNetwork.ToString();
+        }
     }
 
     public enum ADistance : byte
