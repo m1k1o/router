@@ -93,12 +93,12 @@ namespace Router
         public void IP(IPv4Packet IPv4Packet)
         {
             Console.WriteLine("Got IPV4.");
-            if (Equals(EthernetPacket.DestinationHwAddress, Interface.PhysicalAddress))
+            if (!Equals(EthernetPacket.DestinationHwAddress, Interface.PhysicalAddress))
             {
                 return;
             }
 
-            if (Interface.DeviceIP == null || Equals(IPv4Packet.DestinationAddress, Interface.DeviceIP))
+            if (Interface.DeviceIP != null && Equals(IPv4Packet.DestinationAddress, Interface.DeviceIP))
             {
                 Console.WriteLine("Packet is for Device.");
                 return;
