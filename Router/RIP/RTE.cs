@@ -1,136 +1,52 @@
-﻿using System;
+﻿using Router.Helpers;
+using System;
 using System.Net;
 
 namespace Router.RIP
 {
-    public class RTE
+    public class RTE : Packet
     {
-        private byte[] Data = new Byte[20];
-
-        public byte[] Bytes { get => Data; }
+        public new const int Length = 20;
 
         public ushort AddressFamilyIdentifier
         {
-            get
-            {
-                var len = 2;
-                var offset = 0;
-                byte[] Dst = new Byte[len];
-                Array.Copy(Data, offset, Dst, 0, len);
-                return BitConverter.ToUInt16(Dst, 0);
-            }
-
-            set
-            {
-                var len = 2;
-                var offset = 0;
-                byte[] Src = BitConverter.GetBytes(value);
-                Array.Copy(Src, 0, Data, offset, len);
-            }
+            get => (ushort)Slice(0, typeof(ushort));
+            set => Inject(0, value);
         }
 
         public ushort RouteTag
         {
-            get
-            {
-                var len = 2;
-                var offset = 2;
-                byte[] Dst = new Byte[len];
-                Array.Copy(Data, offset, Dst, 0, len);
-                return BitConverter.ToUInt16(Dst, 0);
-            }
-
-            set
-            {
-                var len = 2;
-                var offset = 2;
-                byte[] Src = BitConverter.GetBytes(value);
-                Array.Copy(Src, 0, Data, offset, len);
-            }
+            get => (ushort)Slice(2, typeof(ushort));
+            set => Inject(2, value);
         }
 
         public IPAddress IPAddress
         {
-            get
-            {
-                var len = 4;
-                var offset = 4;
-                byte[] Dst = new Byte[len];
-                Array.Copy(Data, offset, Dst, 0, len);
-                return new IPAddress(Dst);
-            }
-
-            set
-            {
-                var len = 4;
-                var offset = 4;
-                byte[] Src = value.GetAddressBytes();
-                Array.Copy(Src, 0, Data, offset, len);
-            }
+            get => (IPAddress)Slice(4, typeof(IPAddress));
+            set => Inject(4, value);
         }
 
         public IPAddress SubnetMask
         {
-            get
-            {
-                var len = 4;
-                var offset = 8;
-                byte[] Dst = new Byte[len];
-                Array.Copy(Data, offset, Dst, 0, len);
-                return new IPAddress(Dst);
-            }
-
-            set
-            {
-                var len = 4;
-                var offset = 8;
-                byte[] Src = value.GetAddressBytes();
-                Array.Copy(Src, 0, Data, offset, len);
-            }
+            get => (IPAddress)Slice(8, typeof(IPAddress));
+            set => Inject(8, value);
         }
 
         public IPAddress NextHop
         {
-            get
-            {
-                var len = 4;
-                var offset = 12;
-                byte[] Dst = new Byte[len];
-                Array.Copy(Data, offset, Dst, 0, len);
-                return new IPAddress(Dst);
-            }
-
-            set
-            {
-                var len = 4;
-                var offset = 12;
-                byte[] Src = value.GetAddressBytes();
-                Array.Copy(Src, 0, Data, offset, len);
-            }
+            get => (IPAddress)Slice(12, typeof(IPAddress));
+            set => Inject(12, value);
         }
 
         public uint Metric
         {
-            get
-            {
-                var len = 4;
-                var offset = 16;
-                byte[] Dst = new Byte[len];
-                Array.Copy(Data, offset, Dst, 0, len);
-                return BitConverter.ToUInt32(Dst, 0);
-            }
-
-            set
-            {
-                var len = 4;
-                var offset = 16;
-                byte[] Src = BitConverter.GetBytes(value);
-                Array.Copy(Src, 0, Data, offset, len);
-            }
+            get => (uint)Slice(16, typeof(uint));
+            set => Inject(16, value);
         }
 
-        public RTE(IPAddress IPAddress, IPAddress SubnetMask, IPAddress NextHop, uint Metric)
+        public RTE(IPAddress IPAddress, IPAddress SubnetMask, IPAddress NextHop, uint Metric) : base(20)
         {
+            Console.Write(Length);
             AddressFamilyIdentifier = 2;
             RouteTag = 0;
             this.IPAddress = IPAddress;
@@ -139,9 +55,9 @@ namespace Router.RIP
             this.Metric = Metric;
         }
 
-        public RTE(byte[] Data)
+        public RTE(byte[] Data) : base(Data)
         {
-            Array.Copy(Data, 0, this.Data, 0, 20);
+
         }
     }
 }

@@ -1,99 +1,57 @@
-﻿using System;
+﻿using Router.Helpers;
+using System;
 using System.Collections.Generic;
+using System.IO;
 
 namespace Router.RIP
 {
-    public sealed class RIPPacket
+    public sealed class RIPPacket : Packet
     {
-        private byte[] Data = new Byte[24];
-
-        public byte[] Bytes { get => Data; }
-
         public byte CommandType
         {
-            get
-            {
-                return Data[0];
-            }
-
-            set
-            {
-                Data[0] = (byte)value;
-            }
+            get => (byte)Slice(0, typeof(byte));
+            set => Inject(0, value);
         }
 
         public byte Version
         {
-            get
-            {
-                return Data[1];
-            }
-
-            set
-            {
-                Data[1] = (byte)value;
-            }
+            get => (byte)Slice(1, typeof(byte));
+            set => Inject(1, value);
         }
 
         public ushort MustBeZero
         {
-            get
-            {
-                var len = 2;
-                var offset = 2;
-                byte[] Dst = new Byte[len];
-                Array.Copy(Data, offset, Dst, 0, len);
-                return BitConverter.ToUInt16(Dst, 0);
-            }
-
-            set
-            {
-                var len = 2;
-                var offset = 2;
-                byte[] Src = BitConverter.GetBytes(value);
-                Array.Copy(Src, 0, Data, offset, len);
-            }
+            get => (ushort)Slice(2, typeof(ushort));
+            set => Inject(2, value);
         }
 
-        public List<RTE> RTEs
+        public RTECollection RTEs
         {
             get
             {
-                var bytes = Data.Length;
-                var routes = (bytes - 4) / 20;
-                Console.Write(routes.ToString());
+                var offset = 4;
+                var newColection = new RTECollection();
+                do {
+                    var RTEBytes = Slice(offset, RTE.Length);
+                    newColection.Add(new RTE(RTEBytes));
+                    offset += RTE.Length;
+                } while (offset < Length);
 
-                var ret = new List<RTE>();
-                for (int i = 0; i < routes; i++)
-                {
-                    byte[] Dst = new Byte[20];
-                    Array.Copy(Data, 4 + i * 5, Dst, 0, 20);
-                    ret.Add(new RTE(Dst));
-                }
-
-                return ret;
+                return newColection;
             }
 
             set
             {
-                int newSize = 4 + (value.Count * 20);
-                if(newSize != Data.Length)
-                {
-                    Array.Resize(ref Data, 4 + (value.Count * 20));
-                }
-
-                int offset = 4;
+                var offset = 4;
                 foreach (RTE item in value)
                 {
-
-                    byte[] Src = item.Bytes;
-                    Array.Copy(Data, offset, Src, 0, 20);
-                    offset += 20;
+                    Inject(offset, item.Bytes, item.Bytes.Length);
+                    offset += item.Bytes.Length;
                 }
             }
         }
 
-        public RIPPacket(RIPCommandType CommandType, List<RTE> RTEs)
+        public RIPPacket(RIPCommandType CommandType, RTECollection RTEs) : base(4)
         {
             this.CommandType = (byte)CommandType;
             Version = 2;
@@ -101,9 +59,9 @@ namespace Router.RIP
             this.RTEs = RTEs;
         }
 
-        public RIPPacket(byte[] Data)
+        public RIPPacket(byte[] Data) : base(Data)
         {
-            Array.Copy(Data, 0, this.Data, 0, Data.Length);
+
         }
     }
 }

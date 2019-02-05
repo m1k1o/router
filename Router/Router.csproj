@@ -59,6 +59,7 @@
     <Compile Include="Helpers\JSON.cs" />
     <Compile Include="Helpers\JSONError.cs" />
     <Compile Include="Helpers\IPNetwork.cs" />
+    <Compile Include="Helpers\Packet.cs" />
     <Compile Include="HTTP.cs" />
     <Compile Include="Interface.cs" />
     <Compile Include="Interfaces.cs" />
@@ -70,6 +71,7 @@
     <Compile Include="RIP\RIPCommandType.cs" />
     <Compile Include="RIP\RIPPacket.cs" />
     <Compile Include="RIP\RTE.cs" />
+    <Compile Include="RIP\RTECollection.cs" />
     <Compile Include="Routing.cs" />
     <Compile Include="RoutingTable.cs" />
     <Compile Include="RoutingEntry.cs" />
