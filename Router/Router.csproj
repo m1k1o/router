@@ -52,6 +52,7 @@
     <Compile Include="ARPEntry.cs" />
     <Compile Include="ARPTable.cs" />
     <Compile Include="Controllers\ARP.cs" />
+    <Compile Include="Controllers\Global.cs" />
     <Compile Include="Controllers\Interfaces.cs" />
     <Compile Include="Controllers\Routing.cs" />
     <Compile Include="Handler.cs" />
