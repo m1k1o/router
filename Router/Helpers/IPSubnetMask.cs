@@ -11,19 +11,29 @@ namespace Router.Helpers
     {
         public int CIDR { get; private set; }
 
+        private void Verify()
+        {
+            if (!IsValidSubnetMask(this))
+            {
+                throw new Exception("Given mask is not valid.");
+            }
+
+            CIDR = SubnetMaskToCIDR(this);
+        }
+
         public IPSubnetMask(long newAddress) : base(newAddress)
         {
-            CIDR = SubnetMaskToCIDR(this);
+            Verify();
         }
 
         public IPSubnetMask(byte[] address) : base(address)
         {
-            CIDR = SubnetMaskToCIDR(this);
+            Verify();
         }
 
         public IPSubnetMask(byte[] address, long scopeid) : base(address, scopeid)
         {
-            CIDR = SubnetMaskToCIDR(this);
+            Verify();
         }
 
         public static int SubnetMaskToCIDR(IPSubnetMask SubnetMask)
