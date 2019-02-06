@@ -56,9 +56,9 @@ namespace Router
             Device.Close();
         }
 
-        public void SetIP(IPAddress IPAddress, IPAddress SubnetMask)
+        public void SetIP(IPAddress IPAddress, IPSubnetMask IPSubnetMask)
         {
-            IPNetwork = IPNetwork.Parse(IPAddress, SubnetMask);
+            IPNetwork = IPNetwork.Parse(IPAddress, IPSubnetMask);
             this.IPAddress = IPAddress;
         }
 

@@ -26,9 +26,9 @@ namespace Router.RIP
             set => Inject(4, value);
         }
 
-        public IPAddress SubnetMask
+        public IPSubnetMask IPSubnetMask
         {
-            get => (IPAddress)Slice(8, typeof(IPAddress));
+            get => (IPSubnetMask)Slice(8, typeof(IPSubnetMask));
             set => Inject(8, value);
         }
 
@@ -44,12 +44,12 @@ namespace Router.RIP
             set => Inject(16, value);
         }
 
-        public RTE(IPAddress IPAddress, IPAddress SubnetMask, IPAddress NextHop, uint Metric) : base(20)
+        public RTE(IPAddress IPAddress, IPSubnetMask IPSubnetMask, IPAddress NextHop, uint Metric) : base(20)
         {
             AddressFamilyIdentifier = 2;
             RouteTag = 0;
             this.IPAddress = IPAddress;
-            this.SubnetMask = SubnetMask;
+            this.IPSubnetMask = IPSubnetMask;
             this.NextHop = NextHop;
             this.Metric = Metric;
         }
@@ -65,7 +65,7 @@ namespace Router.RIP
                 "AddressFamily:\t" + AddressFamilyIdentifier.ToString() + "\n" +
                 "RouteTag:\t" + RouteTag.ToString() + "\n" +
                 "IPAddress:\t" + IPAddress.ToString() + "\n" +
-                "SubnetMask:\t" + SubnetMask.ToString() + "\n" +
+                "SubnetMask:\t" + IPSubnetMask.ToString() + "\n" +
                 "NextHop:\t" + NextHop.ToString() + "\n" +
                 "IPAddress:\t" + IPAddress.ToString() + "\n" +
                 "Metric:\t" + Metric.ToString();

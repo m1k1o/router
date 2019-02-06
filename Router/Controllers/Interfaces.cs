@@ -41,7 +41,7 @@ namespace Router.Controllers
 
             if (Interface.IPNetwork == null)
             {
-                return new JSONError("You must first set IP and Mask.");
+                return new JSONError("You must first set IPAddress and IPSubnetMask.");
             }
 
             if (!Interface.Running)
@@ -85,12 +85,12 @@ namespace Router.Controllers
 
             Interface Interface;
             IPAddress IP;
-            IPAddress Mask;
+            IPSubnetMask Mask;
             try
             {
                 Interface = Instance.GetInterfaceById(Rows[0]);
                 IP = IPAddress.Parse(Rows[1]);
-                Mask = IPAddress.Parse(Rows[2]);
+                Mask = IPSubnetMask.Parse(Rows[2]);
 
                 // Save
                 Interface.SetIP(IP, Mask);

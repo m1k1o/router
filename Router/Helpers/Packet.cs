@@ -45,6 +45,13 @@ namespace Router.Helpers
                 return (IPAddress)new IPAddress(Dst);
             }
 
+            if (Type == typeof(IPSubnetMask))
+            {
+                byte[] Dst = new Byte[4];
+                Array.Copy(Data, o, Dst, 0, 4);
+                return (IPSubnetMask)new IPSubnetMask(Dst);
+            }
+
             return null;
         }
 
@@ -77,6 +84,13 @@ namespace Router.Helpers
             if (Value is IPAddress)
             {
                 var IPBytes = ((IPAddress)Value).GetAddressBytes();
+                Array.Copy(IPBytes, 0, Data, o, IPBytes.Length);
+                return;
+            }
+
+            if (Value is IPSubnetMask)
+            {
+                var IPBytes = ((IPSubnetMask)Value).GetAddressBytes();
                 Array.Copy(IPBytes, 0, Data, o, IPBytes.Length);
                 return;
             }

@@ -13,20 +13,14 @@ namespace Router.Helpers
 
         public IPAddress BroadcastAddress { get; private set; }
 
-        public IPAddress SubnetMask { get; private set; }
+        public IPSubnetMask SubnetMask { get; private set; }
 
-        public int CIDR { get; private set; }
+        public int CIDR { get => SubnetMask.CIDR; }
 
-        IPNetwork(IPAddress Address, IPAddress SubnetMask)
+        IPNetwork(IPAddress Address, IPSubnetMask SubnetMask)
         {
-            if (!IsValidSubnetMask(SubnetMask))
-            {
-                throw new Exception("Given SubnetMask is not valid.");
-            }
-
             NetworkAddress = GetNetworkAddress(Address, SubnetMask);
             BroadcastAddress = GetBroadcastAddress(Address, SubnetMask);
-            CIDR = SubnetMaskToCIDR(SubnetMask);
             this.SubnetMask = SubnetMask;
         }
 
@@ -111,17 +105,17 @@ namespace Router.Helpers
             return Equals(obj1.NetworkAddress, obj2.NetworkAddress) && obj1.CIDR >= obj2.CIDR;
         }
 
-        public static IPNetwork Parse(IPAddress Address, IPAddress SubnetMask)
+        public static IPNetwork Parse(IPAddress Address, IPSubnetMask SubnetMask)
         {
             return new IPNetwork(Address, SubnetMask);
         }
 
         public static IPNetwork Parse(string Address, string SubnetMask)
         {
-            return new IPNetwork(IPAddress.Parse(Address), IPAddress.Parse(SubnetMask));
+            return new IPNetwork(IPAddress.Parse(Address), IPSubnetMask.Parse(SubnetMask));
         }
 
-        public static IPAddress GetBroadcastAddress(IPAddress Address, IPAddress SubnetMask)
+        public static IPAddress GetBroadcastAddress(IPAddress Address, IPSubnetMask SubnetMask)
         {
             byte[] ipAdressBytes = Address.GetAddressBytes();
             byte[] SubnetMaskBytes = SubnetMask.GetAddressBytes();
@@ -140,7 +134,7 @@ namespace Router.Helpers
             return new IPAddress(broadcastAddress);
         }
 
-        public static IPAddress GetNetworkAddress(IPAddress Address, IPAddress SubnetMask)
+        public static IPAddress GetNetworkAddress(IPAddress Address, IPSubnetMask SubnetMask)
         {
             byte[] ipAdressBytes = Address.GetAddressBytes();
             byte[] SubnetMaskBytes = SubnetMask.GetAddressBytes();
@@ -157,44 +151,6 @@ namespace Router.Helpers
             }
 
             return new IPAddress(networkAddress);
-        }
-
-        public static int SubnetMaskToCIDR(IPAddress SubnetMask)
-        {
-            var value = BitConverter.ToUInt32(SubnetMask.GetAddressBytes(), 0);
-
-            int count = 0;
-            while (value != 0)
-            {
-                count++;
-                value &= value - 1;
-            }
-
-            return count;
-        }
-
-        public static bool IsValidSubnetMask(IPAddress SubnetMask)
-        {
-            var value = BitConverter.ToUInt32(SubnetMask.GetAddressBytes(), 0);
-            if(value == 0)
-            {
-                return true;
-            }
-
-            uint total = UInt32.MaxValue;
-            while (total != 0)
-            {
-                var ip = (uint) IPAddress.HostToNetworkOrder((int) total);
-
-                if (ip == value)
-                {
-                    return true;
-                }
-
-                total = (total << 1);
-            }
-
-            return false;
         }
     }
 }
