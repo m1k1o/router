@@ -46,7 +46,6 @@ namespace Router.RIP
 
         public RTE(IPAddress IPAddress, IPAddress SubnetMask, IPAddress NextHop, uint Metric) : base(20)
         {
-            Console.Write(Length);
             AddressFamilyIdentifier = 2;
             RouteTag = 0;
             this.IPAddress = IPAddress;
@@ -58,6 +57,18 @@ namespace Router.RIP
         public RTE(byte[] Data) : base(Data)
         {
 
+        }
+
+        public override string ToString()
+        {
+            return
+                "AddressFamily:\t" + AddressFamilyIdentifier.ToString() + "\n" +
+                "RouteTag:\t" + RouteTag.ToString() + "\n" +
+                "IPAddress:\t" + IPAddress.ToString() + "\n" +
+                "SubnetMask:\t" + SubnetMask.ToString() + "\n" +
+                "NextHop:\t" + NextHop.ToString() + "\n" +
+                "IPAddress:\t" + IPAddress.ToString() + "\n" +
+                "Metric:\t" + Metric.ToString();
         }
     }
 }

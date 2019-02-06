@@ -63,5 +63,9 @@ namespace Router.RIP
         {
 
         }
+        public override string ToString()
+        {
+            return "RIP " + CommandType + "\n" + RTEs.ToString();
+        }
     }
 }
