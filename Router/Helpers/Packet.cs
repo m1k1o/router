@@ -35,7 +35,7 @@ namespace Router.Helpers
 
             if (Type == typeof(uint))
             {
-                return (uint)BitConverter.ToUInt32(new Byte[4] { Data[o + 1], Data[o], Data[o + 3], Data[o + 2] }, 0);
+                return (uint)BitConverter.ToUInt32(new Byte[4] { Data[o + 3], Data[o + 2], Data[o + 1], Data[o] }, 0);
             }
 
             if (Type == typeof(IPAddress))
