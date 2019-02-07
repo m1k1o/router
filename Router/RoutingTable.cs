@@ -114,7 +114,7 @@ namespace Router
         public bool Remove(IPNetwork IPNetwork, ADistance ADistance)
         {
             var index = Entries.FindIndex(Entry => Entry.IPNetwork == IPNetwork && Entry.ADistance == ADistance);
-            if(index != -1)
+            if (index != -1)
             {
                 Entries.RemoveAt(index);
             }

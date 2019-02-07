@@ -14,7 +14,7 @@ namespace Router
         static public void OnReceived(IPv4Packet IPPacket)
         {
             IPPacket.TimeToLive--;
-            if(IPPacket.TimeToLive <= 0)
+            if (IPPacket.TimeToLive <= 0)
             {
                 Console.WriteLine("TimeToLive reached 0, dropping packet.");
                 return;

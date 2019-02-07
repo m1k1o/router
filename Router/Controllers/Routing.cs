@@ -33,7 +33,7 @@ namespace Router.Controllers
                 return new JSONError("Expected IPAddress, SubnetMask, NextHopIP, InterfaceID.");
             }
 
-            if(string.IsNullOrEmpty(Rows[2]) && string.IsNullOrEmpty(Rows[3]))
+            if (string.IsNullOrEmpty(Rows[2]) && string.IsNullOrEmpty(Rows[3]))
             {
                 return new JSONError("You must set NextHopIP and/or InterfaceID.");
             }

@@ -10,7 +10,7 @@ namespace Router.RIP
 
         static public void OnReceived(RIPPacket RIPPacket, Interface Interface)
         {
-            if(RIPPacket.CommandType == RIPCommandType.Request)
+            if (RIPPacket.CommandType == RIPCommandType.Request)
             {
                 throw new NotImplementedException();
             }

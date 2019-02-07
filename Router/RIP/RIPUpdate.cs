@@ -30,7 +30,7 @@ namespace Router.RIP
                 }
 
                 var RIPEntry = RIPEntries.Find(Route.IPNetwork);
-                if(RIPEntry != null)
+                if (RIPEntry != null)
                 {
                     if (Route.Metric == 16)
                     {
@@ -44,7 +44,7 @@ namespace Router.RIP
                 else
                 {
                     // Don't add poisoned routes
-                    if(Route.Metric == 16)
+                    if (Route.Metric == 16)
                     {
                         continue;
                     }

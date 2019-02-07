@@ -43,7 +43,7 @@ namespace Router
             )
             {
                 // Am i asked?
-                if(Equals(ARPPacket.TargetProtocolAddress, Interface.IPAddress))
+                if (Equals(ARPPacket.TargetProtocolAddress, Interface.IPAddress))
                 {
                     Protocols.ARP.SendResponse(ARPPacket.SenderHardwareAddress, ARPPacket.SenderProtocolAddress, Interface);
                     return;
@@ -66,7 +66,7 @@ namespace Router
         static public PhysicalAddress Lookup(IPAddress IPAddress, Interface Interface)
         {
             var PhysicalAddress = ARPTable.Instance.Find(IPAddress);
-            if(PhysicalAddress != null)
+            if (PhysicalAddress != null)
             {
                 return PhysicalAddress;
             }

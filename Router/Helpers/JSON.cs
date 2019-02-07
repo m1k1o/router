@@ -51,7 +51,7 @@ namespace Router.Helpers
                 return value.ToString();
             }
 
-            if(value is PhysicalAddress)
+            if (value is PhysicalAddress)
             {
                 var regex = "(.{2})(.{2})(.{2})(.{2})(.{2})(.{2})";
                 var replace = "$1:$2:$3:$4:$5:$6";

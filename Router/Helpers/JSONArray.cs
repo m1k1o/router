@@ -6,7 +6,7 @@ namespace Router.Helpers
     {
         public JSONArray(List<object> List = null)
         {
-            if(List != null)
+            if (List != null)
             {
                 foreach (var Row in List)
                 {
