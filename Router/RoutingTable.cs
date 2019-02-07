@@ -106,10 +106,9 @@ namespace Router
             if (index != -1)
             {
                 Entries.RemoveAt(index);
-                return true;
             }
 
-            return false;
+            return index != -1;
         }
 
         public bool Remove(IPNetwork IPNetwork, ADistance ADistance)
@@ -118,10 +117,9 @@ namespace Router
             if(index != -1)
             {
                 Entries.RemoveAt(index);
-                return true;
             }
 
-            return false;
+            return index != -1;
         }
         
         public bool Exists(IPNetwork IPNetwork)
