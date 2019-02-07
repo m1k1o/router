@@ -93,7 +93,7 @@ namespace Router
         public void IP(IPv4Packet IPv4Packet)
         {
             Console.WriteLine("Got IPV4.");
-            if (!Equals(EthernetPacket.DestinationHwAddress, Interface.PhysicalAddress))
+            if (Equals(EthernetPacket.SourceHwAddress, Interface.PhysicalAddress) || !Equals(EthernetPacket.DestinationHwAddress, Interface.PhysicalAddress))
             {
                 return;
             }
