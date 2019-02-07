@@ -50,7 +50,7 @@ namespace Router.Protocols
 
         public RIPPacket(RIPCommandType CommandType, RIPRouteCollection RouteCollection) : base(4)
         {
-            this.CommandType = (byte)CommandType;
+            this.CommandType = CommandType;
             Version = 2;
             MustBeZero = 0;
             this.RouteCollection = RouteCollection;
