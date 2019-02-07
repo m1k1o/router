@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Router.RIP
 {
-    abstract class RIPTimers
+    abstract class RIPEntryTimers
     {
         static public TimeSpan InvalidTimer = TimeSpan.FromSeconds(180);
         static public TimeSpan HoldTimer = TimeSpan.FromSeconds(180);

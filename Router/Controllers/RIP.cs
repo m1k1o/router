@@ -39,9 +39,9 @@ namespace Router.Controllers
                 //.UpdateTimer = UpdateTimer;
                 throw new NotImplementedException();
 
-                RIPTimers.InvalidTimer = InvalidTimer;
-                RIPTimers.HoldTimer = HoldTimer;
-                RIPTimers.FlushTimer = FlushTimer;
+                RIPEntryTimers.InvalidTimer = InvalidTimer;
+                RIPEntryTimers.HoldTimer = HoldTimer;
+                RIPEntryTimers.FlushTimer = FlushTimer;
             }
 
             var obj = new JSONObject();
@@ -49,9 +49,9 @@ namespace Router.Controllers
             //obj.Push("update_timer", .InvalidTimer.TotalSeconds);
             throw new NotImplementedException();
 
-            obj.Push("invalid_timer", RIPTimers.InvalidTimer.TotalSeconds);
-            obj.Push("hold_timer", RIPTimers.HoldTimer.TotalMilliseconds);
-            obj.Push("flush_timer", RIPTimers.FlushTimer.TotalMilliseconds);
+            obj.Push("invalid_timer", RIPEntryTimers.InvalidTimer.TotalSeconds);
+            obj.Push("hold_timer", RIPEntryTimers.HoldTimer.TotalMilliseconds);
+            obj.Push("flush_timer", RIPEntryTimers.FlushTimer.TotalMilliseconds);
             return obj;
         }
 

@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Router.RIP
 {
-    class RIPEntry : RIPTimers
+    class RIPEntry : RIPEntryTimers
     {
         public Interface Interface;
         public IPNetwork IPNetwork;
