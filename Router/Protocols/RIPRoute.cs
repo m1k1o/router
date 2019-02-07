@@ -43,12 +43,21 @@ namespace Router.Protocols
             set => Inject(16, value);
         }
 
-        public RIPRoute(IPAddress IPAddress, IPSubnetMask IPSubnetMask, IPAddress NextHop, uint Metric) : base(20)
+        public IPNetwork IPNetwork
+        {
+            get => IPNetwork.Parse(IPAddress, IPSubnetMask);
+            set
+            {
+                IPAddress = value.NetworkAddress;
+                IPSubnetMask = value.SubnetMask;
+            }
+        }
+
+        public RIPRoute(IPNetwork IPNetwork, IPAddress NextHop, uint Metric) : base(20)
         {
             AddressFamilyIdentifier = 2;
             RouteTag = 0;
-            this.IPAddress = IPAddress;
-            this.IPSubnetMask = IPSubnetMask;
+            this.IPNetwork = IPNetwork;
             this.NextHop = NextHop;
             this.Metric = Metric;
         }
@@ -63,8 +72,7 @@ namespace Router.Protocols
             return
                 "AddressFamily:\t" + AddressFamilyIdentifier.ToString() + "\n" +
                 "RouteTag:\t" + RouteTag.ToString() + "\n" +
-                "IPAddress:\t" + IPAddress.ToString() + "\n" +
-                "SubnetMask:\t" + IPSubnetMask.ToString() + "\n" +
+                "IPNetwork:\t" + IPNetwork.ToString() + "\n" +
                 "NextHop:\t" + NextHop.ToString() + "\n" +
                 "IPAddress:\t" + IPAddress.ToString() + "\n" +
                 "Metric:\t" + Metric.ToString();

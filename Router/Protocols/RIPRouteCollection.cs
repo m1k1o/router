@@ -6,9 +6,9 @@ namespace Router.Protocols
 {
     class RIPRouteCollection : List<RIPRoute>
     {
-        public void Add(IPAddress IPAddress, IPSubnetMask IPSubnetMask, IPAddress NextHop, uint Metric)
+        public void Add(IPNetwork IPNetwork, IPAddress NextHop, uint Metric)
         {
-            Add(new RIPRoute(IPAddress, IPSubnetMask, NextHop, Metric));
+            Add(new RIPRoute(IPNetwork, NextHop, Metric));
         }
 
         public override string ToString()

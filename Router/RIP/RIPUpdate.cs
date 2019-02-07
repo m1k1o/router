@@ -45,7 +45,7 @@ namespace Router.RIP
                     Metric = Route.Metric;
                 }
 
-                RouteCollection.Add(Route.IPNetwork.NetworkAddress, Route.IPNetwork.SubnetMask, Interface.IPAddress, Metric);
+                RouteCollection.Add(Route.IPNetwork, Interface.IPAddress, Metric);
             }
 
             return RouteCollection;
