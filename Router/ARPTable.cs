@@ -13,13 +13,10 @@ namespace Router
 
         public void Push(IPAddress IPAddress, PhysicalAddress PhysicalAddress)
         {
-            foreach (var Entry in Entries)
+            var FoundEntry = Entries.Find(Entry => Equals(Entry.IPAddress, IPAddress));
+            if (FoundEntry != null)
             {
-                if (Equals(Entry.IPAddress, IPAddress))
-                {
-                    Entry.Update(PhysicalAddress);
-                    return;
-                }
+                FoundEntry.Update(PhysicalAddress);
             }
 
             Entries.Add(new ARPEntry(IPAddress, PhysicalAddress));
@@ -27,18 +24,10 @@ namespace Router
 
         public PhysicalAddress Find(IPAddress IPAddress)
         {
-            foreach (var Entry in Entries)
+            var FoundEntry = Entries.Find(Entry => Equals(Entry.IPAddress, IPAddress) && !Entry.HasExpired);
+            if (FoundEntry != null)
             {
-                if (Equals(Entry.IPAddress, IPAddress))
-                {
-                    if (Entry.HasExpired)
-                    {
-                        // Remove entry.
-                        return null;
-                    }
-
-                    return Entry.PhysicalAddress;
-                }
+                return FoundEntry.PhysicalAddress;
             }
 
             return null;
@@ -52,6 +41,11 @@ namespace Router
         public List<ARPEntry> GetEntries()
         {
             return Entries;
+        }
+
+        public void GarbageCollector()
+        {
+            Entries.RemoveAll(Entry => Entry.HasExpired);
         }
     }
 }
