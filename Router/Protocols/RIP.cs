@@ -1,8 +1,6 @@
 using PacketDotNet;
 using System.Net;
 using System.Net.NetworkInformation;
-using System.Collections.Generic;
-using Router.RIP;
 
 namespace Router.Protocols
 {
@@ -12,7 +10,7 @@ namespace Router.Protocols
         public const string MulticastIp = "224.0.0.9";
         public const string MulticastMac = "01-00-5E-00-00-09";
 
-        static public void Send(RIPCommandType CommandType, RTECollection RTEs, Interface Interface)
+        static public void Send(RIPCommandType CommandType, RIPRouteCollection RTEs, Interface Interface)
         {
             var ripPacket = new RIPPacket(CommandType, RTEs);
 

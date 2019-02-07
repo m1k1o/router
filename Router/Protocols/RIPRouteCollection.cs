@@ -4,13 +4,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Router.RIP
+namespace Router.Protocols
 {
-    public class RTECollection : List<RTE>
+    public class RIPRouteCollection : List<RIPRoute>
     {
         public override string ToString()
         {
-            var result = "RTECollection:\n\n";
+            var result = "RIP Route Collection:\n\n";
             foreach (var item in this)
             {
                 result += item.ToString() + "\n\n";

@@ -69,12 +69,13 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Protocols\ARP.cs" />
     <Compile Include="Protocols\RIP.cs" />
+    <Compile Include="RIP.cs" />
     <Compile Include="RIPEntry.cs" />
     <Compile Include="RIPTable.cs" />
-    <Compile Include="RIP\RIPCommandType.cs" />
-    <Compile Include="RIP\RIPPacket.cs" />
-    <Compile Include="RIP\RTE.cs" />
-    <Compile Include="RIP\RTECollection.cs" />
+    <Compile Include="Protocols\RIPCommandType.cs" />
+    <Compile Include="Protocols\RIPPacket.cs" />
+    <Compile Include="Protocols\RIPRoute.cs" />
+    <Compile Include="Protocols\RIPRouteCollection.cs" />
     <Compile Include="Routing.cs" />
     <Compile Include="RoutingTable.cs" />
     <Compile Include="RoutingEntry.cs" />

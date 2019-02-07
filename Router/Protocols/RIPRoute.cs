@@ -1,10 +1,9 @@
 ﻿using Router.Helpers;
-using System;
 using System.Net;
 
-namespace Router.RIP
+namespace Router.Protocols
 {
-    public class RTE : Packet
+    public class RIPRoute : Packet
     {
         public new const int Length = 20;
 
@@ -44,7 +43,7 @@ namespace Router.RIP
             set => Inject(16, value);
         }
 
-        public RTE(IPAddress IPAddress, IPSubnetMask IPSubnetMask, IPAddress NextHop, uint Metric) : base(20)
+        public RIPRoute(IPAddress IPAddress, IPSubnetMask IPSubnetMask, IPAddress NextHop, uint Metric) : base(20)
         {
             AddressFamilyIdentifier = 2;
             RouteTag = 0;
@@ -54,7 +53,7 @@ namespace Router.RIP
             this.Metric = Metric;
         }
 
-        public RTE(byte[] Data) : base(Data)
+        public RIPRoute(byte[] Data) : base(Data)
         {
 
         }

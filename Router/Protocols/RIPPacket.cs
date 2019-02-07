@@ -1,9 +1,6 @@
 ﻿using Router.Helpers;
-using System;
-using System.Collections.Generic;
-using System.IO;
 
-namespace Router.RIP
+namespace Router.Protocols
 {
     public sealed class RIPPacket : Packet
     {
@@ -25,16 +22,16 @@ namespace Router.RIP
             set => Inject(2, value);
         }
 
-        public RTECollection RTEs
+        public RIPRouteCollection RouteCollection
         {
             get
             {
                 var offset = 4;
-                var newColection = new RTECollection();
+                var newColection = new RIPRouteCollection();
                 do {
-                    var RTEBytes = Slice(offset, RTE.Length);
-                    newColection.Add(new RTE(RTEBytes));
-                    offset += RTE.Length;
+                    var RTEBytes = Slice(offset, RIPRoute.Length);
+                    newColection.Add(new RIPRoute(RTEBytes));
+                    offset += RIPRoute.Length;
                 } while (offset < Length);
 
                 return newColection;
@@ -43,7 +40,7 @@ namespace Router.RIP
             set
             {
                 var offset = 4;
-                foreach (RTE item in value)
+                foreach (RIPRoute item in value)
                 {
                     Inject(offset, item.Bytes, item.Bytes.Length);
                     offset += item.Bytes.Length;
@@ -51,21 +48,22 @@ namespace Router.RIP
             }
         }
 
-        public RIPPacket(RIPCommandType CommandType, RTECollection RTEs) : base(4)
+        public RIPPacket(RIPCommandType CommandType, RIPRouteCollection RouteCollection) : base(4)
         {
             this.CommandType = (byte)CommandType;
             Version = 2;
             MustBeZero = 0;
-            this.RTEs = RTEs;
+            this.RouteCollection = RouteCollection;
         }
 
         public RIPPacket(byte[] Data) : base(Data)
         {
 
         }
+
         public override string ToString()
         {
-            return "RIP " + CommandType + "\n" + RTEs.ToString();
+            return "RIP " + CommandType + "\n" + RouteCollection.ToString();
         }
     }
 }
