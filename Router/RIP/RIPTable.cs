@@ -36,7 +36,7 @@ namespace Router.RIP
 
         public List<RIPEntry> BestEntries()
         {
-            return Entries.GroupBy(
+            return GetEntries().GroupBy(
                 Entry => Entry.IPNetwork,
                 Entry => Entry,
                 (BaseIPNetwork, Routes) => Routes.BestRoute()).ToList();
@@ -44,7 +44,7 @@ namespace Router.RIP
 
         public List<RIPEntry> GetEntries()
         {
-            return Entries;
+            return Entries.FindAll(Entry => !Entry.ToBeRemoved);
         }
 
         public void GarbageCollector()
