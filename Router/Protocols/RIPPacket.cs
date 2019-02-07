@@ -4,9 +4,9 @@ namespace Router.Protocols
 {
     public sealed class RIPPacket : Packet
     {
-        public byte CommandType
+        public RIPCommandType CommandType
         {
-            get => (byte)Slice(0, typeof(byte));
+            get => (RIPCommandType)Slice(0, typeof(byte));
             set => Inject(0, value);
         }
 
