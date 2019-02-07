@@ -42,14 +42,14 @@ namespace Router.Controllers
 
                 // Set
                 Router.ARP.ProxyEnabled = ProxyEnabled;
-                ARPTable.CacheTimeout = CacheTimeout;
+                ARPEntry.CacheTimeout = CacheTimeout;
                 Router.ARP.Timeout = Timeout;
                 Router.ARP.Interval = Interval;
             }
 
             var obj = new JSONObject();
             obj.Push("proxy_enabled", Router.ARP.ProxyEnabled);
-            obj.Push("cache_timeout", ARPTable.CacheTimeout.TotalSeconds);
+            obj.Push("cache_timeout", ARPEntry.CacheTimeout.TotalSeconds);
             obj.Push("timeout", Router.ARP.Timeout.TotalMilliseconds);
             obj.Push("interval", Router.ARP.Interval.TotalMilliseconds);
             return obj;
@@ -97,8 +97,7 @@ namespace Router.Controllers
             var Rows = ARPTable.GetEntries();
             foreach (var Row in Rows)
             {
-                var CacheTimeout = (int) (Row.Expires - DateTime.Now).TotalSeconds;
-                if (CacheTimeout < 0)
+                if (Row.HasExpired)
                 {
                     continue;
                 }
@@ -107,7 +106,7 @@ namespace Router.Controllers
 
                 obj.Push("ip", Row.IPAddress);
                 obj.Push("mac", Row.PhysicalAddress);
-                obj.Push("cache_timeout", CacheTimeout);
+                obj.Push("cache_timeout", Row.ExpiresIn);
 
                 arr.Push(obj);
             }

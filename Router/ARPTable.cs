@@ -9,8 +9,6 @@ namespace Router
     {
         internal static ARPTable Instance { get; } = new ARPTable();
 
-        public TimeSpan CacheTimeout = TimeSpan.FromSeconds(128);
-
         private List<ARPEntry> Entries = new List<ARPEntry>();
 
         public void Push(IPAddress IPAddress, PhysicalAddress PhysicalAddress)
@@ -19,13 +17,12 @@ namespace Router
             {
                 if (Equals(Entry.IPAddress, IPAddress))
                 {
-                    Entry.PhysicalAddress = PhysicalAddress;
-                    Entry.Expires = DateTime.Now + CacheTimeout;
+                    Entry.Update(PhysicalAddress);
                     return;
                 }
             }
 
-            Entries.Add(new ARPEntry(IPAddress, PhysicalAddress, DateTime.Now + CacheTimeout));
+            Entries.Add(new ARPEntry(IPAddress, PhysicalAddress));
         }
 
         public PhysicalAddress Find(IPAddress IPAddress)
@@ -34,8 +31,9 @@ namespace Router
             {
                 if (Equals(Entry.IPAddress, IPAddress))
                 {
-                    if (DateTime.Now > Entry.Expires)
+                    if (Entry.HasExpired)
                     {
+                        // Remove entry.
                         return null;
                     }
 
