@@ -34,6 +34,14 @@ namespace Router.RIP
             Entries = new List<RIPEntry>();
         }
 
+        public List<RIPEntry> BestEntries()
+        {
+            return Entries.GroupBy(
+                Entry => Entry.IPNetwork,
+                Entry => Entry,
+                (BaseIPNetwork, Routes) => Routes.BestRoute()).ToList();
+        }
+
         public List<RIPEntry> GetEntries()
         {
             return Entries;
@@ -42,6 +50,14 @@ namespace Router.RIP
         public void GarbageCollector()
         {
             Entries.RemoveAll(Entry => Entry.ToBeRemoved);
+        }
+    }
+
+    static class RIPListExtensions
+    {
+        public static RIPEntry BestRoute(this IEnumerable<RIPEntry> Entries)
+        {
+            return Entries.OrderBy(Entry => Entry.Metric).First();
         }
     }
 }
