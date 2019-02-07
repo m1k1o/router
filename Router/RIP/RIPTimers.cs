@@ -25,20 +25,36 @@ namespace Router.RIP
             TimeUpdated = DateTime.Now;
         }
 
-        public bool NeverUpdated { get => TimeUpdated == DateTime.MinValue; }
+        public bool NeverUpdated {
+            get => TimeUpdated == DateTime.MinValue;
+        }
 
-        public bool ToBeRemoved { get => DateTime.Now > TimeUpdated + FlushTimer; }
+        public bool ToBeRemoved {
+            get => DateTime.Now > TimeUpdated + FlushTimer;
+        }
 
-        public bool Valid { get => DateTime.Now <= TimeUpdated + InvalidTimer; }
+        public bool Valid {
+            get => DateTime.Now <= TimeUpdated + InvalidTimer;
+        }
 
-        private bool forceHold;
+        private DateTime HoldSince;
 
         public bool InHold
         {
             get =>
-                (forceHold && DateTime.Now <= TimeUpdated + HoldTimer) ||
+                (HoldSince != DateTime.MinValue && DateTime.Now <= HoldSince + HoldTimer) ||
                 (!Valid && DateTime.Now <= TimeUpdated + InvalidTimer + HoldTimer);
-            set => forceHold = value;
+            set
+            {
+                if (value)
+                {
+                    HoldSince = DateTime.Now;
+                }
+                else
+                {
+                    HoldSince = DateTime.MinValue;
+                }
+            }
         }
     }
 }
