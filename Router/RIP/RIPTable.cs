@@ -59,5 +59,10 @@ namespace Router.RIP
         {
             return Entries.OrderBy(Entry => Entry.Metric).First();
         }
+
+        public static bool Exists(this List<RIPEntry> Entries, IPNetwork IPNetwork)
+        {
+            return Entries.Exists(Entry => Entry.IPNetwork == IPNetwork);
+        }
     }
 }
