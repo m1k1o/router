@@ -79,6 +79,74 @@ namespace Router.Helpers
             return false;
         }
 
+        public bool Equals(IPSubnetMask IPSubnetMask)
+        {
+            if (IPSubnetMask is null)
+            {
+                return false;
+            }
+
+            if (ReferenceEquals(this, IPSubnetMask))
+            {
+                return true;
+            }
+
+            return CIDR == CIDR;
+        }
+
+        public override bool Equals(object obj)
+        {
+            return obj.GetType() == GetType() && Equals(obj as IPSubnetMask);
+        }
+
+        public override int GetHashCode()
+        {
+            unchecked
+            {
+                return CIDR.GetHashCode();
+            }
+        }
+
+        public static bool operator ==(IPSubnetMask obj1, IPSubnetMask obj2)
+        {
+            if (obj1 is null || obj2 is null)
+            {
+                return false;
+            }
+
+            if (ReferenceEquals(obj1, obj2))
+            {
+                return true;
+            }
+
+            return obj1.Equals(obj2);
+        }
+
+        public static bool operator !=(IPSubnetMask obj1, IPSubnetMask obj2)
+        {
+            return !(obj1 == obj2);
+        }
+
+        public static bool operator <(IPSubnetMask obj1, IPSubnetMask obj2)
+        {
+            return obj1.CIDR < obj2.CIDR;
+        }
+
+        public static bool operator >(IPSubnetMask obj1, IPSubnetMask obj2)
+        {
+            return obj1.CIDR > obj2.CIDR;
+        }
+
+        public static bool operator <=(IPSubnetMask obj1, IPSubnetMask obj2)
+        {
+            return obj1.CIDR <= obj2.CIDR;
+        }
+
+        public static bool operator >=(IPSubnetMask obj1, IPSubnetMask obj2)
+        {
+            return obj1.CIDR >= obj2.CIDR;
+        }
+
         static new public IPSubnetMask Parse(string ipSubnetString)
         {
             return new IPSubnetMask(IPAddress.Parse(ipSubnetString).GetAddressBytes());

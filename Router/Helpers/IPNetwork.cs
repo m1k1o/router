@@ -15,8 +15,6 @@ namespace Router.Helpers
 
         public IPSubnetMask SubnetMask { get; private set; }
 
-        public int CIDR { get => SubnetMask.CIDR; }
-
         IPNetwork(IPAddress Address, IPSubnetMask SubnetMask)
         {
             NetworkAddress = GetNetworkAddress(Address, SubnetMask);
@@ -32,7 +30,7 @@ namespace Router.Helpers
 
         public override string ToString()
         {
-            return NetworkAddress.ToString() + "/" + CIDR.ToString();
+            return NetworkAddress.ToString() + "/" + SubnetMask.CIDR;
         }
 
         public bool Equals(IPNetwork IPNetwork)
@@ -47,7 +45,7 @@ namespace Router.Helpers
                 return true;
             }
 
-            return Equals(IPNetwork.NetworkAddress, NetworkAddress) && IPNetwork.CIDR == CIDR;
+            return Equals(IPNetwork.NetworkAddress, NetworkAddress) && Equals(IPNetwork.SubnetMask, SubnetMask);
         }
         
         public override bool Equals(object obj)
@@ -87,22 +85,22 @@ namespace Router.Helpers
 
         public static bool operator <(IPNetwork obj1, IPNetwork obj2)
         {
-            return Equals(obj1.NetworkAddress, obj2.NetworkAddress) && obj1.CIDR < obj2.CIDR;
+            return Equals(obj1.NetworkAddress, obj2.NetworkAddress) && obj1.SubnetMask < obj2.SubnetMask;
         }
 
         public static bool operator >(IPNetwork obj1, IPNetwork obj2)
         {
-            return Equals(obj1.NetworkAddress, obj2.NetworkAddress) && obj1.CIDR > obj2.CIDR;
+            return Equals(obj1.NetworkAddress, obj2.NetworkAddress) && obj1.SubnetMask > obj2.SubnetMask;
         }
 
         public static bool operator <=(IPNetwork obj1, IPNetwork obj2)
         {
-            return Equals(obj1.NetworkAddress, obj2.NetworkAddress) && obj1.CIDR <= obj2.CIDR;
+            return Equals(obj1.NetworkAddress, obj2.NetworkAddress) && obj1.SubnetMask <= obj2.SubnetMask;
         }
 
         public static bool operator >=(IPNetwork obj1, IPNetwork obj2)
         {
-            return Equals(obj1.NetworkAddress, obj2.NetworkAddress) && obj1.CIDR >= obj2.CIDR;
+            return Equals(obj1.NetworkAddress, obj2.NetworkAddress) && obj1.SubnetMask >= obj2.SubnetMask;
         }
 
         public static IPNetwork Parse(IPAddress Address, IPSubnetMask SubnetMask)
