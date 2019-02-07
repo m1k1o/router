@@ -16,7 +16,15 @@ namespace Router.RIP
 
         public void Add(RIPEntry Entry)
         {
+            // TODO: Don't allow duplicities
             Entries.Add(Entry);
+        }
+
+        public RIPEntry Add(Interface Interface, IPNetwork IPNetwork, IPAddress NextHopIP, uint Metric)
+        {
+            var Entry = new RIPEntry(Interface, IPNetwork, NextHopIP, Metric);
+            Add(Entry);
+            return Entry;
         }
 
         public List<RIPEntry> Find(Interface Interface)
@@ -63,6 +71,11 @@ namespace Router.RIP
         public static bool Exists(this List<RIPEntry> Entries, IPNetwork IPNetwork)
         {
             return Entries.Exists(Entry => Entry.IPNetwork == IPNetwork);
+        }
+
+        public static RIPEntry Find(this List<RIPEntry> Entries, IPNetwork IPNetwork)
+        {
+            return Entries.Find(Entry => Entry.IPNetwork == IPNetwork);
         }
     }
 }
