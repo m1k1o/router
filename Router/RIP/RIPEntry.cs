@@ -36,5 +36,45 @@ namespace Router.RIP
             Update();
             return HasChanged;
         }
+
+        public static bool operator <(RIPEntry obj1, RIPEntry obj2)
+        {
+            if (obj1 is null || obj2 is null)
+            {
+                return false;
+            }
+
+            return obj1.Metric < obj2.Metric;
+        }
+
+        public static bool operator >(RIPEntry obj1, RIPEntry obj2)
+        {
+            if (obj1 is null || obj2 is null)
+            {
+                return false;
+            }
+
+            return obj1.Metric > obj2.Metric;
+        }
+
+        public static bool operator <=(RIPEntry obj1, RIPEntry obj2)
+        {
+            if (obj1 is null || obj2 is null)
+            {
+                return false;
+            }
+
+            return obj1.Metric <= obj2.Metric;
+        }
+
+        public static bool operator >=(RIPEntry obj1, RIPEntry obj2)
+        {
+            if (obj1 is null || obj2 is null)
+            {
+                return false;
+            }
+
+            return obj1.Metric >= obj2.Metric;
+        }
     }
 }
