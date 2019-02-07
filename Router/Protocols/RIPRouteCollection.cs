@@ -1,9 +1,16 @@
-﻿using System.Collections.Generic;
+﻿using Router.Helpers;
+using System.Collections.Generic;
+using System.Net;
 
 namespace Router.Protocols
 {
     public class RIPRouteCollection : List<RIPRoute>
     {
+        public void Add(IPAddress IPAddress, IPSubnetMask IPSubnetMask, IPAddress NextHop, uint Metric)
+        {
+            Add(new RIPRoute(IPAddress, IPSubnetMask, NextHop, Metric));
+        }
+
         public override string ToString()
         {
             var result = "RIP Route Collection:\n\n";
