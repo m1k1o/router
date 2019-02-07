@@ -1,6 +1,6 @@
 ﻿namespace Router.Protocols
 {
-    public enum RIPCommandType : byte
+    enum RIPCommandType : byte
     {
         Request = 1,
         Response = 2

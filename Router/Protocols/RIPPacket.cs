@@ -2,7 +2,7 @@
 
 namespace Router.Protocols
 {
-    public sealed class RIPPacket : Packet
+    sealed class RIPPacket : Packet
     {
         public RIPCommandType CommandType
         {

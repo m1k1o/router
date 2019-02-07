@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Router.Helpers
 {
-    public class IPSubnetMask : IPAddress
+    class IPSubnetMask : IPAddress
     {
         public int CIDR { get; private set; }
 

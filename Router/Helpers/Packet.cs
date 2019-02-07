@@ -3,7 +3,7 @@ using System.Net;
 
 namespace Router.Helpers
 {
-    public abstract class Packet
+    abstract class Packet
     {
         protected byte[] Data;
 

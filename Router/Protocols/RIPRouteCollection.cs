@@ -4,7 +4,7 @@ using System.Net;
 
 namespace Router.Protocols
 {
-    public class RIPRouteCollection : List<RIPRoute>
+    class RIPRouteCollection : List<RIPRoute>
     {
         public void Add(IPAddress IPAddress, IPSubnetMask IPSubnetMask, IPAddress NextHop, uint Metric)
         {

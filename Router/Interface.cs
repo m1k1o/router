@@ -9,7 +9,7 @@ using SharpPcap.WinPcap;
 
 namespace Router
 {
-    internal class Interface
+    class Interface
     {
         public ICaptureDevice Device { get; private set; }
 
