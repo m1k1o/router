@@ -18,12 +18,10 @@ namespace Router
 
         public void Push(Interface Interface, IPNetwork IPNetwork)
         {
-            var index = Entries.FindIndex(Entry => Entry.Interface == Interface && Entry.ADistance == ADistance.DirectlyConnected);
+            var index = Entries.FindIndex(Entry => Entry.IPNetwork == IPNetwork && Entry.ADistance == ADistance.DirectlyConnected);
             if (index != -1)
             {
-                Entries[index].IPNetwork = IPNetwork;
-                Entries[index].NextHopIP = null;
-                return;
+                throw new Exception("There is already C" + IPNetwork + " in routing table.");
             }
 
             Entries.Add(new RoutingEntry(IPNetwork, null, Interface, ADistance.DirectlyConnected));

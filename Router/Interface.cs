@@ -1,3 +1,4 @@
+using System;
 using System.Net;
 using System.Net.NetworkInformation;
 using PacketDotNet;
@@ -64,10 +65,20 @@ namespace Router
 
         public void Start()
         {
+            if (Running)
+            {
+                throw new Exception("Interface is already running.");
+            }
+
             Device.Open(DeviceMode.Promiscuous, 1);
             Device.OnPacketArrival += new PacketArrivalEventHandler(Interfaces.OnPacketArrival);
             Device.OnCaptureStopped += new CaptureStoppedEventHandler(Interfaces.OnCaptureStopped);
             Device.StartCapture();
+
+            if (IPNetwork == null)
+            {
+                throw new Exception("You must first set IPAddress and IPSubnetMask.");
+            }
 
             // Push directly connected
             RoutingTable.Instance.Push(this, IPNetwork);
@@ -76,6 +87,11 @@ namespace Router
 
         public void Stop()
         {
+            if (!Running)
+            {
+                throw new Exception("Interface is not running.");
+            }
+
             // Remove directly connected
             RoutingTable.Instance.Remove(this, IPNetwork);
 

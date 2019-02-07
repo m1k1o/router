@@ -28,51 +28,30 @@ namespace Router.Controllers
 
         public JSON Start(string Data)
         {
-            // Validate
-            Interface Interface;
             try
             {
-                Interface = Instance.GetInterfaceById(Data);
+                Instance.GetInterfaceById(Data).Start();
             }
             catch (Exception e)
             {
                 return new JSONError(e.Message);
             }
 
-            if (Interface.IPNetwork == null)
-            {
-                return new JSONError("You must first set IPAddress and IPSubnetMask.");
-            }
-
-            if (!Interface.Running)
-            {
-                Interface.Start();
-            }
-
-            // Answer
-            return new JSONObject("running", Interface.Running);
+            return new JSONObject("running", true);
         }
 
         public JSON Stop(string Data)
         {
-            // Validate
-            Interface Interface;
             try
             {
-                Interface = Instance.GetInterfaceById(Data);
+                Instance.GetInterfaceById(Data).Stop();
             }
             catch (Exception e)
             {
                 return new JSONError(e.Message);
             }
 
-            if (Interface.Running)
-            {
-                Interface.Stop();
-            }
-
-            // Answer
-            return new JSONObject("running", Interface.Running);
+            return new JSONObject("running", false);
         }
         
         public JSON Edit(string Data)
