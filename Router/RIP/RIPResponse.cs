@@ -8,13 +8,19 @@ using System.Threading.Tasks;
 
 namespace Router.RIP
 {
-    class RIPUpdate
+    class RIPResponse
     {
         public static bool SplitHorizon = true;
         public static bool PoisonReverse = false;
 
+        public Interface Interface { get; private set; }
 
-        public static void Import(IPAddress SourceIP, RIPRouteCollection RouteCollection, Interface Interface)
+        public RIPResponse(Interface Interface)
+        {
+            this.Interface = Interface;
+        }
+
+        public static void OnReceived(IPAddress SourceIP, RIPRouteCollection RouteCollection, Interface Interface)
         {
             var ChangedRIPEntries = new List<RIPEntry>();
 
@@ -38,7 +44,10 @@ namespace Router.RIP
                     }
                     else
                     {
-                        RIPEntryChanged = RIPEntry.Update(NextHopIP, Route.Metric);
+                        if (!RIPEntry.InHold)
+                        {
+                            RIPEntryChanged = RIPEntry.Update(NextHopIP, Route.Metric);
+                        }
                     }
                 }
                 else
@@ -66,17 +75,33 @@ namespace Router.RIP
             }
         }
 
-        public static RIPRouteCollection Export(Interface Interface)
+        public void SendUpdate()
+        {
+            var RIPEntries = RIPTable.Instance.BestEntries();
+            SendTriggeredUpdate(RIPEntries);
+        }
+
+        public void SendTriggeredUpdate(List<RIPEntry> RIPEntries)
+        {
+            var RouteCollection = Export(RIPEntries);
+            Protocols.RIP.Send(RIPCommandType.Response, RouteCollection, Interface);
+        }
+        /*
+        public void SendResponse(RIPRequest RIPRequest)
+        {
+            throw new NotImplementedException();
+        }
+        */
+        public RIPRouteCollection Export(List<RIPEntry> RIPEntries)
         {
             var RouteCollection = new RIPRouteCollection();
-            var Routes = RIPTable.Instance.BestEntries();
 
-            foreach (var Route in Routes)
+            foreach (var RIPEntry in RIPEntries)
             {
                 uint Metric;
 
                 // Split Hotizon \w Poison Reverse
-                if (SplitHorizon && Route.Interface == Interface)
+                if (SplitHorizon && RIPEntry.Interface == Interface)
                 {
                     if (PoisonReverse)
                     {
@@ -89,10 +114,17 @@ namespace Router.RIP
                 }
                 else
                 {
-                    Metric = Route.Metric;
+                    if (RIPEntry.InHold)
+                    {
+                        Metric = 16;
+                    }
+                    else
+                    {
+                        Metric = RIPEntry.Metric;
+                    }
                 }
 
-                RouteCollection.Add(Route.IPNetwork, Interface.IPAddress, Metric);
+                RouteCollection.Add(RIPEntry.IPNetwork, Interface.IPAddress, Metric);
             }
 
             return RouteCollection;

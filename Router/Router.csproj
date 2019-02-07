@@ -80,7 +80,7 @@
     <Compile Include="Protocols\RIPRoute.cs" />
     <Compile Include="Protocols\RIPRouteCollection.cs" />
     <Compile Include="RIP\RIPEntryTimers.cs" />
-    <Compile Include="RIP\RIPUpdate.cs" />
+    <Compile Include="RIP\RIPResponse.cs" />
     <Compile Include="Routing.cs" />
     <Compile Include="RoutingTable.cs" />
     <Compile Include="RoutingEntry.cs" />
