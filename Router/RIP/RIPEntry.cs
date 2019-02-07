@@ -13,7 +13,19 @@ namespace Router.RIP
         public Interface Interface;
         public IPNetwork IPNetwork;
         public IPAddress NextHopIP;
-        public uint Metric;
+
+        private uint metric;
+        public uint Metric {
+            get => metric;
+            private set {
+                if (value < 0 || value > 15)
+                {
+                    throw new Exception("Invalid Metric, use number from interval <1;15>");
+                }
+
+                metric = value;
+            }
+        }
 
         public RIPEntry(Interface Interface, IPNetwork IPNetwork, IPAddress NextHopIP, uint Metric)
         {
