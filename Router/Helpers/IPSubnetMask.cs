@@ -1,9 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Router.Helpers
 {
@@ -36,7 +32,7 @@ namespace Router.Helpers
             Verify();
         }
 
-        public static int SubnetMaskToCIDR(IPSubnetMask SubnetMask)
+        static public int SubnetMaskToCIDR(IPSubnetMask SubnetMask)
         {
             var value = BitConverter.ToUInt32(SubnetMask.GetAddressBytes(), 0);
 
@@ -50,12 +46,12 @@ namespace Router.Helpers
             return count;
         }
 
-        public static IPSubnetMask CIDRToSubnetMask(int CIDR)
+        static public IPSubnetMask CIDRToSubnetMask(int CIDR)
         {
             throw new NotImplementedException();
         }
 
-        public static bool IsValidSubnetMask(IPSubnetMask SubnetMask)
+        static public bool IsValidSubnetMask(IPSubnetMask SubnetMask)
         {
             var value = BitConverter.ToUInt32(SubnetMask.GetAddressBytes(), 0);
             if (value == 0)
@@ -79,77 +75,29 @@ namespace Router.Helpers
             return false;
         }
 
-        public bool Equals(IPSubnetMask IPSubnetMask)
-        {
-            if (IPSubnetMask is null)
-            {
-                return false;
-            }
-
-            if (ReferenceEquals(this, IPSubnetMask))
-            {
-                return true;
-            }
-
-            return CIDR == CIDR;
-        }
-
-        public override bool Equals(object obj)
-        {
-            return obj.GetType() == GetType() && Equals(obj as IPSubnetMask);
-        }
-
-        public override int GetHashCode()
-        {
-            unchecked
-            {
-                return CIDR.GetHashCode();
-            }
-        }
-
-        public static bool operator ==(IPSubnetMask obj1, IPSubnetMask obj2)
-        {
-            if (obj1 is null || obj2 is null)
-            {
-                return false;
-            }
-
-            if (ReferenceEquals(obj1, obj2))
-            {
-                return true;
-            }
-
-            return obj1.Equals(obj2);
-        }
-
-        public static bool operator !=(IPSubnetMask obj1, IPSubnetMask obj2)
-        {
-            return !(obj1 == obj2);
-        }
-
-        public static bool operator <(IPSubnetMask obj1, IPSubnetMask obj2)
-        {
-            return obj1.CIDR < obj2.CIDR;
-        }
-
-        public static bool operator >(IPSubnetMask obj1, IPSubnetMask obj2)
-        {
-            return obj1.CIDR > obj2.CIDR;
-        }
-
-        public static bool operator <=(IPSubnetMask obj1, IPSubnetMask obj2)
-        {
-            return obj1.CIDR <= obj2.CIDR;
-        }
-
-        public static bool operator >=(IPSubnetMask obj1, IPSubnetMask obj2)
-        {
-            return obj1.CIDR >= obj2.CIDR;
-        }
-
         static new public IPSubnetMask Parse(string ipSubnetString)
         {
             return new IPSubnetMask(IPAddress.Parse(ipSubnetString).GetAddressBytes());
         }
+
+        // Equality
+
+        public override int GetHashCode()=> CIDR.GetHashCode();
+
+        public bool Equals(IPSubnetMask IPSubnetMask) => !(IPSubnetMask is null) && IPSubnetMask.CIDR == CIDR;
+
+        public override bool Equals(object obj) => !(obj is null) && obj.GetType() == GetType() && Equals(obj as IPSubnetMask);
+
+        static public bool operator ==(IPSubnetMask obj1, IPSubnetMask obj2) => Equals(obj1, obj2);
+
+        public static bool operator !=(IPSubnetMask obj1, IPSubnetMask obj2) => !(obj1 == obj2);
+
+        public static bool operator <(IPSubnetMask obj1, IPSubnetMask obj2) => obj1.CIDR < obj2.CIDR;
+
+        public static bool operator >(IPSubnetMask obj1, IPSubnetMask obj2) => obj1.CIDR > obj2.CIDR;
+
+        public static bool operator <=(IPSubnetMask obj1, IPSubnetMask obj2) => obj1.CIDR <= obj2.CIDR;
+
+        public static bool operator >=(IPSubnetMask obj1, IPSubnetMask obj2) => obj1.CIDR >= obj2.CIDR;
     }
 }
