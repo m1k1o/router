@@ -30,24 +30,9 @@ namespace Router.RIP
             Thread.Join();
         }
 
-        static public void Add(Interface Interface)
-        {
-            Instance.Add(Interface);
-        }
-
         static public void Add(int ID)
         {
-            Add(Interfaces.Instance.GetInterfaceById(ID));
-        }
-
-        static public void Add(string Name)
-        {
-            Add(Interfaces.Instance.GetInterfaceByName(Name));
-        }
-
-        static public void Remove(Interface Interface)
-        {
-            Instance.Remove(Interface);
+            Instance.Add(Interfaces.Instance.GetInterfaceById(ID));
         }
 
         static public void Remove(int ID)
@@ -55,16 +40,11 @@ namespace Router.RIP
             Instance.RemoveAll(Interface => Interface.ID == ID);
         }
 
-        static public void Remove(string Name)
-        {
-            Instance.RemoveAll(Interface => Interface.Name == Name);
-        }
-
         static public void SendUnsolicitedUpdates()
         {
             do
             {
-                foreach (var Interface in RIPInterfaces.Instance)
+                foreach (var Interface in Instance)
                 {
                     var RIPResponse = new RIPResponse(Interface);
                     RIPResponse.Send();
