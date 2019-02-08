@@ -1,10 +1,6 @@
 ﻿using Router.Helpers;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Router.RIP
 {
@@ -52,26 +48,13 @@ namespace Router.RIP
             SyncWithRT = true;
             return HasChanged;
         }
-
-        public bool Equals(RIPEntry RIPEntry)
+        
+        public override string ToString()
         {
-            if (RIPEntry is null)
-            {
-                return false;
-            }
-
-            if (ReferenceEquals(this, RIPEntry))
-            {
-                return true;
-            }
-
-            return RIPEntry.IPNetwork == IPNetwork && RIPEntry.Interface == Interface;
+            return IPNetwork.ToString() + " via " + Interface.ToString();
         }
 
-        public override bool Equals(object obj)
-        {
-            return obj.GetType() == GetType() && Equals(obj as RIPEntry);
-        }
+        // Equality
 
         public override int GetHashCode()
         {
@@ -83,29 +66,10 @@ namespace Router.RIP
             }
         }
 
-        public static bool operator ==(RIPEntry obj1, RIPEntry obj2)
-        {
-            if (obj1 is null || obj2 is null)
-            {
-                return false;
-            }
+        public bool Equals(RIPEntry RIPEntry)
+            => !(RIPEntry is null) && Equals(RIPEntry.IPNetwork, IPNetwork) && Equals(RIPEntry.Interface, Interface);
 
-            if (ReferenceEquals(obj1, obj2))
-            {
-                return true;
-            }
-
-            return obj1.Equals(obj2);
-        }
-
-        public static bool operator !=(RIPEntry obj1, RIPEntry obj2)
-        {
-            return !(obj1 == obj2);
-        }
-
-        public override string ToString()
-        {
-            return IPNetwork.ToString() + " via " + Interface.ToString();
-        }
+        public override bool Equals(object obj) =>
+            !(obj is null) && obj.GetType() == GetType() && Equals(obj as RIPEntry);
     }
 }
