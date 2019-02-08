@@ -55,6 +55,11 @@ namespace Router
             }
 
             Device.Close();
+
+            Device.OnPacketArrival += new PacketArrivalEventHandler(Interfaces.OnPacketArrival);
+            Device.OnCaptureStopped += new CaptureStoppedEventHandler(Interfaces.OnCaptureStopped);
+
+            RegisterOnStopped(RoutingTable.Instance.RemoveDirectlyConnected);
         }
 
         public void SetIP(IPAddress IPAddress, IPSubnetMask IPSubnetMask)
@@ -71,8 +76,6 @@ namespace Router
             }
 
             Device.Open(DeviceMode.Promiscuous, 1);
-            Device.OnPacketArrival += new PacketArrivalEventHandler(Interfaces.OnPacketArrival);
-            Device.OnCaptureStopped += new CaptureStoppedEventHandler(Interfaces.OnCaptureStopped);
             Device.StartCapture();
 
             if (IPNetwork == null)
@@ -92,9 +95,6 @@ namespace Router
                 throw new Exception("Interface is not running.");
             }
 
-            // Remove directly connected
-            RoutingTable.Instance.RemoveDirectlyConnected(this);
-
             try
             {
                 Device.StopCapture();
@@ -109,6 +109,26 @@ namespace Router
             catch { };
 
             Running = false;
+        }
+
+        public void RegisterOnStarted(Action<Interface> Function)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void RegisterOnStopped(Action<Interface> Function)
+        {
+            Device.OnCaptureStopped += (object sender, CaptureStoppedEventStatus e) => Function(this);
+        }
+
+        public void UnregisterOnStarted(Action<Interface> Function)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void UnregisterOnStopped(Action<Interface> Function)
+        {
+            Device.OnCaptureStopped -= (object sender, CaptureStoppedEventStatus e) => Function(this);
         }
 
         internal void SendPacket(byte[] Data)

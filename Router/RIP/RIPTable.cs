@@ -60,9 +60,9 @@ namespace Router.RIP
             return Entries.FindAll(Entry => !Entry.ToBeRemoved);
         }
 
-        public void Remove(RIPEntry RIPEntry)
+        public void Remove(Interface Interface)
         {
-            Entries.Remove(RIPEntry);
+            Entries.RemoveAll(RIPEntry => RIPEntry.Interface == Interface);
         }
 
         public void GarbageCollector()

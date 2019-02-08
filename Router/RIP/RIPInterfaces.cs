@@ -11,32 +11,35 @@ namespace Router.RIP
     {
         static public TimeSpan UpdateTimer = TimeSpan.FromSeconds(30);
 
-        static List<Interface> Interfaces { get; } = new List<Interface>();
+        static List<Interface> Available { get; } = new List<Interface>();
+        static List<Interface> Active { get; } = new List<Interface>();
 
         static ManualResetEvent StopRequest = new ManualResetEvent(false);
         static Thread Thread;
 
-        static public void Start()
+        static public bool IsActive(Interface Interface)
         {
-            StopRequest.Reset();
-
-            Thread = new Thread(SendUnsolicitedUpdates);
-            Thread.Start();
-        }
-
-        static public void Stop()
-        {
-            StopRequest.Set();
-            Thread.Join();
+            return Active.Exists(Entry => Entry == Interface);
         }
 
         static public void Add(Interface Interface)
         {
+            Available.Add(Interface);
+            Interface.RegisterOnStopped(Stop);
+        }
+
+        static public void Start(Interface Interface)
+        {
+            if (!Interface.Running)
+            {
+                throw new Exception("Interface must be running.");
+            }
+
             var RIPEntry = new RIPEntry(Interface, Interface.IPNetwork, null, 1);
             RIPEntry.SyncWithRT = false;
             RIPEntry.AllowUpdates = false;
 
-            Interfaces.Add(Interface);
+            Active.Add(Interface);
             RIPTable.Instance.Add(RIPEntry);
 
             RIPResponse.SendTriggeredUpdate(Interface, RIPEntry);
@@ -44,25 +47,58 @@ namespace Router.RIP
 
         static public void Remove(Interface Interface)
         {
+            Available.Remove(Interface);
+            Interface.UnregisterOnStopped(Stop);
+            Stop(Interface);
+        }
+
+        static public void Stop(Interface Interface)
+        {
+            if (!IsActive(Interface))
+            {
+                return;
+            }
+
             var RIPEntry = RIPTable.Instance.Find(Interface, Interface.IPNetwork);
             RIPEntry.PossibblyDown = true;
 
             RIPResponse.SendTriggeredUpdate(Interface, RIPEntry);
 
-            Interfaces.Remove(Interface);
-            RIPTable.Instance.Remove(RIPEntry);
+            Active.Remove(Interface);
+            RIPTable.Instance.Remove(Interface);
+
+            RIPTable.Instance.SyncWithRT();
         }
 
-        static public List<Interface> GetInterfaces()
+        static public List<Interface> GetActiveInterfaces()
         {
-            return Interfaces.ToList();
+            return Active.ToList();
         }
 
-        static public void SendUnsolicitedUpdates()
+        static public List<Interface> GetAvailableInterfaces()
+        {
+            return Available.ToList();
+        }
+
+        static public void StartUpdates()
+        {
+            StopRequest.Reset();
+
+            Thread = new Thread(SendUpdates);
+            Thread.Start();
+        }
+
+        static public void StopUpdates()
+        {
+            StopRequest.Set();
+            Thread.Join();
+        }
+
+        static public void SendUpdates()
         {
             do
             {
-                var Interfaces = GetInterfaces();
+                var Interfaces = GetActiveInterfaces();
                 foreach (var Interface in Interfaces)
                 {
                     var RIPResponse = new RIPResponse(Interface);
