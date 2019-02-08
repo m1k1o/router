@@ -10,7 +10,7 @@ namespace Router
 {
     class Interfaces
     {
-        internal static Interfaces Instance { get; } = new Interfaces();
+        public static Interfaces Instance { get; } = new Interfaces();
 
         private List<Interface> Available = new List<Interface>();
 
@@ -72,7 +72,7 @@ namespace Router
             return Available.ToList();
         }
 
-        internal static void OnPacketArrival(object sender, CaptureEventArgs e)
+        public static void OnPacketArrival(object sender, CaptureEventArgs e)
         {
             var Handler = new Handler(e.Packet, Instance.GetInterfaceByName(e.Device.Name));
 

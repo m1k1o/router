@@ -121,7 +121,7 @@ namespace Router
             Running = false;
         }
 
-        internal void SendPacket(byte[] Data)
+        public void SendPacket(byte[] Data)
         {
             Device.SendPacket(Data);
         }

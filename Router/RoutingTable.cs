@@ -10,7 +10,7 @@ namespace Router
 {
     class RoutingTable
     {
-        internal static RoutingTable Instance { get; } = new RoutingTable();
+        public static RoutingTable Instance { get; } = new RoutingTable();
 
         private List<RoutingEntry> Entries = new List<RoutingEntry>();
 

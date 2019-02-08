@@ -10,7 +10,7 @@ namespace Router.RIP
 {
     class RIPTable
     {
-        internal static RIPTable Instance { get; } = new RIPTable();
+        public static RIPTable Instance { get; } = new RIPTable();
 
         private List<RIPEntry> Entries = new List<RIPEntry>();
 

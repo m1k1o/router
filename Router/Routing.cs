@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Router
 {
-    class Routing
+    static class Routing
     {
         static public void OnReceived(IPv4Packet IPPacket)
         {

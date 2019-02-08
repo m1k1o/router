@@ -8,7 +8,7 @@ namespace Router
 {
     class ARPTable
     {
-        internal static ARPTable Instance { get; } = new ARPTable();
+        public static ARPTable Instance { get; } = new ARPTable();
 
         private List<ARPEntry> Entries = new List<ARPEntry>();
 
