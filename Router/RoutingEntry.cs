@@ -5,10 +5,10 @@ namespace Router
 {
     class RoutingEntry
     {
-        public IPNetwork IPNetwork;
-        public IPAddress NextHopIP;
-        public Interface Interface;
-        public ADistance ADistance;
+        public IPNetwork IPNetwork { get; private set; }
+        public IPAddress NextHopIP { get; private set; }
+        public Interface Interface { get; private set; }
+        public ADistance ADistance { get; private set; }
 
         public RoutingEntry(IPNetwork IPNetwork, IPAddress NextHopIP, Interface Interface, ADistance ADistance)
         {
@@ -21,8 +21,13 @@ namespace Router
         public bool HasNextHopIP => NextHopIP != null && NextHopIP is IPAddress;
 
         public bool HasInterface => Interface != null && Interface is Interface;
+        
+        public override string ToString()
+        {
+            return ADistance.ToString() + " " + IPNetwork.ToString();
+        }
 
-        public RoutingEntry Clone() => new RoutingEntry(IPNetwork, NextHopIP, Interface, ADistance);
+        // Equality
 
         public override int GetHashCode()
         {
@@ -34,13 +39,14 @@ namespace Router
             }
         }
 
-        public override string ToString()
-        {
-            return ADistance.ToString() + " " + IPNetwork.ToString();
-        }
+        public bool Equals(RoutingEntry RoutingEntry)
+            => !(RoutingEntry is null) && Equals(RoutingEntry.IPNetwork, IPNetwork) && RoutingEntry.ADistance == ADistance;
+
+        public override bool Equals(object obj)
+            => !(obj is null) && obj.GetType() == GetType() && Equals(obj as RoutingEntry);
     }
 
-    public enum ADistance : byte
+    enum ADistance : byte
     {
         DirectlyConnected = 0,
         Static = 1,
