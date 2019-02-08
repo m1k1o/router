@@ -24,13 +24,14 @@ namespace Router.RIP
         {
             var ChangedRIPEntries = new List<RIPEntry>();
 
-            var RIPEntries = RIPTable.Instance.Find(Interface);
+            var RIPEntries = RIPTable.Instance.FindAll(Interface);
             foreach (var Route in RouteCollection)
             {
                 bool RIPEntryChanged = false;
+                uint Metric = Route.Metric + 1;
 
                 IPAddress NextHopIP = SourceIP;
-                if (Interface.IPNetwork.Contains(Route.NextHop) && !Interface.IPNetwork.Equals(Route.NextHop))
+                if (Interface.IsReachable(SourceIP))
                 {
                     NextHopIP = Route.NextHop;
                 }
@@ -38,7 +39,7 @@ namespace Router.RIP
                 var RIPEntry = RIPEntries.Find(Route.IPNetwork);
                 if (RIPEntry != null)
                 {
-                    if (Route.Metric == 16)
+                    if (Metric == 16)
                     {
                         RIPEntry.InHold = true;
                     }
@@ -46,19 +47,19 @@ namespace Router.RIP
                     {
                         if (!RIPEntry.InHold)
                         {
-                            RIPEntryChanged = RIPEntry.Update(NextHopIP, Route.Metric);
+                            RIPEntryChanged = RIPEntry.Update(NextHopIP, Metric);
                         }
                     }
                 }
                 else
                 {
                     // Don't add poisoned routes
-                    if (Route.Metric == 16)
+                    if (Metric == 16)
                     {
                         continue;
                     }
 
-                    RIPEntry = RIPTable.Instance.Add(Interface, Route.IPNetwork, NextHopIP, Route.Metric);
+                    RIPEntry = RIPTable.Instance.Add(Interface, Route.IPNetwork, NextHopIP, Metric);
                     RIPEntryChanged = true;
                 }
 
@@ -75,24 +76,24 @@ namespace Router.RIP
             }
         }
 
-        public void SendUpdate()
+        public void Send()
         {
             var RIPEntries = RIPTable.Instance.BestEntries();
-            SendTriggeredUpdate(RIPEntries);
+            Send(RIPEntries);
         }
 
-        public void SendTriggeredUpdate(List<RIPEntry> RIPEntries)
+        public void Send(List<RIPEntry> RIPEntries)
         {
             var RouteCollection = Export(RIPEntries);
             Protocols.RIP.Send(RIPCommandType.Response, RouteCollection, Interface);
         }
-        /*
-        public void SendResponse(RIPRequest RIPRequest)
+
+        public void Send(RIPRequest RIPRequest)
         {
-            throw new NotImplementedException();
+            Protocols.RIP.Send(RIPRequest.SrcMac, RIPRequest.SrcIP, RIPRequest.SrcPort, RIPCommandType.Response, RIPRequest.RouteCollection, Interface);
         }
-        */
-        public RIPRouteCollection Export(List<RIPEntry> RIPEntries)
+
+        private RIPRouteCollection Export(List<RIPEntry> RIPEntries)
         {
             var RouteCollection = new RIPRouteCollection();
 
@@ -122,6 +123,12 @@ namespace Router.RIP
                     {
                         Metric = RIPEntry.Metric;
                     }
+                }
+
+                IPAddress NextHop = Interface.IPAddress;
+                if (Interface.IsReachable(RIPEntry.NextHopIP))
+                {
+                    NextHop = RIPEntry.NextHopIP;
                 }
 
                 RouteCollection.Add(RIPEntry.IPNetwork, Interface.IPAddress, Metric);

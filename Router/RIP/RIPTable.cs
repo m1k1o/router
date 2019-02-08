@@ -27,9 +27,14 @@ namespace Router.RIP
             return Entry;
         }
 
-        public List<RIPEntry> Find(Interface Interface)
+        public List<RIPEntry> FindAll(Interface Interface)
         {
             return Entries.FindAll(Entry => Entry.Interface == Interface && !Entry.ToBeRemoved);
+        }
+
+        public List<RIPEntry> FindAll(IPNetwork IPNetwork)
+        {
+            return Entries.FindAll(Entry => Entry.IPNetwork == IPNetwork && !Entry.ToBeRemoved);
         }
 
         public RIPEntry Find(Interface Interface, IPNetwork IPNetwork)

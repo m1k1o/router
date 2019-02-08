@@ -73,6 +73,7 @@
     <Compile Include="RIP\RIPHandler.cs" />
     <Compile Include="RIP\RIPEntry.cs" />
     <Compile Include="RIP\RIPInterfaces.cs" />
+    <Compile Include="RIP\RIPRequest.cs" />
     <Compile Include="RIP\RIPSync.cs" />
     <Compile Include="RIP\RIPTable.cs" />
     <Compile Include="Protocols\RIPCommandType.cs" />
