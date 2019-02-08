@@ -1,25 +1,24 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 
 namespace Router.RIP
 {
     static class RIPInterfaces
     {
-        static public TimeSpan UpdateTimer = TimeSpan.FromSeconds(30);
+        static public TimeSpan UpdateTimer { get; set; } = TimeSpan.FromSeconds(30);
 
-        static List<Interface> Available { get; } = new List<Interface>();
-        static List<Interface> Active { get; } = new List<Interface>();
+        static private List<Interface> Available { get; } = new List<Interface>();
 
-        static ManualResetEvent StopRequest = new ManualResetEvent(false);
-        static Thread Thread;
+        static private List<Interface> Active { get; } = new List<Interface>();
+
+        static private ManualResetEvent StopRequest = new ManualResetEvent(false);
+        static private Thread Thread;
 
         static public bool IsActive(Interface Interface)
         {
-            return Active.Exists(Entry => Entry == Interface);
+            return Active.Exists(Entry => Equals(Entry, Interface));
         }
 
         static public void Add(Interface Interface)

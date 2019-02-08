@@ -6,7 +6,7 @@ namespace Router
 {
     class ARPEntry
     {
-        public static TimeSpan CacheTimeout = TimeSpan.FromSeconds(128);
+        static public TimeSpan CacheTimeout { get; set; } = TimeSpan.FromSeconds(128);
 
         public IPAddress IPAddress { get; private set; }
 
@@ -30,5 +30,23 @@ namespace Router
             this.PhysicalAddress = PhysicalAddress;
             Expires = DateTime.Now + CacheTimeout;
         }
+
+        // Equality
+
+        public override int GetHashCode()
+        {
+            unchecked
+            {
+                int hashCode = IPAddress.GetHashCode();
+                hashCode = (hashCode * 397) ^ PhysicalAddress.GetHashCode();
+                return hashCode;
+            }
+        }
+
+        public bool Equals(ARPEntry ARPEntry)
+            => !(ARPEntry is null) && Equals(ARPEntry.IPAddress, IPAddress) && Equals(ARPEntry.PhysicalAddress, PhysicalAddress);
+
+        public override bool Equals(object obj)
+            => !(obj is null) && obj.GetType() == GetType() && Equals(obj as ARPEntry);
     }
 }

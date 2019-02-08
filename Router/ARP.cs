@@ -1,6 +1,4 @@
 ﻿using PacketDotNet;
-using Router.Helpers;
-using SharpPcap;
 using System;
 using System.Net;
 using System.Net.NetworkInformation;
@@ -8,14 +6,13 @@ using System.Threading;
 
 namespace Router
 {
-    class ARP
+    static class ARP
     {
-        static public TimeSpan Timeout = TimeSpan.FromMilliseconds(1500);
-        static public TimeSpan Interval = TimeSpan.FromMilliseconds(500);
+        static public TimeSpan Timeout { get; set; } = TimeSpan.FromMilliseconds(1500);
+        static public TimeSpan Interval { get; set; }  = TimeSpan.FromMilliseconds(500);
+        static public bool ProxyEnabled { get; set; }
 
-        static ManualResetEvent BlocingWaiting = new ManualResetEvent(false);
-
-        public static bool ProxyEnabled { get; set; }
+        static private ManualResetEvent BlocingWaiting = new ManualResetEvent(false);
 
         static public void OnReceived(PhysicalAddress DestinationMac, ARPPacket ARPPacket, Interface Interface)
         {

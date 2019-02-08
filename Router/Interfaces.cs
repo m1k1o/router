@@ -72,7 +72,7 @@ namespace Router
             return Available.ToList();
         }
 
-        public static void OnPacketArrival(object sender, CaptureEventArgs e)
+        static public void OnPacketArrival(object sender, CaptureEventArgs e)
         {
             var Handler = new Handler(e.Packet, Instance.GetInterfaceByName(e.Device.Name));
 
@@ -96,7 +96,7 @@ namespace Router
             }
         }
 
-        private static void BackgroundThread()
+        static private void BackgroundThread()
         {
             while (!PacketProcessingStop)
             {

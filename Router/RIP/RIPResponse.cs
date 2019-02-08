@@ -1,17 +1,13 @@
 ﻿using Router.Protocols;
-using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Net;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Router.RIP
 {
     class RIPResponse
     {
-        public static bool SplitHorizon = true;
-        public static bool PoisonReverse = false;
+        static public bool SplitHorizon { get; set; } = true;
+        static public bool PoisonReverse { get; set; } = false;
 
         public Interface Interface { get; private set; }
 
@@ -20,7 +16,90 @@ namespace Router.RIP
             this.Interface = Interface;
         }
 
-        public static void OnReceived(IPAddress SourceIP, RIPRouteCollection RouteCollection, Interface Interface)
+        public void Send()
+        {
+            var RIPEntries = RIPTable.Instance.BestEntries();
+            Send(RIPEntries);
+        }
+
+        public void Send(List<RIPEntry> RIPEntries)
+        {
+            var RouteCollection = Export(RIPEntries);
+            Protocols.RIP.Send(RIPCommandType.Response, RouteCollection, Interface);
+        }
+
+        public void Send(RIPRequest RIPRequest)
+        {
+            Protocols.RIP.Send(RIPRequest.SrcMac, RIPRequest.SrcIP, RIPRequest.SrcPort, RIPCommandType.Response, RIPRequest.RouteCollection, Interface);
+        }
+
+        private RIPRouteCollection Export(List<RIPEntry> RIPEntries)
+        {
+            var RouteCollection = new RIPRouteCollection();
+
+            foreach (var RIPEntry in RIPEntries)
+            {
+                uint Metric;
+
+                // Split Hotizon \w Poison Reverse
+                if (SplitHorizon && Equals(RIPEntry.Interface, Interface))
+                {
+                    if (PoisonReverse)
+                    {
+                        Metric = 16;
+                    }
+                    else
+                    {
+                        continue;
+                    }
+                }
+                else
+                {
+                    if (RIPEntry.PossibblyDown)
+                    {
+                        Metric = 16;
+                    }
+                    else
+                    {
+                        Metric = RIPEntry.Metric;
+                    }
+                }
+
+                IPAddress NextHop = Interface.IPAddress;
+                if (Interface.IsReachable(RIPEntry.NextHopIP))
+                {
+                    NextHop = RIPEntry.NextHopIP;
+                }
+
+                RouteCollection.Add(RIPEntry.IPNetwork, Interface.IPAddress, Metric);
+            }
+
+            return RouteCollection;
+        }
+
+        public static void SendTriggeredUpdate(Interface SourceInterface, List<RIPEntry> RIPEntries)
+        {
+            var Interfaces = RIPInterfaces.GetActiveInterfaces();
+            foreach (var Interface in Interfaces)
+            {
+                if (Equals(Interface, SourceInterface))
+                {
+                    continue;
+                }
+
+                var RIPResponse = new RIPResponse(Interface);
+                RIPResponse.Send(RIPEntries);
+            }
+        }
+
+        public static void SendTriggeredUpdate(Interface SourceInterface, RIPEntry RIPEntry)
+        {
+            var ChangedRoutes = new List<RIPEntry>();
+            ChangedRoutes.Add(RIPEntry);
+            SendTriggeredUpdate(SourceInterface, RIPEntry);
+        }
+
+        static public void OnReceived(IPAddress SourceIP, RIPRouteCollection RouteCollection, Interface Interface)
         {
             var ChangedRIPEntries = new List<RIPEntry>();
 
@@ -76,89 +155,6 @@ namespace Router.RIP
                 RIPTable.Instance.SyncWithRT();
                 SendTriggeredUpdate(Interface, ChangedRIPEntries);
             }
-        }
-
-        public void Send()
-        {
-            var RIPEntries = RIPTable.Instance.BestEntries();
-            Send(RIPEntries);
-        }
-
-        public void Send(List<RIPEntry> RIPEntries)
-        {
-            var RouteCollection = Export(RIPEntries);
-            Protocols.RIP.Send(RIPCommandType.Response, RouteCollection, Interface);
-        }
-
-        public void Send(RIPRequest RIPRequest)
-        {
-            Protocols.RIP.Send(RIPRequest.SrcMac, RIPRequest.SrcIP, RIPRequest.SrcPort, RIPCommandType.Response, RIPRequest.RouteCollection, Interface);
-        }
-
-        private RIPRouteCollection Export(List<RIPEntry> RIPEntries)
-        {
-            var RouteCollection = new RIPRouteCollection();
-
-            foreach (var RIPEntry in RIPEntries)
-            {
-                uint Metric;
-
-                // Split Hotizon \w Poison Reverse
-                if (SplitHorizon && RIPEntry.Interface == Interface)
-                {
-                    if (PoisonReverse)
-                    {
-                        Metric = 16;
-                    }
-                    else
-                    {
-                        continue;
-                    }
-                }
-                else
-                {
-                    if (RIPEntry.PossibblyDown)
-                    {
-                        Metric = 16;
-                    }
-                    else
-                    {
-                        Metric = RIPEntry.Metric;
-                    }
-                }
-
-                IPAddress NextHop = Interface.IPAddress;
-                if (Interface.IsReachable(RIPEntry.NextHopIP))
-                {
-                    NextHop = RIPEntry.NextHopIP;
-                }
-
-                RouteCollection.Add(RIPEntry.IPNetwork, Interface.IPAddress, Metric);
-            }
-
-            return RouteCollection;
-        }
-
-        public static void SendTriggeredUpdate(Interface SourceInterface, List<RIPEntry> RIPEntries)
-        {
-            var Interfaces = RIPInterfaces.GetActiveInterfaces();
-            foreach (var Interface in Interfaces)
-            {
-                if (Interface == SourceInterface)
-                {
-                    continue;
-                }
-
-                var RIPResponse = new RIPResponse(Interface);
-                RIPResponse.Send(RIPEntries);
-            }
-        }
-
-        public static void SendTriggeredUpdate(Interface SourceInterface, RIPEntry RIPEntry)
-        {
-            var ChangedRoutes = new List<RIPEntry>();
-            ChangedRoutes.Add(RIPEntry);
-            SendTriggeredUpdate(SourceInterface, RIPEntry);
         }
     }
 }

@@ -5,51 +5,51 @@ namespace Router.Helpers
 {
     abstract class Packet
     {
-        protected byte[] Data;
+        private byte[] RawData;
 
-        public int Length { get => Data.Length; }
+        public int Length { get => RawData.Length; }
 
-        public byte[] Bytes { get => Data; }
+        public byte[] Bytes { get => RawData; }
 
         protected Packet(int ArraySize)
         {
-            Data = new Byte[ArraySize];
+            RawData = new Byte[ArraySize];
         }
 
         public Packet(byte[] Data)
         {
-            Array.Copy(Data, 0, this.Data, 0, Data.Length);
+            Array.Copy(Data, 0, this.RawData, 0, Data.Length);
         }
 
         protected object Slice(int o, Type Type)
         {
             if (Type == typeof(byte))
             {
-                return (byte)Data[o];
+                return RawData[o];
             }
 
             if (Type == typeof(ushort))
             {
-                return (ushort)BitConverter.ToUInt16(new Byte[2] { Data[o + 1], Data[o] }, 0);
+                return BitConverter.ToUInt16(new Byte[2] { RawData[o + 1], RawData[o] }, 0);
             }
 
             if (Type == typeof(uint))
             {
-                return (uint)BitConverter.ToUInt32(new Byte[4] { Data[o + 3], Data[o + 2], Data[o + 1], Data[o] }, 0);
+                return BitConverter.ToUInt32(new Byte[4] { RawData[o + 3], RawData[o + 2], RawData[o + 1], RawData[o] }, 0);
             }
 
             if (Type == typeof(IPAddress))
             {
                 byte[] Dst = new Byte[4];
-                Array.Copy(Data, o, Dst, 0, 4);
-                return (IPAddress)new IPAddress(Dst);
+                Array.Copy(RawData, o, Dst, 0, 4);
+                return new IPAddress(Dst);
             }
 
             if (Type == typeof(IPSubnetMask))
             {
                 byte[] Dst = new Byte[4];
-                Array.Copy(Data, o, Dst, 0, 4);
-                return (IPSubnetMask)new IPSubnetMask(Dst);
+                Array.Copy(RawData, o, Dst, 0, 4);
+                return new IPSubnetMask(Dst);
             }
 
             return null;
@@ -59,39 +59,39 @@ namespace Router.Helpers
         {
             if (Value is byte)
             {
-                Data[o] = (byte)Value;
+                RawData[o] = (byte)Value;
                 return;
             }
 
             if (Value is ushort)
             {
                 var Bytes = BitConverter.GetBytes((ushort)Value);
-                Data[o + 1] = Bytes[0];
-                Data[o] = Bytes[1];
+                RawData[o + 1] = Bytes[0];
+                RawData[o] = Bytes[1];
                 return;
             }
 
             if (Value is uint)
             {
                 var Bytes = BitConverter.GetBytes((uint)Value);
-                Data[o + 3] = Bytes[0];
-                Data[o + 2] = Bytes[1];
-                Data[o + 1] = Bytes[2];
-                Data[o] = Bytes[3];
+                RawData[o + 3] = Bytes[0];
+                RawData[o + 2] = Bytes[1];
+                RawData[o + 1] = Bytes[2];
+                RawData[o] = Bytes[3];
                 return;
             }
 
             if (Value is IPAddress)
             {
                 var IPBytes = ((IPAddress)Value).GetAddressBytes();
-                Array.Copy(IPBytes, 0, Data, o, IPBytes.Length);
+                Array.Copy(IPBytes, 0, RawData, o, IPBytes.Length);
                 return;
             }
 
             if (Value is IPSubnetMask)
             {
                 var IPBytes = ((IPSubnetMask)Value).GetAddressBytes();
-                Array.Copy(IPBytes, 0, Data, o, IPBytes.Length);
+                Array.Copy(IPBytes, 0, RawData, o, IPBytes.Length);
                 return;
             }
         }
@@ -101,7 +101,7 @@ namespace Router.Helpers
             var Value = new Byte[len];
             for (var i = 0; i < len && i < Length; i++)
             {
-                Value[i] = Data[o + i];
+                Value[i] = RawData[o + i];
             }
 
             return Value;
@@ -113,7 +113,7 @@ namespace Router.Helpers
 
             for (var i = 0; i < len; i++)
             {
-                Data[o + i] = Value[i];
+                RawData[o + i] = Value[i];
             }
         }
 
@@ -121,7 +121,7 @@ namespace Router.Helpers
         {
             if (len > Length)
             {
-                Array.Resize(ref Data, len);
+                Array.Resize(ref RawData, len);
             }
         }
     }

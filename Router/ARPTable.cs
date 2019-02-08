@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.NetworkInformation;
@@ -11,6 +10,11 @@ namespace Router
         public static ARPTable Instance { get; } = new ARPTable();
 
         private List<ARPEntry> Entries = new List<ARPEntry>();
+
+        private ARPTable()
+        {
+
+        }
 
         public void Push(IPAddress IPAddress, PhysicalAddress PhysicalAddress)
         {

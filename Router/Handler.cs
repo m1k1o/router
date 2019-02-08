@@ -3,7 +3,6 @@ using Router.Protocols;
 using Router.RIP;
 using SharpPcap;
 using System;
-using System.Net;
 
 namespace Router
 {

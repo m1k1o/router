@@ -9,9 +9,9 @@ namespace Router
 {
     class HTTP
     {
-        HttpListener httpListener = new HttpListener();
+        private HttpListener httpListener = new HttpListener();
 
-        public HTTP(String URL)
+        private HTTP(String URL)
         {
             Console.WriteLine("Starting server...");
             httpListener.Prefixes.Add(URL);
@@ -19,7 +19,7 @@ namespace Router
             Console.WriteLine("Server started.");
         }
 
-        private void request(HttpListenerContext context)
+        private void Request(HttpListenerContext context)
         {
             var Request = context.Request;
             string Data;
@@ -30,7 +30,7 @@ namespace Router
 
             if (context.Response.OutputStream.CanWrite)
             {
-                string Response = response(context.Request.RawUrl, Data);
+                string Response = this.Response(context.Request.RawUrl, Data);
                 byte[] ResponseBytes = Encoding.UTF8.GetBytes(Response);
 
                 context.Response.Headers.Add("Access-Control-Allow-Origin", "*");
@@ -45,7 +45,7 @@ namespace Router
             catch { };
         }
 
-        private string response(string URL, string Data)
+        private string Response(string URL, string Data)
         {
             // Process Request
             String[] Args = URL.Split('/');
@@ -95,20 +95,21 @@ namespace Router
             }
         }
 
-        public void listen()
+        private void Listen()
         {
             while (true)
             {
                 HttpListenerContext context = httpListener.GetContext();
-                request(context);
+                Request(context);
             }
         }
-        static void Main(string[] args)
+
+        static private void Main(string[] args)
         {
             var Preload = Interfaces.Instance;
 
             var HTTP = new HTTP("http://localhost:5000/");
-            HTTP.listen();
+            HTTP.Listen();
         }
     }
 }

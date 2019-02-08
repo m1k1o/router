@@ -1,11 +1,6 @@
 ﻿using Router.Protocols;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net;
 using System.Net.NetworkInformation;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Router.RIP
 {
@@ -16,12 +11,6 @@ namespace Router.RIP
         public ushort SrcPort { get; private set; }
         public RIPRouteCollection RouteCollection { get; private set; }
         public Interface Interface { get; private set; }
-
-        public static void OnReceived(PhysicalAddress SrcMac, IPAddress SrcIP, ushort SrcPort, RIPRouteCollection RouteCollection, Interface Interface)
-        {
-            var RIPRequest = new RIPRequest(SrcMac, SrcIP, SrcPort, RouteCollection, Interface);
-            RIPRequest.SendResponse();
-        }
 
         public RIPRequest(PhysicalAddress SrcMac, IPAddress SrcIP, ushort SrcPort, RIPRouteCollection RouteCollection, Interface Interface)
         {
@@ -58,6 +47,12 @@ namespace Router.RIP
                     Route.Metric = BestRoute.Metric;
                 }
             }
+        }
+
+        static public void OnReceived(PhysicalAddress SrcMac, IPAddress SrcIP, ushort SrcPort, RIPRouteCollection RouteCollection, Interface Interface)
+        {
+            var RIPRequest = new RIPRequest(SrcMac, SrcIP, SrcPort, RouteCollection, Interface);
+            RIPRequest.SendResponse();
         }
     }
 }

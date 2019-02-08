@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Router.RIP
 {
@@ -14,6 +10,7 @@ namespace Router.RIP
 
         private DateTime TimeCreated;
         private DateTime TimeUpdated;
+        private DateTime PossibblyDownSince;
 
         protected void Create()
         {
@@ -33,8 +30,6 @@ namespace Router.RIP
         public bool ToBeRemoved {
             get => DateTime.Now > TimeUpdated + FlushTimer;
         }
-
-        private DateTime PossibblyDownSince;
 
         public bool PossibblyDown
         {

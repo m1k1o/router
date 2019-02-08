@@ -3,18 +3,21 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Router
 {
     class RoutingTable
     {
+        const int LookupMaxTries = 128;
+
         public static RoutingTable Instance { get; } = new RoutingTable();
 
         private List<RoutingEntry> Entries = new List<RoutingEntry>();
 
-        static int LookupMaxTries = 128;
+        private RoutingTable()
+        {
+
+        }
 
         public void Push(RoutingEntry RoutingEntry)
         {
@@ -85,9 +88,7 @@ namespace Router
                 return null;
             }
 
-            ResultRoute = ResultRoute.Clone();
-            ResultRoute.NextHopIP = NextHopIp;
-            return ResultRoute;
+            return new RoutingEntry(ResultRoute.IPNetwork, NextHopIp, ResultRoute.Interface, ResultRoute.ADistance);
         }
 
         public bool Remove(IPNetwork IPNetwork, ADistance ADistance)
@@ -108,7 +109,7 @@ namespace Router
 
         public void RemoveDirectlyConnected(Interface Interface)
         {
-            Entries.RemoveAll(Entry => Entry.Interface == Interface && Entry.ADistance == ADistance.DirectlyConnected);
+            Entries.RemoveAll(Entry => Equals(Entry.Interface, Interface) && Entry.ADistance == ADistance.DirectlyConnected);
         }
 
         public bool Exists(IPNetwork IPNetwork)

@@ -4,10 +4,10 @@ using System.Net.NetworkInformation;
 
 namespace Router.Protocols
 {
-    class ARP
+    static class ARP
     {
-        public const string RequestTargetMac = "00-00-00-00-00-00";
-        public const string RequestDestinationMac = "FF-FF-FF-FF-FF-FF";
+        static public PhysicalAddress RequestTargetMac { get; set; } = PhysicalAddress.Parse("00-00-00-00-00-00");
+        static public PhysicalAddress RequestDestinationMac { get; set; } = PhysicalAddress.Parse("FF-FF-FF-FF-FF-FF");
 
         static private void Send(
             ARPOperation Operation,
@@ -36,9 +36,9 @@ namespace Router.Protocols
                 ARPOperation.Request,
                 Interface.PhysicalAddress,
                 Interface.IPAddress,
-                PhysicalAddress.Parse(RequestTargetMac),
+                RequestTargetMac,
                 TargetIp,
-                PhysicalAddress.Parse(RequestDestinationMac),
+                RequestDestinationMac,
                 Interface
            );
         }
