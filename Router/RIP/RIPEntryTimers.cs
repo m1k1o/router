@@ -23,6 +23,7 @@ namespace Router.RIP
         protected void Update()
         {
             TimeUpdated = DateTime.Now;
+            Valid = true;
         }
 
         public bool NeverUpdated {
@@ -33,28 +34,30 @@ namespace Router.RIP
             get => DateTime.Now > TimeUpdated + FlushTimer;
         }
 
-        public bool Valid {
-            get => DateTime.Now <= TimeUpdated + InvalidTimer;
-        }
+        private DateTime InvalidSince;
 
-        private DateTime HoldSince;
+        public bool Valid {
+            get =>
+                InvalidSince != DateTime.MinValue ||
+                DateTime.Now <= TimeUpdated + InvalidTimer;
+            set
+            {
+                if (!value)
+                {
+                    InvalidSince = DateTime.Now;
+                }
+                else
+                {
+                    InvalidSince = DateTime.MinValue;
+                }
+            }
+        }
 
         public bool InHold
         {
             get =>
-                (HoldSince != DateTime.MinValue && DateTime.Now <= HoldSince + HoldTimer) ||
-                (!Valid && DateTime.Now <= TimeUpdated + InvalidTimer + HoldTimer);
-            set
-            {
-                if (value)
-                {
-                    HoldSince = DateTime.Now;
-                }
-                else
-                {
-                    HoldSince = DateTime.MinValue;
-                }
-            }
+                (InvalidSince != DateTime.MinValue && DateTime.Now > InvalidSince + HoldTimer) ||
+                (!Valid && DateTime.Now > TimeUpdated + InvalidTimer + HoldTimer);
         }
     }
 }

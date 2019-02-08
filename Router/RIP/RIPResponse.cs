@@ -41,7 +41,7 @@ namespace Router.RIP
                 {
                     if (Metric == 16)
                     {
-                        RIPEntry.InHold = true;
+                        RIPEntry.Valid = false;
                     }
                     else
                     {
@@ -115,7 +115,7 @@ namespace Router.RIP
                 }
                 else
                 {
-                    if (RIPEntry.InHold)
+                    if (!RIPEntry.Valid || RIPEntry.InHold)
                     {
                         Metric = 16;
                     }
