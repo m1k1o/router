@@ -1,7 +1,9 @@
 ﻿using PacketDotNet;
 using Router.Protocols;
+using Router.RIP;
 using SharpPcap;
 using System;
+using System.Net;
 
 namespace Router
 {
@@ -82,6 +84,20 @@ namespace Router
         public void RIP(RIPPacket RIPPacket)
         {
             Console.WriteLine("Got RIP.");
+            IPv4Packet IPPacket = (IPv4Packet)EthernetPacket.Extract(typeof(IPv4Packet));
+
+            if (RIPPacket.CommandType == RIPCommandType.Request)
+            {
+                UdpPacket UDPPacket = (UdpPacket)IPPacket.Extract(typeof(UdpPacket));
+                RIPRequest.OnReceived(EthernetPacket.SourceHwAddress, IPPacket.SourceAddress, UDPPacket.SourcePort, RIPPacket.RouteCollection, Interface);
+                return;
+            }
+
+            if (RIPPacket.CommandType == RIPCommandType.Response)
+            {
+                RIPResponse.OnReceived(IPPacket.SourceAddress, RIPPacket.RouteCollection, Interface);
+                return;
+            }
         }
 
         public void ARP(ARPPacket ARPPacket)

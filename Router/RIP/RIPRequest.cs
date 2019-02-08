@@ -14,22 +14,22 @@ namespace Router.RIP
         public PhysicalAddress SrcMac { get; private set; }
         public IPAddress SrcIP { get; private set; }
         public ushort SrcPort { get; private set; }
-        public Interface Interface { get; private set; }
         public RIPRouteCollection RouteCollection { get; private set; }
+        public Interface Interface { get; private set; }
 
-        public static void OnReceived(RIPRequest RIPRequest)
+        public static void OnReceived(PhysicalAddress SrcMac, IPAddress SrcIP, ushort SrcPort, RIPRouteCollection RouteCollection, Interface Interface)
         {
+            var RIPRequest = new RIPRequest(SrcMac, SrcIP, SrcPort, RouteCollection, Interface);
             RIPRequest.SendResponse();
         }
 
-
-        public RIPRequest(PhysicalAddress SrcMac, IPAddress SrcIP, ushort SrcPort, Interface Interface, RIPRouteCollection RouteCollection)
+        public RIPRequest(PhysicalAddress SrcMac, IPAddress SrcIP, ushort SrcPort, RIPRouteCollection RouteCollection, Interface Interface)
         {
             this.SrcMac = SrcMac;
             this.SrcIP = SrcIP;
             this.SrcPort = SrcPort;
-            this.Interface = Interface;
             this.RouteCollection = RouteCollection;
+            this.Interface = Interface;
         }
 
         public void SendResponse()
