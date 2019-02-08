@@ -72,9 +72,9 @@ namespace Router
             return Available.ToList();
         }
 
-        static public void OnPacketArrival(object sender, CaptureEventArgs e)
+        static public void OnPacketArrival(RawCapture Packet, Interface Interface)
         {
-            var Handler = new Handler(e.Packet, Instance.GetInterfaceByName(e.Device.Name));
+            var Handler = new Handler(Packet, Interface);
 
             // Unsupported packet
             if (!Handler.Exists())
