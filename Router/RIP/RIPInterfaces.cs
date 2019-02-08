@@ -33,11 +33,15 @@ namespace Router.RIP
         static public void Add(int ID)
         {
             Instance.Add(Interfaces.Instance.GetInterfaceById(ID));
+
+            // Add C to RIP table
         }
 
         static public void Remove(int ID)
         {
             Instance.RemoveAll(Interface => Interface.ID == ID);
+
+            // Remove C from RIP table
         }
 
         static public void SendUnsolicitedUpdates()

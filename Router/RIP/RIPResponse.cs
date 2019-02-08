@@ -48,7 +48,7 @@ namespace Router.RIP
                     }
                     else
                     {
-                        if (!RIPEntry.InHold)
+                        if (!RIPEntry.InHold && RIPEntry.Metric != 1)
                         {
                             RIPEntryChanged = RIPEntry.Update(NextHopIP, Metric);
                         }
