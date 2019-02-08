@@ -35,6 +35,7 @@ namespace Router.RIP
             Instance.Add(Interfaces.Instance.GetInterfaceById(ID));
 
             // Add C to RIP table
+            // RIPEntry.SyncWithRT = false;
         }
 
         static public void Remove(int ID)

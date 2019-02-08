@@ -70,7 +70,7 @@ namespace Router.RIP
             // TODO: Sync with RT.
             throw new NotImplementedException();
 
-            // Do not import routes with metric 1
+            // Do not import routes with SyncWithRT == false;
 
             var Entries = BestEntries();
             foreach(var Entry in Entries)

@@ -27,6 +27,8 @@ namespace Router.RIP
             }
         }
 
+        public bool SyncWithRT { get; set; } = true;
+
         public RIPEntry(Interface Interface, IPNetwork IPNetwork, IPAddress NextHopIP, uint Metric)
         {
             this.Interface = Interface;
@@ -46,6 +48,7 @@ namespace Router.RIP
             }
 
             Update();
+            SyncWithRT = true;
             return HasChanged;
         }
 

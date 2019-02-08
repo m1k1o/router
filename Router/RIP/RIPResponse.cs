@@ -41,9 +41,8 @@ namespace Router.RIP
                 {
                     if (Metric == 16)
                     {
-                        // TODO: Nebude v holddown stave? Vymaze sa z RT.
-                        throw new NotImplementedException();
                         RIPEntry.PossibblyDown = true;
+                        RIPEntry.SyncWithRT = false;
                         RIPEntryChanged = true;
                     }
                     else
@@ -74,6 +73,7 @@ namespace Router.RIP
 
             if (ChangedRIPEntries.Count > 0)
             {
+                RIPTable.Instance.SyncWithRT();
                 SendTriggeredUpdate(Interface, ChangedRIPEntries);
             }
         }
