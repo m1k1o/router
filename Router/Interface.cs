@@ -9,6 +9,8 @@ using SharpPcap.WinPcap;
 
 namespace Router
 {
+    delegate void InterfaceEvent(Interface Interface);
+
     class Interface
     {
         public ICaptureDevice Device { get; private set; }
@@ -55,11 +57,6 @@ namespace Router
             }
 
             Device.Close();
-
-            Device.OnPacketArrival += new PacketArrivalEventHandler(Interfaces.OnPacketArrival);
-            Device.OnCaptureStopped += new CaptureStoppedEventHandler(Interfaces.OnCaptureStopped);
-
-            RegisterOnStopped(RoutingTable.Instance.RemoveDirectlyConnected);
         }
 
         public void SetIP(IPAddress IPAddress, IPSubnetMask IPSubnetMask)
@@ -68,6 +65,10 @@ namespace Router
             this.IPAddress = IPAddress;
         }
 
+        public InterfaceEvent OnStarted { get; set; } = new InterfaceEvent(I => { });
+
+        public InterfaceEvent OnStopped { get; set; } = new InterfaceEvent(I => { });
+
         public void Start()
         {
             if (Running)
@@ -75,17 +76,26 @@ namespace Router
                 throw new Exception("Interface is already running.");
             }
 
-            Device.Open(DeviceMode.Promiscuous, 1);
-            Device.StartCapture();
-
             if (IPNetwork == null)
             {
                 throw new Exception("You must first set IPAddress and IPSubnetMask.");
             }
 
-            // Push directly connected
+            Device.Open(DeviceMode.Promiscuous, 1);
+
+            Device.OnPacketArrival += new PacketArrivalEventHandler(Interfaces.OnPacketArrival);
+            Device.OnCaptureStopped += (object sender, CaptureStoppedEventStatus e) =>
+            {
+                RoutingTable.Instance.RemoveDirectlyConnected(this);
+                Running = false;
+                OnStopped(this);
+            };
+
+            Device.StartCapture();
+
             RoutingTable.Instance.PushDirectlyConnected(this, IPNetwork);
             Running = true;
+            OnStarted(this);
         }
 
         public void Stop()
@@ -109,26 +119,6 @@ namespace Router
             catch { };
 
             Running = false;
-        }
-
-        public void RegisterOnStarted(Action<Interface> Function)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void RegisterOnStopped(Action<Interface> Function)
-        {
-            Device.OnCaptureStopped += (object sender, CaptureStoppedEventStatus e) => Function(this);
-        }
-
-        public void UnregisterOnStarted(Action<Interface> Function)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void UnregisterOnStopped(Action<Interface> Function)
-        {
-            Device.OnCaptureStopped -= (object sender, CaptureStoppedEventStatus e) => Function(this);
         }
 
         internal void SendPacket(byte[] Data)

@@ -25,7 +25,7 @@ namespace Router.RIP
         static public void Add(Interface Interface)
         {
             Available.Add(Interface);
-            Interface.RegisterOnStopped(Stop);
+            Interface.OnStopped += Stop;
         }
 
         static public void Start(Interface Interface)
@@ -48,7 +48,7 @@ namespace Router.RIP
         static public void Remove(Interface Interface)
         {
             Available.Remove(Interface);
-            Interface.UnregisterOnStopped(Stop);
+            Interface.OnStopped -= Stop;
             Stop(Interface);
         }
 

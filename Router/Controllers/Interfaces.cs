@@ -30,28 +30,30 @@ namespace Router.Controllers
         {
             try
             {
-                Instance.GetInterfaceById(Data).Start();
+                var Interface = Instance.GetInterfaceById(Data);
+                Interface.Start();
+
+                return new JSONObject("running", Interface.Running);
             }
             catch (Exception e)
             {
                 return new JSONError(e.Message);
             }
-
-            return new JSONObject("running", true);
         }
 
         public JSON Stop(string Data)
         {
             try
             {
-                Instance.GetInterfaceById(Data).Stop();
+                var Interface = Instance.GetInterfaceById(Data);
+                Interface.Stop();
+
+                return new JSONObject("running", Interface.Running);
             }
             catch (Exception e)
             {
                 return new JSONError(e.Message);
             }
-
-            return new JSONObject("running", false);
         }
         
         public JSON Edit(string Data)

@@ -72,11 +72,6 @@ namespace Router
             return Available.ToList();
         }
 
-        internal static void OnCaptureStopped(object sender, CaptureStoppedEventStatus e)
-        {
-            Console.WriteLine("Capture stopped...");
-        }
-
         internal static void OnPacketArrival(object sender, CaptureEventArgs e)
         {
             var Handler = new Handler(e.Packet, Instance.GetInterfaceByName(e.Device.Name));
