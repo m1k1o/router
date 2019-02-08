@@ -116,6 +116,11 @@ namespace Router
             Device.SendPacket(Data);
         }
 
+        public bool IsReachable(IPAddress IPAddress)
+        {
+            return IPNetwork.Contains(IPAddress) && !this.IPAddress.Equals(IPAddress);
+        }
+
         public override string ToString()
         {
             return ID.ToString();
