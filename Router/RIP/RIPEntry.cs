@@ -10,9 +10,9 @@ namespace Router.RIP
 {
     class RIPEntry : RIPEntryTimers
     {
-        public Interface Interface;
-        public IPNetwork IPNetwork;
-        public IPAddress NextHopIP;
+        public Interface Interface { get; private set; }
+        public IPNetwork IPNetwork { get; private set; }
+        public IPAddress NextHopIP { get; private set; }
 
         private uint metric;
         public uint Metric {
