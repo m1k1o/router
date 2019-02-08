@@ -28,6 +28,7 @@ namespace Router.RIP
         }
 
         public bool SyncWithRT { get; set; } = true;
+        public bool AllowUpdates { get; set; } = true;
 
         public RIPEntry(Interface Interface, IPNetwork IPNetwork, IPAddress NextHopIP, uint Metric)
         {
@@ -41,7 +42,7 @@ namespace Router.RIP
         public bool Update(IPAddress NextHopIP, uint Metric)
         {
             var HasChanged = this.NextHopIP != NextHopIP || this.Metric != Metric;
-            if (HasChanged)
+            if (HasChanged && AllowUpdates)
             {
                 this.NextHopIP = NextHopIP;
                 this.Metric = Metric;
@@ -52,44 +53,54 @@ namespace Router.RIP
             return HasChanged;
         }
 
-        public static bool operator <(RIPEntry obj1, RIPEntry obj2)
+        public bool Equals(RIPEntry RIPEntry)
         {
-            if (obj1 is null || obj2 is null)
+            if (RIPEntry is null)
             {
                 return false;
             }
 
-            return obj1.Metric < obj2.Metric;
+            if (ReferenceEquals(this, RIPEntry))
+            {
+                return true;
+            }
+
+            return RIPEntry.IPNetwork == IPNetwork && RIPEntry.Interface == Interface;
         }
 
-        public static bool operator >(RIPEntry obj1, RIPEntry obj2)
+        public override bool Equals(object obj)
         {
-            if (obj1 is null || obj2 is null)
-            {
-                return false;
-            }
-
-            return obj1.Metric > obj2.Metric;
+            return obj.GetType() == GetType() && Equals(obj as RIPEntry);
         }
 
-        public static bool operator <=(RIPEntry obj1, RIPEntry obj2)
+        public override int GetHashCode()
         {
-            if (obj1 is null || obj2 is null)
+            unchecked
             {
-                return false;
+                int hashCode = IPNetwork.GetHashCode();
+                hashCode = (hashCode * 397) ^ Interface.GetHashCode();
+                return hashCode;
             }
-
-            return obj1.Metric <= obj2.Metric;
         }
 
-        public static bool operator >=(RIPEntry obj1, RIPEntry obj2)
+        public static bool operator ==(RIPEntry obj1, RIPEntry obj2)
         {
             if (obj1 is null || obj2 is null)
             {
                 return false;
             }
 
-            return obj1.Metric >= obj2.Metric;
+            if (ReferenceEquals(obj1, obj2))
+            {
+                return true;
+            }
+
+            return obj1.Equals(obj2);
+        }
+
+        public static bool operator !=(RIPEntry obj1, RIPEntry obj2)
+        {
+            return !(obj1 == obj2);
         }
     }
 }

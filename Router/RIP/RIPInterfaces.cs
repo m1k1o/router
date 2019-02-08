@@ -11,7 +11,7 @@ namespace Router.RIP
     {
         static public TimeSpan UpdateTimer = TimeSpan.FromSeconds(30);
 
-        internal static List<Interface> Instance { get; } = new List<Interface>();
+        static List<Interface> Interfaces { get; } = new List<Interface>();
 
         static ManualResetEvent StopRequest = new ManualResetEvent(false);
         static Thread Thread;
@@ -29,24 +29,33 @@ namespace Router.RIP
             StopRequest.Set();
             Thread.Join();
         }
-        static public void Add(int ID)
-        {
-            Instance.Add(Interfaces.Instance.GetInterfaceById(ID));
 
-            // Add C to RIP table
-            // RIPEntry.SyncWithRT = false;
+        static public void Add(Interface Interface)
+        {
+            var RIPEntry = new RIPEntry(Interface, Interface.IPNetwork, null, 1);
+            RIPEntry.SyncWithRT = false;
+            RIPEntry.AllowUpdates = false;
+
+            Interfaces.Add(Interface);
+            RIPTable.Instance.Add(RIPEntry);
+
+            RIPResponse.SendTriggeredUpdate(Interface, RIPEntry);
         }
 
-        static public void Remove(int ID)
+        static public void Remove(Interface Interface)
         {
-            Instance.RemoveAll(Interface => Interface.ID == ID);
+            var RIPEntry = RIPTable.Instance.Find(Interface, Interface.IPNetwork);
+            RIPEntry.PossibblyDown = true;
 
-            // Remove C from RIP table
+            RIPResponse.SendTriggeredUpdate(Interface, RIPEntry);
+
+            Interfaces.Remove(Interface);
+            RIPTable.Instance.Remove(RIPEntry);
         }
 
         static public List<Interface> GetInterfaces()
         {
-            return Instance.ToList();
+            return Interfaces.ToList();
         }
 
         static public void SendUnsolicitedUpdates()

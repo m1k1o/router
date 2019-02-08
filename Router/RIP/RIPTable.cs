@@ -60,6 +60,11 @@ namespace Router.RIP
             return Entries.FindAll(Entry => !Entry.ToBeRemoved);
         }
 
+        public void Remove(RIPEntry RIPEntry)
+        {
+            Entries.Remove(RIPEntry);
+        }
+
         public void GarbageCollector()
         {
             Entries.RemoveAll(Entry => Entry.ToBeRemoved);

@@ -47,7 +47,7 @@ namespace Router.RIP
                     }
                     else
                     {
-                        if (!RIPEntry.InHold && RIPEntry.Metric != 1)
+                        if (!RIPEntry.InHold)
                         {
                             RIPEntryChanged = RIPEntry.Update(NextHopIP, Metric);
                         }
@@ -152,6 +152,13 @@ namespace Router.RIP
                 var RIPResponse = new RIPResponse(Interface);
                 RIPResponse.Send(RIPEntries);
             }
+        }
+
+        public static void SendTriggeredUpdate(Interface SourceInterface, RIPEntry RIPEntry)
+        {
+            var ChangedRoutes = new List<RIPEntry>();
+            ChangedRoutes.Add(RIPEntry);
+            SendTriggeredUpdate(SourceInterface, RIPEntry);
         }
     }
 }
