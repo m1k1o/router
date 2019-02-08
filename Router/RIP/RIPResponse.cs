@@ -71,8 +71,7 @@ namespace Router.RIP
 
             if (ChangedRIPEntries.Count > 0)
             {
-                // Send triggered update
-                throw new NotImplementedException();
+                SendTriggeredUpdate(Interface, ChangedRIPEntries);
             }
         }
 
@@ -135,6 +134,20 @@ namespace Router.RIP
             }
 
             return RouteCollection;
+        }
+
+        public static void SendTriggeredUpdate(Interface SourceInterface, List<RIPEntry> RIPEntries)
+        {
+            foreach (var Interface in RIPInterfaces.Instance)
+            {
+                if (Interface == SourceInterface)
+                {
+                    continue;
+                }
+
+                var RIPResponse = new RIPResponse(Interface);
+                RIPResponse.Send(RIPEntries);
+            }
         }
     }
 }
