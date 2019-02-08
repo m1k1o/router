@@ -81,7 +81,7 @@ namespace Router
             }
 
             // Push directly connected
-            RoutingTable.Instance.Push(this, IPNetwork);
+            RoutingTable.Instance.PushDirectlyConnected(this, IPNetwork);
             Running = true;
         }
 
@@ -93,7 +93,7 @@ namespace Router
             }
 
             // Remove directly connected
-            RoutingTable.Instance.Remove(this, IPNetwork);
+            RoutingTable.Instance.RemoveDirectlyConnected(this);
 
             try
             {

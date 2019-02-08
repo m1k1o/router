@@ -16,24 +16,12 @@ namespace Router
 
         static int LookupMaxTries = 128;
 
-        public void Push(Interface Interface, IPNetwork IPNetwork)
-        {
-            var index = Entries.FindIndex(Entry => Entry.IPNetwork == IPNetwork && Entry.ADistance == ADistance.DirectlyConnected);
-            if (index != -1)
-            {
-                throw new Exception("There is already C" + IPNetwork + " in routing table.");
-            }
-
-            Entries.Add(new RoutingEntry(IPNetwork, null, Interface, ADistance.DirectlyConnected));
-        }
-
         public void Push(RoutingEntry RoutingEntry)
         {
-            var index = Entries.FindIndex(Entry => Entry.IPNetwork == RoutingEntry.IPNetwork && Entry.ADistance == RoutingEntry.ADistance);
-            if (index != -1)
+            var Route = Entries.Find(Entry => Entry.IPNetwork == RoutingEntry.IPNetwork && Entry.ADistance == RoutingEntry.ADistance);
+            if (Route != null)
             {
-                Entries[index] = RoutingEntry;
-                return;
+                throw new Exception("Route " + Route + " is already in Routing Table.");
             }
 
             Entries.Add(RoutingEntry);
@@ -100,17 +88,6 @@ namespace Router
             return ResultRoute;
         }
 
-        public bool Remove(Interface Interface, IPNetwork IPNetwork)
-        {
-            var index = Entries.FindIndex(Entry => Entry.IPNetwork == IPNetwork && Entry.Interface == Interface && Entry.ADistance == ADistance.DirectlyConnected);
-            if (index != -1)
-            {
-                Entries.RemoveAt(index);
-            }
-
-            return index != -1;
-        }
-
         public bool Remove(IPNetwork IPNetwork, ADistance ADistance)
         {
             var index = Entries.FindIndex(Entry => Entry.IPNetwork == IPNetwork && Entry.ADistance == ADistance);
@@ -121,7 +98,17 @@ namespace Router
 
             return index != -1;
         }
-        
+
+        public void PushDirectlyConnected(Interface Interface, IPNetwork IPNetwork)
+        {
+            Push(new RoutingEntry(IPNetwork, null, Interface, ADistance.DirectlyConnected));
+        }
+
+        public void RemoveDirectlyConnected(Interface Interface)
+        {
+            Entries.RemoveAll(Entry => Entry.Interface == Interface && Entry.ADistance == ADistance.DirectlyConnected);
+        }
+
         public bool Exists(IPNetwork IPNetwork)
         {
             return Entries.Exists(Entry => Entry.IPNetwork == IPNetwork);

@@ -38,33 +38,25 @@ namespace Router.Controllers
                 return new JSONError("You must set NextHopIP and/or InterfaceID.");
             }
 
-            IPNetwork IPNetwork;
-            IPAddress NextHopIP;
-            Interface Interface;
             try
             {
-                IPNetwork = IPNetwork.Parse(Rows[0], Rows[1]);
-                NextHopIP = string.IsNullOrEmpty(Rows[2]) ? null : IPAddress.Parse(Rows[2]);
-                Interface = string.IsNullOrEmpty(Rows[3]) ? null : Router.Interfaces.Instance.GetInterfaceById(Rows[3]);
+                var Network = IPNetwork.Parse(Rows[0], Rows[1]);
+                var NextHopIP = string.IsNullOrEmpty(Rows[2]) ? null : IPAddress.Parse(Rows[2]);
+                var Interface = string.IsNullOrEmpty(Rows[3]) ? null : Router.Interfaces.Instance.GetInterfaceById(Rows[3]);
+
+                if (RoutingTable.Find(Network, ADistance.DirectlyConnected) != null)
+                {
+                    throw new Exception("Network " + Network + " is directly connected.");
+                }
+
+                var Entry = new RoutingEntry(Network, NextHopIP, Interface, ADistance.Static);
+                RoutingTable.Push(Entry);
+                return RoutingEntry(Entry);
             }
             catch (Exception e)
             {
                 return new JSONError(e.Message);
             }
-
-            if (RoutingTable.Find(IPNetwork, ADistance.DirectlyConnected) != null)
-            {
-                return new JSONError("Netrwork " + IPNetwork + " is directly connected.");
-            }
-
-            if (RoutingTable.Find(IPNetwork, ADistance.Static) != null)
-            {
-                return new JSONError("Netrwork S" + IPNetwork + " is already in table.");
-            }
-
-            var Entry = new RoutingEntry(IPNetwork, NextHopIP, Interface, ADistance.Static);
-            RoutingTable.Push(Entry);
-            return RoutingEntry(Entry);
         }
 
         public JSON RemoveRoute(string Data)
