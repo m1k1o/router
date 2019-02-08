@@ -41,7 +41,10 @@ namespace Router.RIP
                 {
                     if (Metric == 16)
                     {
-                        RIPEntry.Valid = false;
+                        // TODO: Nebude v holddown stave? Vymaze sa z RT.
+                        throw new NotImplementedException();
+                        RIPEntry.PossibblyDown = true;
+                        RIPEntryChanged = true;
                     }
                     else
                     {
@@ -114,7 +117,7 @@ namespace Router.RIP
                 }
                 else
                 {
-                    if (!RIPEntry.Valid || RIPEntry.InHold)
+                    if (RIPEntry.PossibblyDown)
                     {
                         Metric = 16;
                     }
