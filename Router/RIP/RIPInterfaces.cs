@@ -29,7 +29,6 @@ namespace Router.RIP
             StopRequest.Set();
             Thread.Join();
         }
-
         static public void Add(int ID)
         {
             Instance.Add(Interfaces.Instance.GetInterfaceById(ID));
@@ -45,11 +44,17 @@ namespace Router.RIP
             // Remove C from RIP table
         }
 
+        static public List<Interface> GetInterfaces()
+        {
+            return Instance.ToList();
+        }
+
         static public void SendUnsolicitedUpdates()
         {
             do
             {
-                foreach (var Interface in Instance)
+                var Interfaces = GetInterfaces();
+                foreach (var Interface in Interfaces)
                 {
                     var RIPResponse = new RIPResponse(Interface);
                     RIPResponse.Send();

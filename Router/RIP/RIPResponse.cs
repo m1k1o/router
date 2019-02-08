@@ -141,7 +141,8 @@ namespace Router.RIP
 
         public static void SendTriggeredUpdate(Interface SourceInterface, List<RIPEntry> RIPEntries)
         {
-            foreach (var Interface in RIPInterfaces.Instance)
+            var Interfaces = RIPInterfaces.GetInterfaces();
+            foreach (var Interface in Interfaces)
             {
                 if (Interface == SourceInterface)
                 {

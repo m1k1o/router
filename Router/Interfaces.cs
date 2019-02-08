@@ -3,6 +3,7 @@ using Router.Protocols;
 using SharpPcap;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 
 namespace Router
@@ -63,23 +64,12 @@ namespace Router
 
         public Interface GetInterfaceByName(string Name)
         {
-            var i = 1;
-            foreach (var Int in Available)
-            {
-                if (Int.Name == Name)
-                {
-                    return Int;
-                }
-
-                i++;
-            }
-
-            throw new Exception("No interface Found.");
+            return Available.Find(Interface => Interface.Name == Name);
         }
 
         public List<Interface> GetInteraces()
         {
-            return Available;
+            return Available.ToList();
         }
 
         internal static void OnCaptureStopped(object sender, CaptureStoppedEventStatus e)

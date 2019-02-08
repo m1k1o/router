@@ -35,6 +35,8 @@ namespace Router
         public RoutingEntry BestMatch(IPAddress IPAddress)
         {
             RoutingEntry BestMatch = null;
+
+            var Entries = GetEntries();
             foreach (var Entry in Entries)
             {
                 if (!Entry.IPNetwork.Contains(IPAddress))
@@ -121,7 +123,7 @@ namespace Router
 
         public List<RoutingEntry> GetEntries()
         {
-            return Entries;
+            return Entries.ToList();
         }
     }
 }

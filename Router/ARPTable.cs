@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using System.Net.NetworkInformation;
 
@@ -40,7 +41,7 @@ namespace Router
 
         public List<ARPEntry> GetEntries()
         {
-            return Entries;
+            return Entries.ToList();
         }
 
         public void GarbageCollector()
