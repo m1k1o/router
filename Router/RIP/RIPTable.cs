@@ -64,6 +64,18 @@ namespace Router.RIP
         {
             Entries.RemoveAll(Entry => Entry.ToBeRemoved);
         }
+
+        public void SyncWithRT()
+        {
+            // TODO: Sync with RT.
+            throw new NotImplementedException();
+
+            var Entries = BestEntries();
+            foreach(var Entry in Entries)
+            {
+
+            }
+        }
     }
 
     static class RIPListExtensions

@@ -75,6 +75,8 @@ namespace Router.RIP
                     Console.WriteLine("Terminating thread...");
                     break;
                 }
+
+                RIPTable.Instance.GarbageCollector();
             }
             while (true);
         }
