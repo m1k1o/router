@@ -58,25 +58,53 @@ namespace Router.RIP
 
         public void Remove(Interface Interface)
         {
-            Entries.RemoveAll(RIPEntry => Equals(RIPEntry.Interface, Interface));
+            Entries.RemoveAll(RIPEntry => {
+                if(!Equals(RIPEntry.Interface, Interface))
+                {
+                    return false;
+                }
+
+                if (RIPEntry.SyncWithRT)
+                {
+                    // Remove from RT
+                    RoutingTable.Instance.Remove(RIPEntry.IPNetwork, ADistance.RIP);
+                }
+                
+                return true;
+            });
         }
 
         public void GarbageCollector()
         {
-            Entries.RemoveAll(Entry => Entry.ToBeRemoved);
+            Entries.RemoveAll(RIPEntry => {
+                if (RIPEntry.ToBeRemoved)
+                {
+                    return false;
+                }
+
+                if (RIPEntry.SyncWithRT)
+                {
+                    // Remove from RT
+                    RoutingTable.Instance.Remove(RIPEntry.IPNetwork, ADistance.RIP);
+                }
+
+                return true;
+            });
         }
 
         public void SyncWithRT()
         {
-            // TODO: Sync with RT.
-            throw new NotImplementedException();
+            GarbageCollector();
 
-            // Do not import routes with SyncWithRT == false;
-
-            var Entries = BestEntries();
-            foreach(var Entry in Entries)
+            foreach (var Entry in Entries)
             {
+                if (!Entry.SyncWithRT)
+                {
+                    continue;
+                }
 
+                var RoutingEntry = new RoutingEntry(Entry.IPNetwork, Entry.NextHopIP, Entry.Interface, ADistance.RIP);
+                RoutingTable.Instance.Push(RoutingEntry);
             }
         }
     }
