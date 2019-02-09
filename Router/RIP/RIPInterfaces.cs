@@ -9,6 +9,26 @@ namespace Router.RIP
     {
         public static TimeSpan UpdateTimer { get; set; } = TimeSpan.FromSeconds(30);
 
+        private static bool UpdatesRunning;
+
+        public static bool ActiveUpdates {
+            get => UpdatesRunning;
+            set
+            {
+                if (value && !UpdatesRunning)
+                {
+                    StartUpdates();
+                    UpdatesRunning = true;
+                }
+
+                if (!value && UpdatesRunning)
+                {
+                    StopUpdates();
+                    UpdatesRunning = false;
+                }
+            }
+        }
+
         private static List<Interface> Active { get; } = new List<Interface>();
 
         private static List<Interface> Running { get; } = new List<Interface>();

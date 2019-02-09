@@ -73,6 +73,24 @@ namespace Router.Controllers
             return obj;
         }
 
+        public JSON Updates(string Data = null)
+        {
+            if (!string.IsNullOrEmpty(Data))
+            {
+                if(Data == "start")
+                {
+                    RIPInterfaces.ActiveUpdates = true;
+                }
+
+                if (Data == "stop")
+                {
+                    RIPInterfaces.ActiveUpdates = false;
+                }
+            }
+
+            return new JSONObject("active", RIPInterfaces.ActiveUpdates);
+        }
+
         public JSON AddInterface(string Data)
         {
             try
