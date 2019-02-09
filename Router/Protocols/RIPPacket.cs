@@ -7,7 +7,7 @@ namespace Router.Protocols
         public RIPCommandType CommandType
         {
             get => (RIPCommandType)Slice(0, typeof(byte));
-            set => Inject(0, value);
+            set => Inject(0, (byte)value);
         }
 
         public byte Version
