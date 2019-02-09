@@ -41,7 +41,7 @@ namespace Router
                 return;
             }
 
-            RIPPacket ripPacket = Protocols.RIP.Parse(packet);
+            RIPPacket ripPacket = Protocols.RIP.Parse(packet, Interface);
             if (ripPacket != null)
             {
                 PacketType = typeof(RIPPacket);

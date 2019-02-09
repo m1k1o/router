@@ -14,14 +14,20 @@ namespace Router.Protocols
         {
             var ripPacket = new RIPPacket(CommandType, RTEs);
 
-            var udpPacket = new UdpPacket(PortUDP, DstPort);
-            udpPacket.PayloadData = ripPacket.Bytes;
+            var udpPacket = new UdpPacket(PortUDP, DstPort)
+            {
+                PayloadData = ripPacket.Bytes
+            };
 
-            var ipPacket = new IPv4Packet(Interface.IPAddress, DstIP);
-            ipPacket.PayloadPacket = udpPacket;
+            var ipPacket = new IPv4Packet(Interface.IPAddress, DstIP)
+            {
+                PayloadPacket = udpPacket
+            };
 
-            var ethernetPacket = new EthernetPacket(Interface.PhysicalAddress, DstMAC, EthernetPacketType.IpV4);
-            ethernetPacket.PayloadPacket = ipPacket;
+            var ethernetPacket = new EthernetPacket(Interface.PhysicalAddress, DstMAC, EthernetPacketType.IpV4)
+            {
+                PayloadPacket = ipPacket
+            };
 
             Interface.SendPacket(ethernetPacket.Bytes);
         }
@@ -31,38 +37,49 @@ namespace Router.Protocols
             Send(MulticastMac, MulticastIp, PortUDP, CommandType, RTEs, Interface);
         }
 
-        public static RIPPacket Parse(EthernetPacket packet, Interface Interface = null)
+        public static RIPPacket Parse(EthernetPacket packet, Interface Interface)
         {
-            // RIP Multicast or Unicast MAC
-            if (!Equals(packet.DestinationHwAddress, MulticastMac)/* && !(Interface != null || !Equals(packet.DestinationHwAddress, Interface.PhysicalAddress))*/)
+            IPv4Packet ipPacket;
+            UdpPacket udpPacket;
+
+            if(
+                // Sent from me
+                Equals(packet.SourceHwAddress, Interface.PhysicalAddress) &&
+
+                // Not from RIP Multicast MAC
+                !Equals(packet.DestinationHwAddress, MulticastMac) &&
+
+                // Not from Unicast for me
+                !Equals(packet.DestinationHwAddress, MulticastMac) &&
+
+                // Not IP Packet
+                (ipPacket = (IPv4Packet)packet.Extract(typeof(IPv4Packet))) == null &&
+
+                // Not from this network
+                !Interface.IsReachable(Interface.IPAddress) &&
+
+                // Not from RIP Multicast IP
+                !Equals(ipPacket.DestinationAddress, MulticastIp) &&
+
+                // Not for me 
+                !Equals(ipPacket.DestinationAddress, Interface.IPAddress) &&
+
+                // Not UDP Packet
+                (udpPacket = (UdpPacket)ipPacket.Extract(typeof(UdpPacket))) == null &&
+
+                // Not to 520 Port
+                udpPacket.DestinationPort != PortUDP
+            )
             {
-                return null;
+                return Parse(udpPacket);
             }
 
-            var ipPacket = (IPv4Packet)packet.Extract(typeof(IPv4Packet));
-            if (ipPacket == null)
-            {
-                return null;
-            }
+            return null;
+        }
 
-            // RIP Multicast or Unicast IP
-            if (!Equals(ipPacket.DestinationAddress, MulticastIp)/* && !(Interface != null || !Equals(ipPacket.DestinationAddress, Interface.IPAddress))*/)
-            {
-                return null;
-            }
-
-            var udpPacket = (UdpPacket)packet.Extract(typeof(UdpPacket));
-            if (udpPacket == null)
-            {
-                return null;
-            }
-
-            if (udpPacket.DestinationPort != PortUDP)
-            {
-                return null;
-            }
-
-            return new RIPPacket(udpPacket.PayloadData);
+        public static RIPPacket Parse(UdpPacket UdpPacket)
+        {
+            return new RIPPacket(UdpPacket.PayloadData);
         }
     }
 }
