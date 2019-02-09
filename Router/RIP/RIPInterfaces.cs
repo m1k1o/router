@@ -9,12 +9,17 @@ namespace Router.RIP
     {
         static public TimeSpan UpdateTimer { get; set; } = TimeSpan.FromSeconds(30);
 
-        static private List<Interface> Available { get; } = new List<Interface>();
-
         static private List<Interface> Active { get; } = new List<Interface>();
+
+        static private List<Interface> Running { get; } = new List<Interface>();
 
         static private ManualResetEvent StopRequest = new ManualResetEvent(false);
         static private Thread Thread;
+
+        static public bool IsRunning(Interface Interface)
+        {
+            return Running.Exists(Entry => Equals(Entry, Interface));
+        }
 
         static public bool IsActive(Interface Interface)
         {
@@ -23,60 +28,65 @@ namespace Router.RIP
 
         static public void Add(Interface Interface)
         {
-            Available.Add(Interface);
+            Active.Add(Interface);
+
+            if (Interface.Running)
+            {
+                Start(Interface);
+            }
+
+            Interface.OnStarted += Start;
             Interface.OnStopped += Stop;
         }
 
-        static public void Start(Interface Interface)
+        static public void Remove(Interface Interface)
         {
-            if (!Interface.Running)
+            Active.Remove(Interface);
+
+            Interface.OnStarted -= Start;
+            Interface.OnStopped -= Stop;
+
+            if (Interface.Running)
             {
-                throw new Exception("Interface must be running.");
+                Stop(Interface);
             }
+        }
 
-            var RIPEntry = new RIPEntry(Interface, Interface.IPNetwork, null, 1);
-            RIPEntry.SyncWithRT = false;
-            RIPEntry.AllowUpdates = false;
+        static private void Start(Interface Interface)
+        {
+            var RIPEntry = new RIPEntry(Interface, Interface.IPNetwork, null, 1)
+            {
+                SyncWithRT = false,
+                AllowUpdates = false
+            };
 
-            Active.Add(Interface);
+            Running.Add(Interface);
             RIPTable.Instance.Add(RIPEntry);
 
             RIPResponse.SendTriggeredUpdate(Interface, RIPEntry);
         }
 
-        static public void Remove(Interface Interface)
+        static private void Stop(Interface Interface)
         {
-            Available.Remove(Interface);
-            Interface.OnStopped -= Stop;
-            Stop(Interface);
-        }
-
-        static public void Stop(Interface Interface)
-        {
-            if (!IsActive(Interface))
-            {
-                return;
-            }
-
             var RIPEntry = RIPTable.Instance.Find(Interface, Interface.IPNetwork);
             RIPEntry.PossibblyDown = true;
 
             RIPResponse.SendTriggeredUpdate(Interface, RIPEntry);
 
-            Active.Remove(Interface);
+            Running.Remove(Interface);
             RIPTable.Instance.Remove(Interface);
 
             RIPTable.Instance.SyncWithRT();
         }
 
+        static public List<Interface> GetRunningInterfaces()
+        {
+            return Running.ToList();
+        }
+
         static public List<Interface> GetActiveInterfaces()
         {
             return Active.ToList();
-        }
-
-        static public List<Interface> GetAvailableInterfaces()
-        {
-            return Available.ToList();
         }
 
         static public void StartUpdates()
@@ -97,7 +107,7 @@ namespace Router.RIP
         {
             do
             {
-                var Interfaces = GetActiveInterfaces();
+                var Interfaces = GetRunningInterfaces();
                 foreach (var Interface in Interfaces)
                 {
                     var RIPResponse = new RIPResponse(Interface);

@@ -72,49 +72,58 @@ namespace Router.Controllers
             return obj;
         }
 
-        /*
-        public JSON AddInterface(string Data = null)
+        public JSON AddInterface(string Data)
         {
             try
             {
                 var Interface = Router.Interfaces.Instance.GetInterfaceById(Data);
                 RIPInterfaces.Add(Interface);
 
-                return new JSONObject("running", Interface.Running);
+                var obj = new JSONObject();
+                obj.Push("active", RIPInterfaces.IsActive(Interface));
+                obj.Push("running", RIPInterfaces.IsRunning(Interface));
+                return obj;
             }
             catch (Exception e)
             {
                 return new JSONError(e.Message);
             }
         }
-        */
+
+        public JSON RemoveInterface(string Data)
+        {
+            try
+            {
+                var Interface = Router.Interfaces.Instance.GetInterfaceById(Data);
+                RIPInterfaces.Remove(Interface);
+
+                var obj = new JSONObject();
+                obj.Push("active", RIPInterfaces.IsActive(Interface));
+                obj.Push("running", RIPInterfaces.IsRunning(Interface));
+                return obj;
+            }
+            catch (Exception e)
+            {
+                return new JSONError(e.Message);
+            }
+        }
 
         public JSON Interfaces(string Data = null)
         {
-            if(Data != "available" && Data != "started")
-            {
-                return new JSONError("Expected 'available' or 'active'.");
-            }
+            var obj = new JSONObject();
+            var obj2 = new JSONObject();
 
-            var arr = new JSONArray();
-
-            List<Interface> Interfaces = null;
-            if (Data == "active")
-            {
-                Interfaces = RIPInterfaces.GetActiveInterfaces();
-            }
-
-            if (Data == "available")
-            {
-                Interfaces = RIPInterfaces.GetAvailableInterfaces();
-            }
-
+            var Interfaces = Router.Interfaces.Instance.GetInteraces();
             foreach (var Interface in Interfaces)
             {
-                arr.Push(Interface.ID);
+                obj2.Empty();
+                obj2.Push("active", RIPInterfaces.IsActive(Interface));
+                obj2.Push("running", RIPInterfaces.IsRunning(Interface));
+
+                obj.Push(Interface.ToString(), obj2);
             }
 
-            return arr;
+            return obj;
         }
 
         public JSON Table(string Data = null)

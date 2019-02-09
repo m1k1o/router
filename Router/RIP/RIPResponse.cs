@@ -79,7 +79,7 @@ namespace Router.RIP
 
         public static void SendTriggeredUpdate(Interface SourceInterface, List<RIPEntry> RIPEntries)
         {
-            var Interfaces = RIPInterfaces.GetActiveInterfaces();
+            var Interfaces = RIPInterfaces.GetRunningInterfaces();
             foreach (var Interface in Interfaces)
             {
                 if (Equals(Interface, SourceInterface))
@@ -96,7 +96,7 @@ namespace Router.RIP
         {
             var ChangedRoutes = new List<RIPEntry>();
             ChangedRoutes.Add(RIPEntry);
-            SendTriggeredUpdate(SourceInterface, RIPEntry);
+            SendTriggeredUpdate(SourceInterface, ChangedRoutes);
         }
 
         static public void OnReceived(IPAddress SourceIP, RIPRouteCollection RouteCollection, Interface Interface)
