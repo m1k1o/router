@@ -31,12 +31,11 @@ namespace Router
                 {
                     throw new Exception("You must first set IPAddress and IPSubnetMask.");
                 }
-
-                RoutingTable.Instance.PushDirectlyConnected(this, IPNetwork);
             };
 
             AfterStarted = () =>
             {
+                RoutingTable.Instance.PushDirectlyConnected(this, IPNetwork);
                 OnStarted(this);
             };
 
