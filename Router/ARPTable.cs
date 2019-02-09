@@ -22,6 +22,7 @@ namespace Router
             if (FoundEntry != null)
             {
                 FoundEntry.Update(PhysicalAddress);
+                return;
             }
 
             Entries.Add(new ARPEntry(IPAddress, PhysicalAddress));
