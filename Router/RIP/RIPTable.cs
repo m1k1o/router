@@ -23,13 +23,6 @@ namespace Router.RIP
             Entries.Add(Entry);
         }
 
-        public RIPEntry Add(Interface Interface, IPNetwork IPNetwork, IPAddress NextHopIP, uint Metric)
-        {
-            var Entry = new RIPEntry(Interface, IPNetwork, NextHopIP, Metric);
-            Add(Entry);
-            return Entry;
-        }
-
         public List<RIPEntry> FindAll(Interface Interface)
         {
             return Entries.FindAll(Entry => Equals(Entry.Interface, Interface) && !Entry.ToBeRemoved);
@@ -42,7 +35,7 @@ namespace Router.RIP
 
         public RIPEntry Find(Interface Interface, IPNetwork IPNetwork)
         {
-            return Entries.Find(Entry => Equals(Entry.Interface, Interface) && Entry.IPNetwork == IPNetwork && !Entry.ToBeRemoved);
+            return Entries.Find(Entry => Equals(Entry.Interface, Interface) && Equals(Entry.IPNetwork, IPNetwork) && !Entry.ToBeRemoved);
         }
 
         public void Flush()

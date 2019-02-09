@@ -65,11 +65,18 @@ namespace Router.RIP
             RIPTable.Instance.Add(RIPEntry);
 
             RIPResponse.SendTriggeredUpdate(Interface, RIPEntry);
+
+            RIPRequest.AskForUpdate(Interface);
         }
 
         private static void Stop(Interface Interface)
         {
             var RIPEntry = RIPTable.Instance.Find(Interface, Interface.IPNetwork);
+            if (RIPEntry == null)
+            {
+                throw new Exception("RIPEntry not found while Stopping");
+            }
+
             RIPEntry.PossibblyDown = true;
 
             RIPResponse.SendTriggeredUpdate(Interface, RIPEntry);

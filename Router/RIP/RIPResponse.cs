@@ -83,7 +83,7 @@ namespace Router.RIP
                 }
 
                 IPAddress NextHop = Interface.IPAddress;
-                if (Interface.IsReachable(RIPEntry.NextHopIP))
+                if (RIPEntry.NextHopIP != null && Interface.IsReachable(RIPEntry.NextHopIP))
                 {
                     NextHop = RIPEntry.NextHopIP;
                 }
@@ -165,7 +165,8 @@ namespace Router.RIP
                         continue;
                     }
 
-                    RIPEntry = RIPTable.Instance.Add(Interface, Route.IPNetwork, NextHopIP, Metric);
+                    RIPEntry = new RIPEntry(Interface, Route.IPNetwork, NextHopIP, Metric);
+                    RIPTable.Instance.Add(RIPEntry);
                     RIPEntryChanged = true;
                 }
 
