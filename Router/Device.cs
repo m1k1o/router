@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Net;
 using System.Net.NetworkInformation;
+using System.Threading;
 using SharpPcap;
 using SharpPcap.LibPcap;
 using SharpPcap.WinPcap;
@@ -48,6 +49,8 @@ namespace Router
         protected Action AfterStarted;
         protected Action AfterStopped;
 
+        private Thread Thread;
+
         private void SetFilter()
         {
             var DeviceMac = BitConverter.ToString(PhysicalAddress.GetAddressBytes()).Replace("-", ":");
@@ -94,7 +97,11 @@ namespace Router
                 if(Running)
                 {
                     Running = false;
-                    AfterStopped();
+
+                    Thread = new Thread(() => {
+                        AfterStopped();
+                    });
+                    Thread.Start();
                 }
             };
 
@@ -124,12 +131,20 @@ namespace Router
             }
             catch { };
 
-            Running = false;
-            AfterStopped();
+            if (Running)
+            {
+                Running = false;
+                AfterStopped();
+            }
         }
 
         public void SendPacket(byte[] Data)
         {
+            if (!Running)
+            {
+                return;
+            }
+
             ICaptureDevice.SendPacket(Data);
         }
     }
