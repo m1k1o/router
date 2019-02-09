@@ -57,7 +57,8 @@ namespace Router.RIP
             var RIPEntry = new RIPEntry(Interface, Interface.IPNetwork, null, 1)
             {
                 SyncWithRT = false,
-                AllowUpdates = false
+                CanBeUpdated = false,
+                CanBeRemoved = false
             };
 
             Running.Add(Interface);

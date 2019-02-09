@@ -28,8 +28,10 @@ namespace Router.RIP
             get => TimeUpdated == TimeCreated;
         }
 
+        public bool CanBeRemoved { get; set; } = true;
+
         public bool ToBeRemoved {
-            get => DateTime.Now > TimeUpdated + FlushTimer;
+            get => CanBeRemoved && DateTime.Now > TimeUpdated + FlushTimer;
         }
 
         public bool PossibblyDown

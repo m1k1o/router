@@ -24,7 +24,7 @@ namespace Router.RIP
         }
 
         public bool SyncWithRT { get; set; } = true;
-        public bool AllowUpdates { get; set; } = true;
+        public bool CanBeUpdated { get; set; } = true;
 
         public RIPEntry(Interface Interface, IPNetwork IPNetwork, IPAddress NextHopIP, uint Metric)
         {
@@ -38,7 +38,7 @@ namespace Router.RIP
         public bool Update(IPAddress NextHopIP, uint Metric)
         {
             var HasChanged = this.NextHopIP != NextHopIP || this.Metric != Metric;
-            if (HasChanged && AllowUpdates)
+            if (HasChanged && CanBeUpdated)
             {
                 this.NextHopIP = NextHopIP;
                 this.Metric = Metric;
