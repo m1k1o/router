@@ -31,6 +31,11 @@ namespace Router
                 {
                     throw new Exception("You must first set IPAddress and IPSubnetMask.");
                 }
+
+                if (RoutingTable.Instance.Find(IPNetwork, ADistance.DirectlyConnected) != null)
+                {
+                    throw new Exception("There is already C" + IPNetwork + " in routing table.");
+                }
             };
 
             AfterStarted = () =>
@@ -41,8 +46,14 @@ namespace Router
 
             AfterStopped = () =>
             {
-                OnStopped(this);
-                RoutingTable.Instance.RemoveDirectlyConnected(this);
+                try
+                {
+                    OnStopped(this);
+                }
+                finally
+                {
+                    RoutingTable.Instance.RemoveDirectlyConnected(this);
+                }
             };
         }
 
