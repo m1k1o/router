@@ -26,7 +26,7 @@ namespace Router.Controllers
 
             obj.Push("sync_with_rt", RIPEntry.SyncWithRT);
             obj.Push("can_be_updated", RIPEntry.CanBeUpdated);
-            obj.Push("can_be_removed", RIPEntry.CanBeRemoved);
+            obj.Push("timers_enabled", RIPEntry.TimersEnabled);
             return obj;
         }
 

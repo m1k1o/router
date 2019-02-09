@@ -28,11 +28,11 @@ namespace Router.RIP
             get => TimeUpdated == TimeCreated;
         }
 
-        public bool CanBeRemoved { get; set; } = true;
+        public bool TimersEnabled { get; set; } = true;
 
         public bool ToBeRemoved {
             get => 
-                CanBeRemoved &&
+                TimersEnabled &&
                 ((PossibblyDownSince != DateTime.MinValue && DateTime.Now > PossibblyDownSince + FlushTimer) ||
                 (PossibblyDownSince == DateTime.MinValue && DateTime.Now > TimeUpdated + FlushTimer));
         }
@@ -40,6 +40,7 @@ namespace Router.RIP
         public bool PossibblyDown
         {
             get =>
+                TimersEnabled &&
                 PossibblyDownSince != DateTime.MinValue ||
                 DateTime.Now > TimeUpdated + InvalidTimer;
             set
@@ -58,8 +59,9 @@ namespace Router.RIP
         public bool InHold
         {
             get =>
-                (PossibblyDownSince != DateTime.MinValue && DateTime.Now <= PossibblyDownSince + HoldTimer) ||
-                (PossibblyDownSince == DateTime.MinValue && DateTime.Now > TimeUpdated + InvalidTimer && DateTime.Now <= TimeUpdated + InvalidTimer + HoldTimer);
+                TimersEnabled &&
+                ((PossibblyDownSince != DateTime.MinValue && DateTime.Now <= PossibblyDownSince + HoldTimer) ||
+                (PossibblyDownSince == DateTime.MinValue && DateTime.Now > TimeUpdated + InvalidTimer && DateTime.Now <= TimeUpdated + InvalidTimer + HoldTimer));
         }
     }
 }

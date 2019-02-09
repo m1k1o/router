@@ -58,7 +58,7 @@ namespace Router.RIP
             {
                 SyncWithRT = false,
                 CanBeUpdated = false,
-                CanBeRemoved = false
+                TimersEnabled = false
             };
 
             Running.Add(Interface);
