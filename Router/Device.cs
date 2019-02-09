@@ -51,13 +51,11 @@ namespace Router
         private void SetFilter()
         {
             var DeviceMac = BitConverter.ToString(PhysicalAddress.GetAddressBytes()).Replace("-", ":");
-            var RequestDestinationMac = BitConverter.ToString(Protocols.ARP.RequestDestinationMac.GetAddressBytes()).Replace("-", ":");
-            var MulticastMac = BitConverter.ToString(Protocols.RIP.MulticastMac.GetAddressBytes()).Replace("-", ":");
 
             String Filter = "(" +
                 "ether dst " + DeviceMac + " or " +
-                "ether dst " + RequestDestinationMac + " or " +
-                "ether dst " + MulticastMac +
+                "ether broadcast or " +
+                "ether multicast " +
             ") and (ip or arp) ";
 
 
