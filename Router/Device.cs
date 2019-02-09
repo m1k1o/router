@@ -48,6 +48,27 @@ namespace Router
         protected Action AfterStarted;
         protected Action AfterStopped;
 
+        private void SetFilter()
+        {
+            var DeviceMac = BitConverter.ToString(PhysicalAddress.GetAddressBytes()).Replace("-", ":");
+            var RequestDestinationMac = BitConverter.ToString(Protocols.ARP.RequestDestinationMac.GetAddressBytes()).Replace("-", ":");
+            var MulticastMac = BitConverter.ToString(Protocols.RIP.MulticastMac.GetAddressBytes()).Replace("-", ":");
+
+            String Filter = "(" +
+                "ether dst " + DeviceMac + " or " +
+                "ether dst " + RequestDestinationMac + " or " +
+                "ether dst " + MulticastMac +
+            ") and (ip or arp) ";
+
+
+            if (DeviceIP != null)
+            {
+                Filter += " and (not dst host " + DeviceIP + ")";
+            }
+
+            ICaptureDevice.Filter = Filter;
+        }
+
         public void Start()
         {
             if (Running)
@@ -58,6 +79,7 @@ namespace Router
             BeforeStarted();
 
             ICaptureDevice.Open(DeviceMode.Promiscuous, 1);
+            SetFilter();
 
             ICaptureDevice.OnPacketArrival += (object sender, CaptureEventArgs e) =>
             {
