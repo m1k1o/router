@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace Router.Protocols
 {
-    class RIPRequestRoute : RIPRoute
+    class RIPRouteRequest : RIPRoute
     {
-        public RIPRequestRoute() : base(null)
+        public RIPRouteRequest() : base()
         {
             AddressFamilyIdentifier = 0;
             Metric = 16;

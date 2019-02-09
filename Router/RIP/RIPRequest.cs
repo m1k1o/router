@@ -57,7 +57,7 @@ namespace Router.RIP
         {
             var RouteCollection = new RIPRouteCollection
             {
-                new RIPRequestRoute()
+                new RIPRouteRequest()
             };
 
             Protocols.RIP.Send(RIPCommandType.Request, RouteCollection, Interface);
@@ -68,7 +68,5 @@ namespace Router.RIP
             var RIPRequest = new RIPRequest(SrcMac, SrcIP, SrcPort, RouteCollection);
             RIPRequest.SendResponse(Interface);
         }
-
-        static void 
     }
 }

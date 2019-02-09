@@ -56,10 +56,7 @@ namespace Router.Protocols
             this.RouteCollection = RouteCollection;
         }
 
-        public RIPPacket(byte[] Data) : base(Data)
-        {
-
-        }
+        public RIPPacket(byte[] Data) : base(Data) {}
 
         public override string ToString()
         {

@@ -53,7 +53,7 @@ namespace Router.Protocols
             }
         }
 
-        public RIPRoute(IPNetwork IPNetwork, IPAddress NextHop, uint Metric) : base(20)
+        public RIPRoute(IPNetwork IPNetwork, IPAddress NextHop, uint Metric) : base(Length)
         {
             AddressFamilyIdentifier = 2;
             RouteTag = 0;
@@ -62,10 +62,9 @@ namespace Router.Protocols
             this.Metric = Metric;
         }
 
-        public RIPRoute(byte[] Data) : base(Data)
-        {
+        protected RIPRoute() : base(Length) {}
 
-        }
+        public RIPRoute(byte[] Data) : base(Data) {}
 
         public override string ToString()
         {
