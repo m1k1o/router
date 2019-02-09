@@ -15,6 +15,7 @@ namespace Router.RIP
         protected void Create()
         {
             TimeCreated = DateTime.Now;
+            TimeUpdated = DateTime.Now;
         }
 
         protected void Update()
@@ -24,7 +25,7 @@ namespace Router.RIP
         }
 
         public bool NeverUpdated {
-            get => TimeUpdated == DateTime.MinValue;
+            get => TimeUpdated == TimeCreated;
         }
 
         public bool ToBeRemoved {
