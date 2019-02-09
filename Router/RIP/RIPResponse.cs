@@ -18,8 +18,8 @@ namespace Router.RIP
 
         public void Send()
         {
-            var RIPEntries = RIPTable.Instance.BestEntries();
-            Send(RIPEntries);
+            var RouteCollection = Export();
+            Protocols.RIP.Send(RIPCommandType.Response, RouteCollection, Interface);
         }
 
         public void Send(List<RIPEntry> RIPEntries)
@@ -30,7 +30,24 @@ namespace Router.RIP
 
         public void Send(RIPRequest RIPRequest)
         {
-            Protocols.RIP.Send(RIPRequest.SrcMac, RIPRequest.SrcIP, RIPRequest.SrcPort, RIPCommandType.Response, RIPRequest.RouteCollection, Interface);
+            RIPRouteCollection RouteCollection;
+            if (RIPRequest.AskingForUpdate)
+            {
+                RouteCollection = Export();
+            }
+            else
+            {
+                RIPRequest.Export(Interface);
+                RouteCollection = RIPRequest.RouteCollection;
+            }
+
+            Protocols.RIP.Send(RIPRequest.SrcMac, RIPRequest.SrcIP, RIPRequest.SrcPort, RIPCommandType.Response, RouteCollection, Interface);
+        }
+
+        private RIPRouteCollection Export()
+        {
+            var RIPEntries = RIPTable.Instance.BestEntries();
+            return Export(RIPEntries);
         }
 
         private RIPRouteCollection Export(List<RIPEntry> RIPEntries)
@@ -77,6 +94,16 @@ namespace Router.RIP
             return RouteCollection;
         }
 
+        public static void SendUpdate()
+        {
+            var Interfaces = RIPInterfaces.GetRunningInterfaces();
+            foreach (var Interface in Interfaces)
+            {
+                var RIPResponse = new RIPResponse(Interface);
+                RIPResponse.Send();
+            }
+        }
+
         public static void SendTriggeredUpdate(Interface SourceInterface, List<RIPEntry> RIPEntries)
         {
             var Interfaces = RIPInterfaces.GetRunningInterfaces();
@@ -94,9 +121,7 @@ namespace Router.RIP
 
         public static void SendTriggeredUpdate(Interface SourceInterface, RIPEntry RIPEntry)
         {
-            var ChangedRoutes = new List<RIPEntry>();
-            ChangedRoutes.Add(RIPEntry);
-            SendTriggeredUpdate(SourceInterface, ChangedRoutes);
+            SendTriggeredUpdate(SourceInterface, new List<RIPEntry> { RIPEntry });
         }
 
         static public void OnReceived(IPAddress SourceIP, RIPRouteCollection RouteCollection, Interface Interface)

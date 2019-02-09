@@ -10,26 +10,30 @@ namespace Router.RIP
         public IPAddress SrcIP { get; private set; }
         public ushort SrcPort { get; private set; }
         public RIPRouteCollection RouteCollection { get; private set; }
-        public Interface Interface { get; private set; }
 
-        public RIPRequest(PhysicalAddress SrcMac, IPAddress SrcIP, ushort SrcPort, RIPRouteCollection RouteCollection, Interface Interface)
+        public RIPRequest(PhysicalAddress SrcMac, IPAddress SrcIP, ushort SrcPort, RIPRouteCollection RouteCollection)
         {
             this.SrcMac = SrcMac;
             this.SrcIP = SrcIP;
             this.SrcPort = SrcPort;
             this.RouteCollection = RouteCollection;
-            this.Interface = Interface;
         }
 
-        public void SendResponse()
+        public void SendResponse(Interface Interface)
         {
-            InsertRoutes();
+            if (RouteCollection.Count == 0)
+            {
+                return;
+            }
 
             var RIPResponse = new RIPResponse(Interface);
             RIPResponse.Send(this);
         }
 
-        private void InsertRoutes()
+        public bool AskingForUpdate
+            => RouteCollection.Count == 1 && RouteCollection[0].AddressFamilyIdentifier == 0 && RouteCollection[0].Metric ==16;
+
+        public void Export(Interface Interface)
         {
             foreach (var Route in RouteCollection)
             {
@@ -49,10 +53,22 @@ namespace Router.RIP
             }
         }
 
+        public static void AskForUpdate(Interface Interface)
+        {
+            var RouteCollection = new RIPRouteCollection
+            {
+                new RIPRequestRoute()
+            };
+
+            Protocols.RIP.Send(RIPCommandType.Request, RouteCollection, Interface);
+        }
+
         static public void OnReceived(PhysicalAddress SrcMac, IPAddress SrcIP, ushort SrcPort, RIPRouteCollection RouteCollection, Interface Interface)
         {
-            var RIPRequest = new RIPRequest(SrcMac, SrcIP, SrcPort, RouteCollection, Interface);
-            RIPRequest.SendResponse();
+            var RIPRequest = new RIPRequest(SrcMac, SrcIP, SrcPort, RouteCollection);
+            RIPRequest.SendResponse(Interface);
         }
+
+        static void 
     }
 }

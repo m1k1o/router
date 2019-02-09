@@ -108,12 +108,7 @@ namespace Router.RIP
         {
             do
             {
-                var Interfaces = GetRunningInterfaces();
-                foreach (var Interface in Interfaces)
-                {
-                    var RIPResponse = new RIPResponse(Interface);
-                    RIPResponse.Send();
-                }
+                RIPResponse.SendUpdate();
 
                 if (StopRequest.WaitOne(UpdateTimer))
                 {

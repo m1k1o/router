@@ -3,7 +3,7 @@ using System.Net;
 
 namespace Router.Protocols
 {
-    sealed class RIPRoute : Packet
+    class RIPRoute : Packet
     {
         public new const int Length = 20;
 
