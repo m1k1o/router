@@ -63,7 +63,7 @@ namespace Router.RIP
             Protocols.RIP.Send(RIPCommandType.Request, RouteCollection, Interface);
         }
 
-        static public void OnReceived(PhysicalAddress SrcMac, IPAddress SrcIP, ushort SrcPort, RIPRouteCollection RouteCollection, Interface Interface)
+        public static void OnReceived(PhysicalAddress SrcMac, IPAddress SrcIP, ushort SrcPort, RIPRouteCollection RouteCollection, Interface Interface)
         {
             var RIPRequest = new RIPRequest(SrcMac, SrcIP, SrcPort, RouteCollection);
             RIPRequest.SendResponse(Interface);

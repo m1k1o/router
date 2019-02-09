@@ -6,7 +6,7 @@ namespace Router
 {
     class ARPEntry
     {
-        static public TimeSpan CacheTimeout { get; set; } = TimeSpan.FromSeconds(128);
+        public static TimeSpan CacheTimeout { get; set; } = TimeSpan.FromSeconds(128);
 
         public IPAddress IPAddress { get; private set; }
 

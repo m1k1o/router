@@ -8,13 +8,13 @@ namespace Router
 {
     static class ARP
     {
-        static public TimeSpan Timeout { get; set; } = TimeSpan.FromMilliseconds(1500);
-        static public TimeSpan Interval { get; set; }  = TimeSpan.FromMilliseconds(500);
-        static public bool ProxyEnabled { get; set; }
+        public static TimeSpan Timeout { get; set; } = TimeSpan.FromMilliseconds(1500);
+        public static TimeSpan Interval { get; set; }  = TimeSpan.FromMilliseconds(500);
+        public static bool ProxyEnabled { get; set; }
 
-        static private ManualResetEvent BlocingWaiting = new ManualResetEvent(false);
+        private static ManualResetEvent BlocingWaiting = new ManualResetEvent(false);
 
-        static public void OnReceived(PhysicalAddress DestinationMac, ARPPacket ARPPacket, Interface Interface)
+        public static void OnReceived(PhysicalAddress DestinationMac, ARPPacket ARPPacket, Interface Interface)
         {
             // Is packet valid response for me?
             if (
@@ -60,7 +60,7 @@ namespace Router
             }
         }
         
-        static public PhysicalAddress Lookup(IPAddress IPAddress, Interface Interface)
+        public static PhysicalAddress Lookup(IPAddress IPAddress, Interface Interface)
         {
             var PhysicalAddress = ARPTable.Instance.Find(IPAddress);
             if (PhysicalAddress != null)
@@ -71,7 +71,7 @@ namespace Router
             return Fetch(IPAddress, Interface);
         }
 
-        static public PhysicalAddress Fetch(IPAddress IPAddress, Interface Interface)
+        public static PhysicalAddress Fetch(IPAddress IPAddress, Interface Interface)
         {
             BlocingWaiting.Reset();
 

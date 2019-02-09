@@ -6,7 +6,7 @@ namespace Router
 {
     static class Routing
     {
-        static public void OnReceived(IPv4Packet IPPacket)
+        public static void OnReceived(IPv4Packet IPPacket)
         {
             IPPacket.TimeToLive--;
             if (IPPacket.TimeToLive <= 0)

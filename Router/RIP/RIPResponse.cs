@@ -6,8 +6,8 @@ namespace Router.RIP
 {
     class RIPResponse
     {
-        static public bool SplitHorizon { get; set; } = true;
-        static public bool PoisonReverse { get; set; } = false;
+        public static bool SplitHorizon { get; set; } = true;
+        public static bool PoisonReverse { get; set; } = false;
 
         public Interface Interface { get; private set; }
 
@@ -124,7 +124,7 @@ namespace Router.RIP
             SendTriggeredUpdate(SourceInterface, new List<RIPEntry> { RIPEntry });
         }
 
-        static public void OnReceived(IPAddress SourceIP, RIPRouteCollection RouteCollection, Interface Interface)
+        public static void OnReceived(IPAddress SourceIP, RIPRouteCollection RouteCollection, Interface Interface)
         {
             var ChangedRIPEntries = new List<RIPEntry>();
 

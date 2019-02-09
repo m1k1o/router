@@ -6,11 +6,11 @@ namespace Router.Protocols
 {
     static class RIP
     {
-        static public ushort PortUDP { get; set; } = 520;
-        static public IPAddress MulticastIp { get; set; } = IPAddress.Parse("224.0.0.9");
-        static public PhysicalAddress MulticastMac { get; set; } = PhysicalAddress.Parse("01-00-5E-00-00-09");
+        public static ushort PortUDP { get; set; } = 520;
+        public static IPAddress MulticastIp { get; set; } = IPAddress.Parse("224.0.0.9");
+        public static PhysicalAddress MulticastMac { get; set; } = PhysicalAddress.Parse("01-00-5E-00-00-09");
 
-        static public void Send(PhysicalAddress DstMAC, IPAddress DstIP, ushort DstPort, RIPCommandType CommandType, RIPRouteCollection RTEs, Interface Interface)
+        public static void Send(PhysicalAddress DstMAC, IPAddress DstIP, ushort DstPort, RIPCommandType CommandType, RIPRouteCollection RTEs, Interface Interface)
         {
             var ripPacket = new RIPPacket(CommandType, RTEs);
 
@@ -26,12 +26,12 @@ namespace Router.Protocols
             Interface.SendPacket(ethernetPacket.Bytes);
         }
 
-        static public void Send(RIPCommandType CommandType, RIPRouteCollection RTEs, Interface Interface)
+        public static void Send(RIPCommandType CommandType, RIPRouteCollection RTEs, Interface Interface)
         {
             Send(MulticastMac, MulticastIp, PortUDP, CommandType, RTEs, Interface);
         }
 
-        static public RIPPacket Parse(EthernetPacket packet, Interface Interface = null)
+        public static RIPPacket Parse(EthernetPacket packet, Interface Interface = null)
         {
             // RIP Multicast or Unicast MAC
             if (!Equals(packet.DestinationHwAddress, MulticastMac)/* && !(Interface != null || !Equals(packet.DestinationHwAddress, Interface.PhysicalAddress))*/)

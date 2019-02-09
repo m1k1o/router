@@ -10,7 +10,7 @@ namespace Router.Controllers
 {
     class Routing
     {
-        static private readonly RoutingTable RoutingTable = RoutingTable.Instance;
+        private static readonly RoutingTable RoutingTable = RoutingTable.Instance;
 
         private JSON RoutingEntry(RoutingEntry RoutingEntry)
         {

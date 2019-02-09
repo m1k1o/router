@@ -72,7 +72,7 @@ namespace Router
             return Available.ToList();
         }
 
-        static public void OnPacketArrival(RawCapture Packet, Interface Interface)
+        public static void OnPacketArrival(RawCapture Packet, Interface Interface)
         {
             var Handler = new Handler(Packet, Interface);
 
@@ -96,7 +96,7 @@ namespace Router
             }
         }
 
-        static private void BackgroundThread()
+        private static void BackgroundThread()
         {
             while (!PacketProcessingStop)
             {

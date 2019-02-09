@@ -8,7 +8,7 @@ namespace Router.RIP
 {
     class RIPTable
     {
-        static public RIPTable Instance { get; } = new RIPTable();
+        public static RIPTable Instance { get; } = new RIPTable();
 
         private List<RIPEntry> Entries = new List<RIPEntry>();
 
@@ -90,17 +90,17 @@ namespace Router.RIP
 
     static class RIPListExtensions
     {
-        static public RIPEntry BestRoute(this IEnumerable<RIPEntry> Entries)
+        public static RIPEntry BestRoute(this IEnumerable<RIPEntry> Entries)
         {
             return Entries.OrderBy(Entry => Entry.Metric).First();
         }
 
-        static public bool Exists(this List<RIPEntry> Entries, IPNetwork IPNetwork)
+        public static bool Exists(this List<RIPEntry> Entries, IPNetwork IPNetwork)
         {
             return Entries.Exists(Entry => Entry.IPNetwork == IPNetwork);
         }
 
-        static public RIPEntry Find(this List<RIPEntry> Entries, IPNetwork IPNetwork)
+        public static RIPEntry Find(this List<RIPEntry> Entries, IPNetwork IPNetwork)
         {
             return Entries.Find(Entry => Entry.IPNetwork == IPNetwork);
         }

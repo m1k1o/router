@@ -27,17 +27,17 @@ namespace Router.Helpers
             return NetworkAddress.ToString() + "/" + SubnetMask.CIDR;
         }
 
-        static public IPNetwork Parse(IPAddress Address, IPSubnetMask SubnetMask)
+        public static IPNetwork Parse(IPAddress Address, IPSubnetMask SubnetMask)
         {
             return new IPNetwork(Address, SubnetMask);
         }
 
-        static public IPNetwork Parse(string Address, string SubnetMask)
+        public static IPNetwork Parse(string Address, string SubnetMask)
         {
             return new IPNetwork(IPAddress.Parse(Address), IPSubnetMask.Parse(SubnetMask));
         }
 
-        static public IPAddress GetBroadcastAddress(IPAddress Address, IPSubnetMask SubnetMask)
+        public static IPAddress GetBroadcastAddress(IPAddress Address, IPSubnetMask SubnetMask)
         {
             byte[] ipAdressBytes = Address.GetAddressBytes();
             byte[] SubnetMaskBytes = SubnetMask.GetAddressBytes();
@@ -56,7 +56,7 @@ namespace Router.Helpers
             return new IPAddress(broadcastAddress);
         }
 
-        static public IPAddress GetNetworkAddress(IPAddress Address, IPSubnetMask SubnetMask)
+        public static IPAddress GetNetworkAddress(IPAddress Address, IPSubnetMask SubnetMask)
         {
             byte[] ipAdressBytes = Address.GetAddressBytes();
             byte[] SubnetMaskBytes = SubnetMask.GetAddressBytes();
@@ -93,7 +93,7 @@ namespace Router.Helpers
         public override bool Equals(object obj)
             => !(obj is null) && obj.GetType() == GetType() && Equals(obj as IPNetwork);
 
-        static public bool operator ==(IPNetwork obj1, IPNetwork obj2)
+        public static bool operator ==(IPNetwork obj1, IPNetwork obj2)
             => Equals(obj1, obj2);
 
         public static bool operator !=(IPNetwork obj1, IPNetwork obj2)

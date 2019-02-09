@@ -4,9 +4,9 @@ namespace Router.RIP
 {
     abstract class RIPEntryTimers
     {
-        static public TimeSpan InvalidTimer = TimeSpan.FromSeconds(180);
-        static public TimeSpan HoldTimer = TimeSpan.FromSeconds(180);
-        static public TimeSpan FlushTimer = TimeSpan.FromSeconds(240);
+        public static TimeSpan InvalidTimer = TimeSpan.FromSeconds(180);
+        public static TimeSpan HoldTimer = TimeSpan.FromSeconds(180);
+        public static TimeSpan FlushTimer = TimeSpan.FromSeconds(240);
 
         private DateTime TimeCreated;
         private DateTime TimeUpdated;

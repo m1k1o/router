@@ -7,7 +7,7 @@ namespace Router.Controllers
 {
     class RIP
     {
-        static private readonly RIPTable RIPTable = RIPTable.Instance;
+        private static readonly RIPTable RIPTable = RIPTable.Instance;
 
         private JSON RIPEntry(RIPEntry RIPEntry)
         {

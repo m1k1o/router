@@ -32,7 +32,7 @@ namespace Router.Helpers
             Verify();
         }
 
-        static public int SubnetMaskToCIDR(IPSubnetMask SubnetMask)
+        public static int SubnetMaskToCIDR(IPSubnetMask SubnetMask)
         {
             var value = BitConverter.ToUInt32(SubnetMask.GetAddressBytes(), 0);
 
@@ -46,12 +46,12 @@ namespace Router.Helpers
             return count;
         }
 
-        static public IPSubnetMask CIDRToSubnetMask(int CIDR)
+        public static IPSubnetMask CIDRToSubnetMask(int CIDR)
         {
             throw new NotImplementedException();
         }
 
-        static public bool IsValidSubnetMask(IPSubnetMask SubnetMask)
+        public static bool IsValidSubnetMask(IPSubnetMask SubnetMask)
         {
             var value = BitConverter.ToUInt32(SubnetMask.GetAddressBytes(), 0);
             if (value == 0)
@@ -88,7 +88,7 @@ namespace Router.Helpers
 
         public override bool Equals(object obj) => !(obj is null) && obj.GetType() == GetType() && Equals(obj as IPSubnetMask);
 
-        static public bool operator ==(IPSubnetMask obj1, IPSubnetMask obj2) => Equals(obj1, obj2);
+        public static bool operator ==(IPSubnetMask obj1, IPSubnetMask obj2) => Equals(obj1, obj2);
 
         public static bool operator !=(IPSubnetMask obj1, IPSubnetMask obj2) => !(obj1 == obj2);
 

@@ -10,7 +10,7 @@ namespace Router.Controllers
 {
     class Interfaces
     {
-        static private readonly Router.Interfaces Instance = Router.Interfaces.Instance;
+        private static readonly Router.Interfaces Instance = Router.Interfaces.Instance;
 
         private JSON Interface(Interface Interface)
         {

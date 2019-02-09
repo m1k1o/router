@@ -6,10 +6,10 @@ namespace Router.Protocols
 {
     static class ARP
     {
-        static public PhysicalAddress RequestTargetMac { get; set; } = PhysicalAddress.Parse("00-00-00-00-00-00");
-        static public PhysicalAddress RequestDestinationMac { get; set; } = PhysicalAddress.Parse("FF-FF-FF-FF-FF-FF");
+        public static PhysicalAddress RequestTargetMac { get; set; } = PhysicalAddress.Parse("00-00-00-00-00-00");
+        public static PhysicalAddress RequestDestinationMac { get; set; } = PhysicalAddress.Parse("FF-FF-FF-FF-FF-FF");
 
-        static private void Send(
+        private static void Send(
             ARPOperation Operation,
             PhysicalAddress SenderMac,
             IPAddress SenderIp,
@@ -27,7 +27,7 @@ namespace Router.Protocols
             Interface.SendPacket(ethernetPacket.Bytes);
         }
 
-        static public void SendRequest(
+        public static void SendRequest(
             IPAddress TargetIp,
             Interface Interface
         )
@@ -43,7 +43,7 @@ namespace Router.Protocols
            );
         }
 
-        static public void SendProxyResponse(
+        public static void SendProxyResponse(
             IPAddress SenderIp,
             PhysicalAddress TargetMac,
             IPAddress TargetIp,
@@ -61,7 +61,7 @@ namespace Router.Protocols
            );
         }
 
-        static public void SendResponse(
+        public static void SendResponse(
             PhysicalAddress TargetMac,
             IPAddress TargetIp,
             Interface Interface
@@ -78,7 +78,7 @@ namespace Router.Protocols
            );
         }
 
-        static public ARPPacket Parse(Packet packet)
+        public static ARPPacket Parse(Packet packet)
         {
             return (ARPPacket) packet.Extract(typeof(ARPPacket));
         }

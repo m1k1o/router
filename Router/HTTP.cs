@@ -104,7 +104,7 @@ namespace Router
             }
         }
 
-        static private void Main(string[] args)
+        private static void Main(string[] args)
         {
             var Preload = Interfaces.Instance;
 

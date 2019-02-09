@@ -10,7 +10,7 @@ namespace Router.Controllers
 {
     class ARP
     {
-        static private readonly ARPTable ARPTable = ARPTable.Instance;
+        private static readonly ARPTable ARPTable = ARPTable.Instance;
 
         public JSON Settings(string Data = null)
         {
