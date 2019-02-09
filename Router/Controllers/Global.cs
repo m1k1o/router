@@ -15,6 +15,7 @@ namespace Router.Controllers
             obj.Push("interfaces", (new Interfaces()).Show());
             obj.Push("arp_table", (new ARP()).Table());
             obj.Push("routing_table", (new Routing()).Table());
+            obj.Push("rip_table", (new RIP()).Table());
             return obj;
         }
 
@@ -23,6 +24,7 @@ namespace Router.Controllers
             var obj = new JSONObject();
             obj.Push("arp_table", (new ARP()).Table());
             obj.Push("routing_table", (new Routing()).Table());
+            obj.Push("rip_table", (new RIP()).Table());
             return obj;
         }
     }

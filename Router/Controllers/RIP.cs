@@ -1,6 +1,7 @@
 ﻿using Router.Helpers;
 using Router.RIP;
 using System;
+using System.Collections.Generic;
 
 namespace Router.Controllers
 {
@@ -35,7 +36,7 @@ namespace Router.Controllers
                 var Rows = Data.Split('\n');
 
                 // Validate
-                if (Rows.Length != 3)
+                if (Rows.Length != 4)
                 {
                     return new JSONError("Expected UpdateTimer, InvalidTimer, HoldTimer, FlushTimer.");
                 }
@@ -48,8 +49,8 @@ namespace Router.Controllers
                 {
                     UpdateTimer = TimeSpan.FromSeconds(Int32.Parse(Rows[0]));
                     InvalidTimer = TimeSpan.FromSeconds(Int32.Parse(Rows[1]));
-                    HoldTimer = TimeSpan.FromMilliseconds(Int32.Parse(Rows[2]));
-                    FlushTimer = TimeSpan.FromMilliseconds(Int32.Parse(Rows[3]));
+                    HoldTimer = TimeSpan.FromSeconds(Int32.Parse(Rows[2]));
+                    FlushTimer = TimeSpan.FromSeconds(Int32.Parse(Rows[3]));
                 }
                 catch (Exception e)
                 {
@@ -66,9 +67,54 @@ namespace Router.Controllers
             var obj = new JSONObject();
             obj.Push("update_timer", RIPInterfaces.UpdateTimer.TotalSeconds);
             obj.Push("invalid_timer", RIPEntryTimers.InvalidTimer.TotalSeconds);
-            obj.Push("hold_timer", RIPEntryTimers.HoldTimer.TotalMilliseconds);
-            obj.Push("flush_timer", RIPEntryTimers.FlushTimer.TotalMilliseconds);
+            obj.Push("hold_timer", RIPEntryTimers.HoldTimer.TotalSeconds);
+            obj.Push("flush_timer", RIPEntryTimers.FlushTimer.TotalSeconds);
             return obj;
+        }
+
+        /*
+        public JSON AddInterface(string Data = null)
+        {
+            try
+            {
+                var Interface = Router.Interfaces.Instance.GetInterfaceById(Data);
+                RIPInterfaces.Add(Interface);
+
+                return new JSONObject("running", Interface.Running);
+            }
+            catch (Exception e)
+            {
+                return new JSONError(e.Message);
+            }
+        }
+        */
+
+        public JSON Interfaces(string Data = null)
+        {
+            if(Data != "available" && Data != "started")
+            {
+                return new JSONError("Expected 'available' or 'active'.");
+            }
+
+            var arr = new JSONArray();
+
+            List<Interface> Interfaces = null;
+            if (Data == "active")
+            {
+                Interfaces = RIPInterfaces.GetActiveInterfaces();
+            }
+
+            if (Data == "available")
+            {
+                Interfaces = RIPInterfaces.GetAvailableInterfaces();
+            }
+
+            foreach (var Interface in Interfaces)
+            {
+                arr.Push(Interface.ID);
+            }
+
+            return arr;
         }
 
         public JSON Table(string Data = null)
