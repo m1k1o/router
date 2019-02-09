@@ -31,7 +31,10 @@ namespace Router.RIP
         public bool CanBeRemoved { get; set; } = true;
 
         public bool ToBeRemoved {
-            get => CanBeRemoved && DateTime.Now > TimeUpdated + FlushTimer;
+            get => 
+                CanBeRemoved &&
+                ((PossibblyDownSince != DateTime.MinValue && DateTime.Now > PossibblyDownSince + FlushTimer) ||
+                (PossibblyDownSince == DateTime.MinValue && DateTime.Now > TimeUpdated + FlushTimer));
         }
 
         public bool PossibblyDown
@@ -41,12 +44,12 @@ namespace Router.RIP
                 DateTime.Now > TimeUpdated + InvalidTimer;
             set
             {
-                if (!value)
+                if (value && PossibblyDownSince == DateTime.MinValue)
                 {
                     PossibblyDownSince = DateTime.Now;
                 }
-                else
-                {
+
+                if (!value) {
                     PossibblyDownSince = DateTime.MinValue;
                 }
             }

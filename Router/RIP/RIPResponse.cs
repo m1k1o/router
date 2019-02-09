@@ -131,8 +131,13 @@ namespace Router.RIP
             var RIPEntries = RIPTable.Instance.FindAll(Interface);
             foreach (var Route in RouteCollection)
             {
+                if (Route.Metric > 16 || Route.AddressFamilyIdentifier != 2)
+                {
+                    continue;
+                }
+
                 bool RIPEntryChanged = false;
-                uint Metric = Route.Metric + 1;
+                uint Metric = Route.Metric == 16 ? 16 : Route.Metric + 1;
 
                 IPAddress NextHopIP = SourceIP;
                 if (Interface.IsReachable(SourceIP))
