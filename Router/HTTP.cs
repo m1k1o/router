@@ -62,27 +62,19 @@ namespace Router
 
             try
             {
-                // Find a type you want to instantiate: you need to know the assembly it's in for it, we assume that all is is one assembly for simplicity
-                // You should be careful, because ClassName should be full name, which means it should include all the namespaces, like "ConsoleApplication.MyClass"
-                // Not just "MyClass"
-                Type type = Assembly.GetExecutingAssembly().GetType("Router.Controllers." + ClassName);
-                if (type == null)
+                Type Type = Type.GetType("Router.Controllers." + ClassName);
+                if (Type == null)
                 {
-                    throw new Exception("Class '"+ ClassName+"' not found.");
+                    throw new Exception("Class '" + ClassName + "' not found.");
                 }
 
-                // Get MethodInfo, reflection class that is responsible for storing all relevant information about one method that type defines
-                MethodInfo method = type.GetMethod(MethodName);
-                if (method == null)
+                MethodInfo MethodInfo = Type.GetMethod(MethodName);
+                if (MethodInfo == null)
                 {
                     throw new Exception("Method '" + MethodName + "' not found.");
                 }
 
-                // Create an instance of the type
-                object instance = Activator.CreateInstance(type);
-
-                // So we pass an instance to call it on and parameter list
-                object response = method.Invoke(instance, new object[] { Data });
+                object response = MethodInfo.Invoke(null, new object[] { Data });
                 return new JSON(response).ToString();
             }
             catch (TargetInvocationException e)
