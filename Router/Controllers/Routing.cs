@@ -16,12 +16,12 @@ namespace Router.Controllers
             obj.Push("mask", RoutingEntry.IPNetwork.SubnetMask);
             obj.Push("network", RoutingEntry.IPNetwork);
             obj.Push("next_hop", RoutingEntry.NextHopIP);
-            obj.Push("interface", RoutingEntry.Interface);
+            obj.Push("interface", RoutingEntry.Interface.ID.ToString());
             obj.Push("type", RoutingEntry.ADistance);
             return obj;
         }
 
-        public static JSON AddRoute(string Data)
+        public static JSON AddStatic(string Data)
         {
             var Rows = Data.Split('\n');
             if (Rows.Length != 4)
@@ -47,7 +47,7 @@ namespace Router.Controllers
 
                 var Entry = new RoutingEntry(Network, NextHopIP, Interface, ADistance.Static);
                 RoutingTable.Push(Entry);
-                return RoutingEntry(Entry);
+                return new JSONObject(Entry.ID.ToString(), RoutingEntry(Entry));
             }
             catch (Exception e)
             {
@@ -55,7 +55,7 @@ namespace Router.Controllers
             }
         }
 
-        public static JSON RemoveRoute(string Data)
+        public static JSON RemoveStatic(string Data)
         {
             var Rows = Data.Split('\n');
             if (Rows.Length != 2)

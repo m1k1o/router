@@ -11,12 +11,12 @@ namespace Router.Controllers
         private static JSON RIPEntry(RIPEntry RIPEntry)
         {
             var obj = new JSONObject();
-            obj.Push("id", RIPEntry.ToString());
+            //obj.Push("id", RIPEntry.ID.ToString());
             obj.Push("ip", RIPEntry.IPNetwork.NetworkAddress);
             obj.Push("mask", RIPEntry.IPNetwork.SubnetMask);
             obj.Push("network", RIPEntry.IPNetwork);
             obj.Push("next_hop", RIPEntry.NextHopIP);
-            obj.Push("interface", RIPEntry.Interface);
+            obj.Push("interface", RIPEntry.Interface.ID.ToString());
             obj.Push("metric", RIPEntry.Metric);
 
             obj.Push("never_updated", RIPEntry.NeverUpdated);
@@ -85,12 +85,19 @@ namespace Router.Controllers
             return new JSONObject("active", RIPInterfaces.ActiveUpdates);
         }
 
-        public static JSON AddInterface(string Data)
+        public static JSON InterfaceToggle(string Data)
         {
             try
             {
                 var Interface = Router.Interfaces.Instance.GetInterfaceById(Data);
-                RIPInterfaces.Add(Interface);
+                if (RIPInterfaces.IsActive(Interface))
+                {
+                    RIPInterfaces.Remove(Interface);
+                }
+                else
+                {
+                    RIPInterfaces.Add(Interface);
+                }
 
                 var obj = new JSONObject();
                 obj.Push("active", RIPInterfaces.IsActive(Interface));
@@ -102,25 +109,7 @@ namespace Router.Controllers
                 return new JSONError(e.Message);
             }
         }
-
-        public static JSON RemoveInterface(string Data)
-        {
-            try
-            {
-                var Interface = Router.Interfaces.Instance.GetInterfaceById(Data);
-                RIPInterfaces.Remove(Interface);
-
-                var obj = new JSONObject();
-                obj.Push("active", RIPInterfaces.IsActive(Interface));
-                obj.Push("running", RIPInterfaces.IsRunning(Interface));
-                return obj;
-            }
-            catch (Exception e)
-            {
-                return new JSONError(e.Message);
-            }
-        }
-
+        
         public static JSON Interfaces(string Data = null)
         {
             var obj = new JSONObject();

@@ -22,12 +22,19 @@ namespace Router.Controllers
             return obj;
         }
 
-        public static JSON Start(string Data)
+        public static JSON Toggle(string Data)
         {
             try
             {
                 var Interface = Instance.GetInterfaceById(Data);
-                Interface.Start();
+                if (!Interface.Running)
+                {
+                    Interface.Start();
+                }
+                else
+                {
+                    Interface.Stop();
+                }
 
                 return new JSONObject("running", Interface.Running);
             }
@@ -37,21 +44,6 @@ namespace Router.Controllers
             }
         }
 
-        public static JSON Stop(string Data)
-        {
-            try
-            {
-                var Interface = Instance.GetInterfaceById(Data);
-                Interface.Stop();
-
-                return new JSONObject("running", Interface.Running);
-            }
-            catch (Exception e)
-            {
-                return new JSONError(e.Message);
-            }
-        }
-        
         public static JSON Edit(string Data)
         {
             var Rows = Data.Split('\n');
