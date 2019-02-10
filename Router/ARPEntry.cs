@@ -8,8 +8,9 @@ namespace Router
     {
         public static TimeSpan CacheTimeout { get; set; } = TimeSpan.FromSeconds(128);
 
-        public IPAddress IPAddress { get; private set; }
+        public int ID => GetHashCode();
 
+        public IPAddress IPAddress { get; private set; }
         public PhysicalAddress PhysicalAddress { get; private set; }
 
         private DateTime Expires;
@@ -24,11 +25,16 @@ namespace Router
         public bool HasExpired { get => DateTime.Now > Expires; }
 
         public int ExpiresIn { get => (int)(Expires - DateTime.Now).TotalSeconds; }
-
+        
         public void Update(PhysicalAddress PhysicalAddress)
         {
             this.PhysicalAddress = PhysicalAddress;
             Expires = DateTime.Now + CacheTimeout;
+        }
+
+        public override string ToString()
+        {
+            return "ARPEntry:" + IPAddress.ToString() + " has " + PhysicalAddress.ToString() + " (timeout: " + ExpiresIn + ")\n";
         }
 
         // Equality

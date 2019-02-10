@@ -6,6 +6,8 @@ namespace Router.RIP
 {
     class RIPEntry : RIPEntryTimers
     {
+        public int ID => GetHashCode();
+
         public Interface Interface { get; private set; }
         public IPNetwork IPNetwork { get; private set; }
         public IPAddress NextHopIP { get; private set; }
@@ -50,10 +52,22 @@ namespace Router.RIP
             SyncWithRT = true;
             return HasChanged;
         }
-        
+
         public override string ToString()
         {
-            return IPNetwork.ToString() + " via " + Interface.ToString();
+            return
+                "RIPEntry:" + IPNetwork.ToString() + " via " + NextHopIP.ToString() + ":\n" +
+                "\tInterface:\t" + Interface.ToString() + "\n" +
+                "\tMetric:\t" + Metric.ToString() + "\n" +
+
+                "\tSyncWithRT:\t" + SyncWithRT.ToString() + "\n" +
+                "\tCanBeUpdated:\t" + CanBeUpdated.ToString() + "\n" +
+                "\t\tNeverUpdated:\t" + NeverUpdated.ToString() + "\n" +
+
+                "\tTimersEnabled:\t" + TimersEnabled.ToString() + "\n" +
+                "\t\tPossibblyDown:\t" + PossibblyDown.ToString() + "\n" +
+                "\t\tInHold:\t" + InHold.ToString() + "\n" +
+                "\t\tToBeRemoved:\t" + ToBeRemoved.ToString() + "\n";
         }
 
         // Equality

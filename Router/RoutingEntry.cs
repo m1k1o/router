@@ -5,6 +5,8 @@ namespace Router
 {
     class RoutingEntry
     {
+        public int ID => GetHashCode();
+
         public IPNetwork IPNetwork { get; private set; }
         public IPAddress NextHopIP { get; private set; }
         public Interface Interface { get; private set; }
@@ -24,7 +26,18 @@ namespace Router
         
         public override string ToString()
         {
-            return ADistance.ToString() + " " + IPNetwork.ToString();
+            string Str = "";
+            if (HasNextHopIP)
+            {
+                Str += NextHopIP.ToString() + " ";
+            }
+
+            if (HasInterface)
+            {
+                Str += "interface " + Interface.ToString() + " ";
+            }
+
+            return IPNetwork.ToString() + " via " + Str + "[" + ADistance.ToString() + "]";
         }
 
         // Equality

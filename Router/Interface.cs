@@ -9,10 +9,11 @@ namespace Router
 
     class Interface : Device
     {
+        public int ID { get; private set; }
+
         public InterfaceEvent OnStarted { get; set; } = new InterfaceEvent(I => { });
         public InterfaceEvent OnStopped { get; set; } = new InterfaceEvent(I => { });
 
-        public int ID { get; private set; }
         public IPAddress IPAddress { get; private set; }
         public IPNetwork IPNetwork { get; private set; }
 
@@ -70,7 +71,7 @@ namespace Router
 
         public override string ToString()
         {
-            return ID.ToString();
+            return FriendlyName + "(" + IPNetwork.ToString() + ")";
         }
 
         // Equality
