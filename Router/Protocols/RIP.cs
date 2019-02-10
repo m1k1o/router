@@ -42,39 +42,43 @@ namespace Router.Protocols
             IPv4Packet ipPacket;
             UdpPacket udpPacket;
 
-            if(
+            if (
                 // Sent from me
-                Equals(packet.SourceHwAddress, Interface.PhysicalAddress) &&
+                Equals(packet.SourceHwAddress, Interface.PhysicalAddress) ||
 
-                // Not from RIP Multicast MAC
-                !Equals(packet.DestinationHwAddress, MulticastMac) &&
+                (
+                    // Not to RIP Multicast MAC
+                    !Equals(packet.DestinationHwAddress, MulticastMac) &&
 
-                // Not from Unicast for me
-                !Equals(packet.DestinationHwAddress, MulticastMac) &&
+                    // Not to Unicast for me
+                    !Equals(packet.DestinationHwAddress, Interface.PhysicalAddress)
+                ) ||
 
                 // Not IP Packet
-                (ipPacket = (IPv4Packet)packet.Extract(typeof(IPv4Packet))) == null &&
+                (ipPacket = (IPv4Packet)packet.Extract(typeof(IPv4Packet))) == null ||
 
                 // Not from this network
-                !Interface.IsReachable(Interface.IPAddress) &&
+                !Interface.IsReachable(ipPacket.SourceAddress) ||
 
-                // Not from RIP Multicast IP
-                !Equals(ipPacket.DestinationAddress, MulticastIp) &&
+                (
+                    // Not to RIP Multicast IP
+                    !Equals(ipPacket.DestinationAddress, MulticastIp) &&
 
-                // Not for me 
-                !Equals(ipPacket.DestinationAddress, Interface.IPAddress) &&
+                    // Not to me 
+                    !Equals(ipPacket.DestinationAddress, Interface.IPAddress)
+                ) ||
 
                 // Not UDP Packet
-                (udpPacket = (UdpPacket)ipPacket.Extract(typeof(UdpPacket))) == null &&
+                (udpPacket = (UdpPacket)ipPacket.Extract(typeof(UdpPacket))) == null ||
 
                 // Not to 520 Port
                 udpPacket.DestinationPort != PortUDP
             )
             {
-                return Parse(udpPacket);
+                return null;
             }
 
-            return null;
+            return Parse(udpPacket);
         }
 
         public static RIPPacket Parse(UdpPacket UdpPacket)

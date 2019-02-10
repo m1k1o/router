@@ -108,14 +108,20 @@ namespace Router
         public void IP(IPv4Packet IPv4Packet)
         {
             Console.WriteLine("Got IPV4.");
-            if (Equals(EthernetPacket.SourceHwAddress, Interface.PhysicalAddress) || !Equals(EthernetPacket.DestinationHwAddress, Interface.PhysicalAddress))
-            {
-                return;
-            }
+            if (
+                // Is from my MAC
+                Equals(EthernetPacket.SourceHwAddress, Interface.PhysicalAddress) || 
 
-            if (Interface.DeviceIP != null && Equals(IPv4Packet.DestinationAddress, Interface.DeviceIP))
+                // Is not to my MAC
+                !Equals(EthernetPacket.DestinationHwAddress, Interface.PhysicalAddress) ||
+
+                // Is to my IP
+                Equals(IPv4Packet.DestinationAddress, Interface.IPAddress) ||
+
+                // Is to my Device IP
+                (Interface.DeviceIP != null && Equals(IPv4Packet.DestinationAddress, Interface.DeviceIP))
+            )
             {
-                Console.WriteLine("Packet is for Device.");
                 return;
             }
 
