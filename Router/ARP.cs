@@ -8,8 +8,8 @@ namespace Router
 {
     static class ARP
     {
-        public static TimeSpan Timeout { get; set; } = TimeSpan.FromMilliseconds(1500);
-        public static TimeSpan Interval { get; set; }  = TimeSpan.FromMilliseconds(500);
+        public static TimeSpan RequestTimeout { get; set; } = TimeSpan.FromMilliseconds(1500);
+        public static TimeSpan RequestInterval { get; set; }  = TimeSpan.FromMilliseconds(500);
         public static bool ProxyEnabled { get; set; }
 
         private static ManualResetEvent BlocingWaiting = new ManualResetEvent(false);
@@ -75,14 +75,14 @@ namespace Router
         {
             BlocingWaiting.Reset();
 
-            var timeoutDateTime = DateTime.Now + Timeout;
+            var timeoutDateTime = DateTime.Now + RequestTimeout;
             while (DateTime.Now < timeoutDateTime)
             {
                 // Send Request
                 Protocols.ARP.SendRequest(IPAddress, Interface);
 
                 // Wait for response
-                if (BlocingWaiting.WaitOne(Interval))
+                if (BlocingWaiting.WaitOne(RequestInterval))
                 {
                     return ARPTable.Instance.Find(IPAddress);
                 }

@@ -1,21 +1,17 @@
 ﻿using Router.Helpers;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Router.Controllers
 {
-    class Routing
+    static class Routing
     {
         private static readonly RoutingTable RoutingTable = RoutingTable.Instance;
 
-        private JSON RoutingEntry(RoutingEntry RoutingEntry)
+        private static JSON RoutingEntry(RoutingEntry RoutingEntry)
         {
             var obj = new JSONObject();
-            obj.Push("id", RoutingEntry.ToString());
+            //obj.Push("id", RoutingEntry.ID);
             obj.Push("ip", RoutingEntry.IPNetwork.NetworkAddress);
             obj.Push("mask", RoutingEntry.IPNetwork.SubnetMask);
             obj.Push("network", RoutingEntry.IPNetwork);
@@ -25,7 +21,7 @@ namespace Router.Controllers
             return obj;
         }
 
-        public JSON AddRoute(string Data)
+        public static JSON AddRoute(string Data)
         {
             var Rows = Data.Split('\n');
             if (Rows.Length != 4)
@@ -59,7 +55,7 @@ namespace Router.Controllers
             }
         }
 
-        public JSON RemoveRoute(string Data)
+        public static JSON RemoveRoute(string Data)
         {
             var Rows = Data.Split('\n');
             if (Rows.Length != 2)
@@ -80,16 +76,23 @@ namespace Router.Controllers
             return new JSONObject("removed", RoutingTable.Remove(IPNetwork, ADistance.Static));
         }
 
-        public JSON Table(string Data = null)
+        public static JSON Table(string Data = null)
         {
             var obj = new JSONObject();
 
             var Rows = RoutingTable.GetEntries();
             foreach (var Row in Rows)
             {
-                obj.Push(Row.ToString(), RoutingEntry(Row));
+                obj.Push(Row.ID.ToString(), RoutingEntry(Row));
             }
 
+            return obj;
+        }
+
+        public static JSON Initialize(string Data = null)
+        {
+            var obj = new JSONObject();
+            obj.Push("table", Table());
             return obj;
         }
     }

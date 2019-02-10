@@ -1,15 +1,14 @@
 ﻿using Router.Helpers;
 using Router.RIP;
 using System;
-using System.Collections.Generic;
 
 namespace Router.Controllers
 {
-    class RIP
+    static class RIP
     {
         private static readonly RIPTable RIPTable = RIPTable.Instance;
 
-        private JSON RIPEntry(RIPEntry RIPEntry)
+        private static JSON RIPEntry(RIPEntry RIPEntry)
         {
             var obj = new JSONObject();
             obj.Push("id", RIPEntry.ToString());
@@ -30,7 +29,7 @@ namespace Router.Controllers
             return obj;
         }
 
-        public JSON Timers(string Data = null)
+        public static JSON Timers(string Data = null)
         {
             if (!string.IsNullOrEmpty(Data))
             {
@@ -42,27 +41,22 @@ namespace Router.Controllers
                     return new JSONError("Expected UpdateTimer, InvalidTimer, HoldTimer, FlushTimer.");
                 }
 
-                TimeSpan UpdateTimer;
-                TimeSpan InvalidTimer;
-                TimeSpan HoldTimer;
-                TimeSpan FlushTimer;
                 try
                 {
-                    UpdateTimer = TimeSpan.FromSeconds(Int32.Parse(Rows[0]));
-                    InvalidTimer = TimeSpan.FromSeconds(Int32.Parse(Rows[1]));
-                    HoldTimer = TimeSpan.FromSeconds(Int32.Parse(Rows[2]));
-                    FlushTimer = TimeSpan.FromSeconds(Int32.Parse(Rows[3]));
+                    var UpdateTimer = TimeSpan.FromSeconds(Int32.Parse(Rows[0]));
+                    var InvalidTimer = TimeSpan.FromSeconds(Int32.Parse(Rows[1]));
+                    var HoldTimer = TimeSpan.FromSeconds(Int32.Parse(Rows[2]));
+                    var FlushTimer = TimeSpan.FromSeconds(Int32.Parse(Rows[3]));
+
+                    RIPInterfaces.UpdateTimer = UpdateTimer;
+                    RIPEntryTimers.InvalidTimer = InvalidTimer;
+                    RIPEntryTimers.HoldTimer = HoldTimer;
+                    RIPEntryTimers.FlushTimer = FlushTimer;
                 }
                 catch (Exception e)
                 {
                     return new JSONError(e.Message);
                 }
-
-                // Set
-                RIPInterfaces.UpdateTimer = UpdateTimer;
-                RIPEntryTimers.InvalidTimer = InvalidTimer;
-                RIPEntryTimers.HoldTimer = HoldTimer;
-                RIPEntryTimers.FlushTimer = FlushTimer;
             }
 
             var obj = new JSONObject();
@@ -73,7 +67,7 @@ namespace Router.Controllers
             return obj;
         }
 
-        public JSON Updates(string Data = null)
+        public static JSON Updates(string Data = null)
         {
             if (!string.IsNullOrEmpty(Data))
             {
@@ -91,7 +85,7 @@ namespace Router.Controllers
             return new JSONObject("active", RIPInterfaces.ActiveUpdates);
         }
 
-        public JSON AddInterface(string Data)
+        public static JSON AddInterface(string Data)
         {
             try
             {
@@ -109,7 +103,7 @@ namespace Router.Controllers
             }
         }
 
-        public JSON RemoveInterface(string Data)
+        public static JSON RemoveInterface(string Data)
         {
             try
             {
@@ -127,7 +121,7 @@ namespace Router.Controllers
             }
         }
 
-        public JSON Interfaces(string Data = null)
+        public static JSON Interfaces(string Data = null)
         {
             var obj = new JSONObject();
             var obj2 = new JSONObject();
@@ -145,16 +139,26 @@ namespace Router.Controllers
             return obj;
         }
 
-        public JSON Table(string Data = null)
+        public static JSON Table(string Data = null)
         {
             var obj = new JSONObject();
 
             var Rows = RIPTable.GetEntries();
             foreach (var Row in Rows)
             {
-                obj.Push(Row.ToString(), RIPEntry(Row));
+                obj.Push(Row.ID.ToString(), RIPEntry(Row));
             }
 
+            return obj;
+        }
+
+        public static JSON Initialize(string Data = null)
+        {
+            var obj = new JSONObject();
+            obj.Push("table", Table());
+            obj.Push("updates", Updates());
+            obj.Push("interfaces", Interfaces());
+            obj.Push("timers", Timers());
             return obj;
         }
     }

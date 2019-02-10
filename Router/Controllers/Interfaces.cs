@@ -1,18 +1,14 @@
 ﻿using Router.Helpers;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Router.Controllers
 {
-    class Interfaces
+    static class Interfaces
     {
         private static readonly Router.Interfaces Instance = Router.Interfaces.Instance;
 
-        private JSON Interface(Interface Interface)
+        private static JSON Interface(Interface Interface)
         {
             var obj = new JSONObject();
             //obj.Push("id", Interface.ID);
@@ -26,7 +22,7 @@ namespace Router.Controllers
             return obj;
         }
 
-        public JSON Start(string Data)
+        public static JSON Start(string Data)
         {
             try
             {
@@ -41,7 +37,7 @@ namespace Router.Controllers
             }
         }
 
-        public JSON Stop(string Data)
+        public static JSON Stop(string Data)
         {
             try
             {
@@ -56,60 +52,49 @@ namespace Router.Controllers
             }
         }
         
-        public JSON Edit(string Data)
+        public static JSON Edit(string Data)
         {
             var Rows = Data.Split('\n');
             if (Rows.Length != 3)
             {
-                return new JSONError("Expected InterfaceID, IPAddress, Mask.");
+                return new JSONError("Expected InterfaceID, IPAddress, IPSubnetMask.");
             }
 
             Interface Interface;
-            IPAddress IP;
-            IPSubnetMask Mask;
             try
             {
                 Interface = Instance.GetInterfaceById(Rows[0]);
-                IP = IPAddress.Parse(Rows[1]);
-                Mask = IPSubnetMask.Parse(Rows[2]);
 
-                // Save
-                Interface.SetIP(IP, Mask);
+                var IP = IPAddress.Parse(Rows[1]);
+                var SubnetMask = IPSubnetMask.Parse(Rows[2]);
+                Interface.SetIP(IP, SubnetMask);
             }
             catch (Exception e)
             {
                 return new JSONError(e.Message);
             }
 
-            return this.Interface(Interface);
+            return Interfaces.Interface(Interface);
         }
-
-        public JSON Show(string Data = null)
+        
+        public static JSON Table(string Data = null)
         {
             var obj = new JSONObject();
 
             var Interfaces = Instance.GetInteraces();
             foreach(var Iface in Interfaces)
             {
-                obj.Push(Iface.ToString(), Interface(Iface));
+                obj.Push(Iface.ID.ToString(), Interface(Iface));
             }
 
             return obj;
         }
 
-        public JSON Get(string Data = null)
+        public static JSON Initialize(string Data = null)
         {
-            Interface Interface;
-            try
-            {
-                Interface = Instance.GetInterfaceById(Data);
-            }
-            catch (Exception e)
-            {
-                return new JSONError(e.Message);
-            }
-
-            return this.Interface(Interface);
+            var obj = new JSONObject();
+            obj.Push("table", Table());
+            return obj;
         }
     }
 }

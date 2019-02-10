@@ -1,39 +1,43 @@
 ﻿using Router.Helpers;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Router.Controllers
 {
-    class ARP
+    static class ARP
     {
         private static readonly ARPTable ARPTable = ARPTable.Instance;
 
-        public JSON Settings(string Data = null)
+        private static JSON ARPEntry(ARPEntry ARPEntry)
+        {
+            var obj = new JSONObject();
+            //obj.Push("id", ARPEntry.ID);
+            obj.Push("ip", ARPEntry.IPAddress);
+            obj.Push("mac", ARPEntry.PhysicalAddress);
+            obj.Push("cache_timeout", ARPEntry.ExpiresIn);
+            return obj;
+        }
+
+        public static JSON Timers(string Data = null)
         {
             if (!string.IsNullOrEmpty(Data))
             {
                 var Rows = Data.Split('\n');
 
                 // Validate
-                if (Rows.Length != 4)
+                if (Rows.Length != 3)
                 {
-                    return new JSONError("Expected ProxyEnabled, TTL, Timeout, Interval.");
+                    return new JSONError("Expected CacheTimeout, RequestTimeout, RequestInterval.");
                 }
-
-                bool ProxyEnabled;
+                
                 TimeSpan CacheTimeout;
-                TimeSpan Timeout;
-                TimeSpan Interval;
+                TimeSpan RequestTimeout;
+                TimeSpan RequestInterval;
                 try
                 {
-                    ProxyEnabled = Rows[0] == "true";
-                    CacheTimeout = TimeSpan.FromSeconds(Int32.Parse(Rows[1]));
-                    Timeout = TimeSpan.FromMilliseconds(Int32.Parse(Rows[2]));
-                    Interval = TimeSpan.FromMilliseconds(Int32.Parse(Rows[3]));
+                    CacheTimeout = TimeSpan.FromSeconds(Int32.Parse(Rows[0]));
+                    RequestTimeout = TimeSpan.FromMilliseconds(Int32.Parse(Rows[1]));
+                    RequestInterval = TimeSpan.FromMilliseconds(Int32.Parse(Rows[2]));
                 }
                 catch (Exception e)
                 {
@@ -41,21 +45,37 @@ namespace Router.Controllers
                 }
 
                 // Set
-                Router.ARP.ProxyEnabled = ProxyEnabled;
                 ARPEntry.CacheTimeout = CacheTimeout;
-                Router.ARP.Timeout = Timeout;
-                Router.ARP.Interval = Interval;
+                Router.ARP.RequestTimeout = RequestTimeout;
+                Router.ARP.RequestInterval = RequestInterval;
             }
 
             var obj = new JSONObject();
-            obj.Push("proxy_enabled", Router.ARP.ProxyEnabled);
             obj.Push("cache_timeout", ARPEntry.CacheTimeout.TotalSeconds);
-            obj.Push("timeout", Router.ARP.Timeout.TotalMilliseconds);
-            obj.Push("interval", Router.ARP.Interval.TotalMilliseconds);
+            obj.Push("request_timeout", Router.ARP.RequestTimeout.TotalMilliseconds);
+            obj.Push("request_interval", Router.ARP.RequestInterval.TotalMilliseconds);
             return obj;
         }
-        
-        public JSON Lookup(string Data)
+
+        public static JSON Proxy(string Data = null)
+        {
+            if (!string.IsNullOrEmpty(Data))
+            {
+                if (Data == "start")
+                {
+                    Router.ARP.ProxyEnabled = true;
+                }
+
+                if (Data == "stop")
+                {
+                    Router.ARP.ProxyEnabled = false;
+                }
+            }
+
+            return new JSONObject("active", Router.ARP.ProxyEnabled);
+        }
+
+        public static JSON Lookup(string Data)
         {
             var Rows = Data.Split('\n');
 
@@ -89,9 +109,8 @@ namespace Router.Controllers
             return new JSONObject("mac", MAC);
         }
 
-        public JSON Table(string Data = null)
+        public static JSON Table(string Data = null)
         {
-            var arr = new JSONArray();
             var obj = new JSONObject();
 
             var Rows = ARPTable.GetEntries();
@@ -102,16 +121,19 @@ namespace Router.Controllers
                     continue;
                 }
 
-                obj.Empty();
-
-                obj.Push("ip", Row.IPAddress);
-                obj.Push("mac", Row.PhysicalAddress);
-                obj.Push("cache_timeout", Row.ExpiresIn);
-
-                arr.Push(obj);
+                obj.Push(Row.ID.ToString(), ARPEntry(Row));
             }
 
-            return arr;
+            return obj;
+        }
+
+        public static JSON Initialize(string Data = null)
+        {
+            var obj = new JSONObject();
+            obj.Push("table", Table());
+            obj.Push("timers", Timers());
+            obj.Push("proxy_enabled", Proxy());
+            return obj;
         }
     }
 }
