@@ -45,13 +45,13 @@ namespace Router.Controllers
                 }
 
                 // Set
-                ARPEntry.CacheTimeout = CacheTimeout;
+                Router.ARPEntry.CacheTimeout = CacheTimeout;
                 Router.ARP.RequestTimeout = RequestTimeout;
                 Router.ARP.RequestInterval = RequestInterval;
             }
 
             var obj = new JSONObject();
-            obj.Push("cache_timeout", ARPEntry.CacheTimeout.TotalSeconds);
+            obj.Push("cache_timeout", Router.ARPEntry.CacheTimeout.TotalSeconds);
             obj.Push("request_timeout", Router.ARP.RequestTimeout.TotalMilliseconds);
             obj.Push("request_interval", Router.ARP.RequestInterval.TotalMilliseconds);
             return obj;

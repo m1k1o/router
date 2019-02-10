@@ -71,7 +71,12 @@ namespace Router
 
         public override string ToString()
         {
-            return FriendlyName + "(" + IPNetwork.ToString() + ")";
+            if (IPNetwork == null)
+            {
+                return FriendlyName + "(no ip)";
+            }
+
+            return FriendlyName + "(" + IPAddress.ToString() + "/" + IPNetwork.SubnetMask.CIDR.ToString() + ")";
         }
 
         // Equality
