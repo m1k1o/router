@@ -41,8 +41,8 @@ namespace Router.RIP
         {
             get =>
                 TimersEnabled &&
-                PossibblyDownSince != DateTime.MinValue ||
-                DateTime.Now > TimeUpdated + InvalidTimer;
+                (PossibblyDownSince != DateTime.MinValue ||
+                DateTime.Now > TimeUpdated + InvalidTimer);
             set
             {
                 if (value && PossibblyDownSince == DateTime.MinValue)

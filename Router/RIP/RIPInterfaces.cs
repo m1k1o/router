@@ -74,7 +74,7 @@ namespace Router.RIP
 
         private static void Start(Interface Interface)
         {
-            var RIPEntry = new RIPEntry(Interface, Interface.IPNetwork, null, 1)
+            var RIPEntry = new RIPEntry(Interface, Interface.IPNetwork, Interface.IPAddress, 1)
             {
                 SyncWithRT = false,
                 CanBeUpdated = false,

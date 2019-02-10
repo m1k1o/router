@@ -42,7 +42,7 @@ namespace Router
             var Entries = GetEntries();
             foreach (var Entry in Entries)
             {
-                if (!Entry.IPNetwork.Contains(IPAddress))
+                if (!Entry.IPNetwork.Contains(IPAddress) || (Entry.HasInterface && !Entry.Interface.Running))
                 {
                     continue;
                 }
