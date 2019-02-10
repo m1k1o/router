@@ -61,18 +61,20 @@ namespace Router.Controllers
         {
             if (!string.IsNullOrEmpty(Data))
             {
-                if (Data == "start")
+                var Rows = Data.Split('\n');
+
+                // Validate
+                if (Rows.Length != 1)
                 {
-                    Router.ARP.ProxyEnabled = true;
+                    return new JSONError("Expected ProxyEnabled.");
                 }
 
-                if (Data == "stop")
-                {
-                    Router.ARP.ProxyEnabled = false;
-                }
+                Router.ARP.ProxyEnabled = Rows[0] == "true";
             }
 
-            return new JSONObject("active", Router.ARP.ProxyEnabled);
+            var obj = new JSONObject();
+            obj.Push("enabled", Router.ARP.ProxyEnabled);
+            return obj;
         }
 
         public static JSON Lookup(string Data)
@@ -132,7 +134,7 @@ namespace Router.Controllers
             var obj = new JSONObject();
             obj.Push("table", Table());
             obj.Push("timers", Timers());
-            obj.Push("proxy_enabled", Proxy());
+            obj.Push("proxy", Proxy());
             return obj;
         }
     }

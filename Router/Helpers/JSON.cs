@@ -46,7 +46,7 @@ namespace Router.Helpers
                 return ((JSONArray)value).ToString();
             }
 
-            if (value is int || value is JSON)
+            if (value is double || value is float || value is int || value is JSON)
             {
                 return value.ToString();
             }

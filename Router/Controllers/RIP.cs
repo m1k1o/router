@@ -133,7 +133,7 @@ namespace Router.Controllers
                 obj2.Push("active", RIPInterfaces.IsActive(Interface));
                 obj2.Push("running", RIPInterfaces.IsRunning(Interface));
 
-                obj.Push(Interface.ToString(), obj2);
+                obj.Push(Interface.ID.ToString(), obj2);
             }
 
             return obj;

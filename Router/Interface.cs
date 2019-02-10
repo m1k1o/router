@@ -73,10 +73,10 @@ namespace Router
         {
             if (IPNetwork == null)
             {
-                return FriendlyName + "(no ip)";
+                return FriendlyName + " (no ip)";
             }
 
-            return FriendlyName + "(" + IPAddress.ToString() + "/" + IPNetwork.SubnetMask.CIDR.ToString() + ")";
+            return FriendlyName + " (" + IPAddress.ToString() + "/" + IPNetwork.SubnetMask.CIDR.ToString() + ")";
         }
 
         // Equality
