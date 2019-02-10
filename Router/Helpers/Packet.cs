@@ -18,7 +18,7 @@ namespace Router.Helpers
 
         public Packet(byte[] Data)
         {
-            Array.Copy(Data, 0, this.RawData, 0, Data.Length);
+            RawData = Data;
         }
 
         protected object Slice(int o, Type Type)
