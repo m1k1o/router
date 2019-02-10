@@ -77,7 +77,7 @@ namespace Router.RIP
         public void GarbageCollector()
         {
             Entries.RemoveAll(RIPEntry => {
-                if (RIPEntry.ToBeRemoved)
+                if (!RIPEntry.ToBeRemoved)
                 {
                     return false;
                 }
@@ -104,7 +104,12 @@ namespace Router.RIP
                 }
 
                 var RoutingEntry = new RoutingEntry(Entry.IPNetwork, Entry.NextHopIP, Entry.Interface, ADistance.RIP);
-                RoutingTable.Instance.Push(RoutingEntry);
+
+                try
+                {
+                    RoutingTable.Instance.Push(RoutingEntry);
+                }
+                catch { }
             }
         }
     }

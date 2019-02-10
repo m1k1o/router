@@ -47,7 +47,7 @@ namespace Router
                 }
 
                 // Is Porxy ARP turned on? And is request from outside of this interface?
-                if (!ProxyEnabled || Interface.IsReachable(Interface.IPAddress))
+                if (!ProxyEnabled || Interface.IsReachable(ARPPacket.TargetProtocolAddress))
                 {
                     return;
                 }

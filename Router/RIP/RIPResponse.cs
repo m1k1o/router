@@ -140,7 +140,7 @@ namespace Router.RIP
                 uint Metric = Route.Metric == 16 ? 16 : Route.Metric + 1;
 
                 IPAddress NextHopIP = SourceIP;
-                if (Interface.IsReachable(SourceIP))
+                if (Interface.IsReachable(Route.NextHop))
                 {
                     NextHopIP = Route.NextHop;
                 }
@@ -148,6 +148,11 @@ namespace Router.RIP
                 var RIPEntry = RIPEntries.Find(Route.IPNetwork);
                 if (RIPEntry != null)
                 {
+                    if (!RIPEntry.CanBeUpdated)
+                    {
+                        continue;
+                    }
+
                     if (Metric == 16)
                     {
                         RIPEntry.PossibblyDown = true;

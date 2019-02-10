@@ -1,4 +1,5 @@
 using PacketDotNet;
+using Router.RIP;
 using System.Net;
 using System.Net.NetworkInformation;
 
@@ -43,6 +44,9 @@ namespace Router.Protocols
             UdpPacket udpPacket;
 
             if (
+                // Interface is not Running RIP
+                !RIPInterfaces.IsRunning(Interface) ||
+
                 // Sent from me
                 Equals(packet.SourceHwAddress, Interface.PhysicalAddress) ||
 

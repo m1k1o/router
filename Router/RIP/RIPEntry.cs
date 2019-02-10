@@ -37,8 +37,10 @@ namespace Router.RIP
 
         public bool Update(IPAddress NextHopIP, uint Metric)
         {
+            if (!CanBeUpdated) return false;
+
             var HasChanged = this.NextHopIP != NextHopIP || this.Metric != Metric;
-            if (HasChanged && CanBeUpdated)
+            if (HasChanged)
             {
                 this.NextHopIP = NextHopIP;
                 this.Metric = Metric;
