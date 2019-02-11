@@ -47,7 +47,7 @@ namespace Router
                     continue;
                 }
 
-                if (BestMatch == null || BestMatch.IPNetwork >= Entry.IPNetwork || BestMatch.ADistance < Entry.ADistance)
+                if (BestMatch == null || BestMatch.IPNetwork > Entry.IPNetwork || (BestMatch.IPNetwork == Entry.IPNetwork && BestMatch.ADistance >= Entry.ADistance))
                 {
                     BestMatch = Entry;
                 }
@@ -125,6 +125,20 @@ namespace Router
         public List<RoutingEntry> GetEntries()
         {
             return Entries.ToList();
+        }
+        public List<RoutingEntry> BestEntries()
+        {
+            return GetEntries().GroupBy(
+                Entry => Entry.IPNetwork,
+                Entry => Entry,
+                (BaseIPNetwork, Routes) => Routes.BestRoute()).ToList();
+        }
+    }
+    static class RoutingTableExtensions
+    {
+        public static RoutingEntry BestRoute(this IEnumerable<RoutingEntry> Entries)
+        {
+            return Entries.OrderBy(Entry => Entry.ADistance).First();
         }
     }
 }

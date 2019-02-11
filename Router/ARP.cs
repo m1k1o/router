@@ -32,7 +32,10 @@ namespace Router
 
             // Is packet valid request?
             if (
-                Equals(DestinationMac, PhysicalAddress.Parse("FF-FF-FF-FF-FF-FF")) &&
+                (
+                    Equals(DestinationMac, PhysicalAddress.Parse("FF-FF-FF-FF-FF-FF")) ||
+                    Equals(DestinationMac, Interface.PhysicalAddress)
+                ) &&
                 (
                     Equals(ARPPacket.TargetHardwareAddress, PhysicalAddress.Parse("00-00-00-00-00-00")) ||
                     Equals(ARPPacket.TargetHardwareAddress, PhysicalAddress.Parse("FF-FF-FF-FF-FF-FF"))

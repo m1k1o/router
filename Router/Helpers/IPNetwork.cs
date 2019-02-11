@@ -100,15 +100,15 @@ namespace Router.Helpers
             => !(obj1 == obj2);
 
         public static bool operator <(IPNetwork obj1, IPNetwork obj2)
-            => Equals(obj1.NetworkAddress, obj2.NetworkAddress) && obj1.SubnetMask < obj2.SubnetMask;
+            => /*Equals(obj1.NetworkAddress, obj2.NetworkAddress) && */obj1.SubnetMask > obj2.SubnetMask;
 
         public static bool operator >(IPNetwork obj1, IPNetwork obj2)
-            => Equals(obj1.NetworkAddress, obj2.NetworkAddress) && obj1.SubnetMask > obj2.SubnetMask;
+            => /*Equals(obj1.NetworkAddress, obj2.NetworkAddress) && */obj1.SubnetMask < obj2.SubnetMask;
 
         public static bool operator <=(IPNetwork obj1, IPNetwork obj2)
-            => Equals(obj1.NetworkAddress, obj2.NetworkAddress) && obj1.SubnetMask <= obj2.SubnetMask;
+            => /*Equals(obj1.NetworkAddress, obj2.NetworkAddress) && */obj1.SubnetMask >= obj2.SubnetMask;
 
         public static bool operator >=(IPNetwork obj1, IPNetwork obj2)
-            => Equals(obj1.NetworkAddress, obj2.NetworkAddress) && obj1.SubnetMask >= obj2.SubnetMask;
+            => /*Equals(obj1.NetworkAddress, obj2.NetworkAddress) && */obj1.SubnetMask <= obj2.SubnetMask;
     }
 }

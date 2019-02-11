@@ -11,6 +11,8 @@ namespace Router.RIP
         private DateTime TimeCreated;
         private DateTime TimeUpdated;
         private DateTime PossibblyDownSince;
+        
+        public int SinceLastUpdate { get => (int)(DateTime.Now - TimeUpdated).TotalSeconds; }
 
         protected void Create()
         {
@@ -47,7 +49,7 @@ namespace Router.RIP
             {
                 if (value && PossibblyDownSince == DateTime.MinValue)
                 {
-                    PossibblyDownSince = DateTime.Now;
+                    PossibblyDownSince = DateTime.Now - InvalidTimer;
                 }
 
                 if (!value) {

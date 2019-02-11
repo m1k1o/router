@@ -15,8 +15,8 @@ namespace Router.Controllers
             obj.Push("ip", RoutingEntry.IPNetwork.NetworkAddress);
             obj.Push("mask", RoutingEntry.IPNetwork.SubnetMask);
             obj.Push("network", RoutingEntry.IPNetwork);
-            obj.Push("next_hop", RoutingEntry.NextHopIP);
-            obj.Push("interface", RoutingEntry.Interface.ID.ToString());
+            obj.Push("next_hop", RoutingEntry.HasNextHopIP ? RoutingEntry.NextHopIP.ToString() : null);
+            obj.Push("interface", RoutingEntry.HasInterface ? RoutingEntry.Interface.ID.ToString() : null);
             obj.Push("type", RoutingEntry.ADistance);
             return obj;
         }
@@ -76,11 +76,38 @@ namespace Router.Controllers
             return new JSONObject("removed", RoutingTable.Remove(IPNetwork, ADistance.Static));
         }
 
+        public static JSON Lookup(string Data)
+        {
+            var Rows = Data.Split('\n');
+
+            // Validate
+            if (Rows.Length != 1)
+            {
+                return new JSONError("Expected IPAddress.");
+            }
+            
+            IPAddress IPAddress;
+            try
+            {
+                IPAddress = IPAddress.Parse(Rows[0]);
+            }
+            catch (Exception e)
+            {
+                return new JSONError(e.Message);
+            }
+
+            RoutingEntry BestMatch = Router.RoutingTable.Instance.Lookup(IPAddress);
+
+            // Answer
+            return BestMatch != null ? RoutingEntry(BestMatch) : (new JSONObject("found", false));
+        }
+
+
         public static JSON Table(string Data = null)
         {
             var obj = new JSONObject();
 
-            var Rows = RoutingTable.GetEntries();
+            var Rows = RoutingTable.BestEntries();
             foreach (var Row in Rows)
             {
                 obj.Push(Row.ID.ToString(), RoutingEntry(Row));
