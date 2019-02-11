@@ -64,12 +64,8 @@ namespace Router.RIP
                     return false;
                 }
 
-                if (RIPEntry.SyncWithRT)
-                {
-                    // Remove from RT
-                    RoutingTable.Instance.Remove(RIPEntry.IPNetwork, ADistance.RIP);
-                }
-                
+                // Remove
+                RoutingTable.Instance.Remove(RIPEntry.IPNetwork, ADistance.RIP);
                 return true;
             });
         }
@@ -77,18 +73,13 @@ namespace Router.RIP
         public void GarbageCollector()
         {
             Entries.RemoveAll(RIPEntry => {
-                if (!RIPEntry.ToBeRemoved)
-                {
-                    return false;
-                }
-
-                if (RIPEntry.SyncWithRT)
+                if (!RIPEntry.SyncWithRT || !RIPEntry.ToBeRemoved)
                 {
                     // Remove from RT
                     RoutingTable.Instance.Remove(RIPEntry.IPNetwork, ADistance.RIP);
                 }
 
-                return true;
+                return RIPEntry.ToBeRemoved;
             });
         }
 
