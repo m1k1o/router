@@ -89,6 +89,8 @@
     <Compile Include="Routing.cs" />
     <Compile Include="RoutingTable.cs" />
     <Compile Include="RoutingEntry.cs" />
+    <Compile Include="Services\RIPService.cs" />
+    <Compile Include="Services\InterfaceService.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config">
