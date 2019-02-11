@@ -9,7 +9,7 @@ namespace Router.RIP
     {
         public static TimeSpan UpdateTimer { get; set; } = TimeSpan.FromSeconds(30);
 
-        private static bool UpdatesRunning;
+        private static bool UpdatesRunning = false;
 
         public static bool ActiveUpdates {
             get => UpdatesRunning;
@@ -57,6 +57,7 @@ namespace Router.RIP
 
             Interface.OnStarted += Start;
             Interface.OnStopped += Stop;
+            Interface.OnChanged += Update;
         }
 
         public static void Remove(Interface Interface)
@@ -65,6 +66,7 @@ namespace Router.RIP
 
             Interface.OnStarted -= Start;
             Interface.OnStopped -= Stop;
+            Interface.OnChanged -= Update;
 
             if (Interface.Running)
             {
@@ -103,6 +105,21 @@ namespace Router.RIP
 
             Running.Remove(Interface);
             RIPTable.Instance.Remove(Interface);
+
+            RIPTable.Instance.SyncWithRT();
+        }
+
+        private static void Update(Interface Interface)
+        {
+            throw new NotImplementedException();
+
+            var RIPEntry = RIPTable.Instance.Find(Interface, Interface.IPNetwork);
+            if (RIPEntry == null)
+            {
+                throw new Exception("RIPEntry not found while Updating");
+            }
+
+            RIPResponse.SendTriggeredUpdate(Interface, RIPEntry);
 
             RIPTable.Instance.SyncWithRT();
         }

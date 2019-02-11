@@ -104,7 +104,8 @@ namespace Router
 
         public void PushDirectlyConnected(Interface Interface, IPNetwork IPNetwork)
         {
-            Push(new RoutingEntry(IPNetwork, null, Interface, ADistance.DirectlyConnected));
+            RemoveDirectlyConnected(Interface);
+            Entries.Add(new RoutingEntry(IPNetwork, null, Interface, ADistance.DirectlyConnected));
         }
 
         public void RemoveDirectlyConnected(Interface Interface)

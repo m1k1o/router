@@ -13,6 +13,7 @@ namespace Router
 
         public InterfaceEvent OnStarted { get; set; } = new InterfaceEvent(I => { });
         public InterfaceEvent OnStopped { get; set; } = new InterfaceEvent(I => { });
+        public InterfaceEvent OnChanged { get; set; } = new InterfaceEvent(I => { });
 
         public IPAddress IPAddress { get; private set; }
         public IPNetwork IPNetwork { get; private set; }
@@ -62,6 +63,12 @@ namespace Router
         {
             IPNetwork = IPNetwork.Parse(IPAddress, IPSubnetMask);
             this.IPAddress = IPAddress;
+
+            if (Running)
+            {
+                RoutingTable.Instance.PushDirectlyConnected(this, IPNetwork);
+                OnChanged(this);
+            }
         }
 
         public bool IsReachable(IPAddress IPAddress)
