@@ -11,6 +11,7 @@ namespace Router.Controllers
             obj.Push("arp", ARP.Initialize());
             obj.Push("routing", Routing.Initialize());
             obj.Push("rip", RIP.Initialize());
+            obj.Push("lldp", LLDP.Initialize());
             return obj;
         }
 
@@ -21,6 +22,7 @@ namespace Router.Controllers
             obj.Push("arp", ARP.Table());
             obj.Push("routing", Routing.Table());
             obj.Push("rip", RIP.Table());
+            obj.Push("lldp", LLDP.Table());
             return obj;
         }
     }

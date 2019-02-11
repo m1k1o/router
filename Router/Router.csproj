@@ -54,6 +54,7 @@
     <Compile Include="Controllers\ARP.cs" />
     <Compile Include="Controllers\Global.cs" />
     <Compile Include="Controllers\Interfaces.cs" />
+    <Compile Include="Controllers\LLDP.cs" />
     <Compile Include="Controllers\RIP.cs" />
     <Compile Include="Controllers\Routing.cs" />
     <Compile Include="Device.cs" />
