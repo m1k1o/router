@@ -17,7 +17,7 @@ namespace Router.RIP
         protected void Create()
         {
             TimeCreated = DateTime.Now;
-            TimeUpdated = DateTime.Now;
+            TimeUpdated = TimeCreated;
         }
 
         protected void Update()
