@@ -55,13 +55,14 @@ namespace Router.Controllers
             obj.Push("running", LLDPProcess.Running);
             obj.Push("time_to_live", LLDPProcess.TimeToLive);
             obj.Push("system_name", LLDPProcess.SystemName);
-            obj.Push("system_decsription", LLDPProcess.SystemDescription);
+            obj.Push("system_description", LLDPProcess.SystemDescription);
             return obj;
         }
 
         public static JSON Table(string Data = null)
         {
-            var obj = new JSONObject();
+            //var obj = new JSONObject();
+            var arr = new JSONArray();
 
             var Rows = LLDPTable.GetEntries();
             foreach (var Row in Rows)
@@ -71,10 +72,12 @@ namespace Router.Controllers
                     continue;
                 }
 
-                obj.Push(Row.ID.ToString(), LLDPEntry(Row));
+                //obj.Push(Row.ID.ToString(), LLDPEntry(Row));
+                arr.Push(LLDPEntry(Row));
             }
 
-            return obj;
+            //return obj;
+            return arr;
         }
 
         public static JSON Initialize(string Data = null)
