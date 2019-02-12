@@ -1,4 +1,5 @@
-﻿using System;
+﻿using PacketDotNet;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -29,8 +30,13 @@ namespace Router.LLDP
             throw new NotImplementedException();
         }
 
-        public void OnPacketArrival(object RawData, Interface Interface)
+        public void OnPacketArrival(Handler Handler)
         {
+            if (!Handler.CheckType(typeof(LLDPPacket)))
+            {
+                return;
+            }
+
             throw new NotImplementedException();
         }
 

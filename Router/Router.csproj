@@ -50,6 +50,7 @@
   <ItemGroup>
     <Compile Include="ARP\ARPMiddleware.cs" />
     <Compile Include="ARP\ARPEntry.cs" />
+    <Compile Include="ARP\ARPService.cs" />
     <Compile Include="ARP\ARPTable.cs" />
     <Compile Include="Controllers\ARP.cs" />
     <Compile Include="Controllers\Global.cs" />

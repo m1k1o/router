@@ -3,12 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using Router.Helpers;
+using PacketDotNet;
 using SharpPcap;
 
 namespace Router
 {
     delegate void InterfaceEvent(Interface Interface);
-    delegate void PacketArrival(object Packet, Interface Interface);
+    delegate void PacketArrival(Handler Handler);
 
     class Interface : Device
     {
@@ -17,7 +18,7 @@ namespace Router
         private InterfaceEvent OnStarted { get; set; } = new InterfaceEvent(I => { });
         private InterfaceEvent OnStopped { get; set; } = new InterfaceEvent(I => { });
         private InterfaceEvent OnChanged { get; set; } = new InterfaceEvent(I => { });
-        private PacketArrival OnPacketArrival { get; set; } = new PacketArrival((P, I) => { });
+        private PacketArrival OnPacketArrival { get; set; } = new PacketArrival(H => { });
 
         public IPAddress IPAddress { get; private set; }
         public IPNetwork IPNetwork { get; private set; }
@@ -26,11 +27,7 @@ namespace Router
         {
             this.ID = ID;
 
-            PacketArrival = (Packet) => 
-            {
-                Interfaces.OnPacketArrival(Packet, this);
-                OnPacketArrival(Packet, this);
-            };
+            PacketArrival = (Packet) => OnPacketArrival(new Handler(Packet, this));
 
             BeforeStarted = () =>
             {
@@ -95,6 +92,7 @@ namespace Router
 
         private static List<InterfaceService> AvailableServices = new List<InterfaceService>
         {
+            new ARP.ARPService(),
             new RIP.RIPService(),
             new LLDP.LLDPService()
         };

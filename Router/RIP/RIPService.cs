@@ -1,4 +1,6 @@
-﻿using System;
+﻿using PacketDotNet;
+using Router.Protocols;
+using System;
 
 namespace Router.RIP
 {
@@ -56,9 +58,30 @@ namespace Router.RIP
             RIPTable.Instance.SyncWithRT();
         }
 
-        public void OnPacketArrival(object RawData, Interface Interface)
+        public void OnPacketArrival(Handler Handler)
         {
-            throw new NotImplementedException();
+            if (!Handler.CheckType(typeof(RIPPacket)))
+            {
+                return;
+            }
+
+            RIPPacket RIPPacket = (RIPPacket)Handler.PacketPayload;
+
+            Console.WriteLine("Got RIP.");
+            IPv4Packet IPPacket = (IPv4Packet)Handler.EthernetPacket.Extract(typeof(IPv4Packet));
+
+            if (RIPPacket.CommandType == RIPCommandType.Request)
+            {
+                UdpPacket UDPPacket = (UdpPacket)IPPacket.Extract(typeof(UdpPacket));
+                RIPRequest.OnReceived(Handler.EthernetPacket.SourceHwAddress, IPPacket.SourceAddress, UDPPacket.SourcePort, RIPPacket.RouteCollection, Handler.Interface);
+                return;
+            }
+
+            if (RIPPacket.CommandType == RIPCommandType.Response)
+            {
+                RIPResponse.OnReceived(IPPacket.SourceAddress, RIPPacket.RouteCollection, Handler.Interface);
+                return;
+            }
         }
     }
 }

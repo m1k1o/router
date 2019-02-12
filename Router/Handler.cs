@@ -1,7 +1,5 @@
 ﻿using PacketDotNet;
 using Router.Protocols;
-using Router.RIP;
-using Router.ARP;
 using SharpPcap;
 using System;
 
@@ -9,52 +7,50 @@ namespace Router
 {
     class Handler
     {
-        private Interface Interface;
-        private EthernetPacket EthernetPacket;
+        public Interface Interface { get; private set; }
+        public EthernetPacket EthernetPacket { get; private set; }
 
-        private Type PacketType;
-        private Action PacketHandler;
+        public object PacketPayload { get; private set; }
+        public Type PacketType { get; private set; }
 
         public Handler(RawCapture RawCapture, Interface Interface)
         {
             this.Interface = Interface;
 
-            var packet = (EthernetPacket)PacketDotNet.Packet.ParsePacket(RawCapture.LinkLayerType, RawCapture.Data);
-            EthernetPacket = packet;
-
-            if (packet == null)
+            EthernetPacket = (EthernetPacket)Packet.ParsePacket(RawCapture.LinkLayerType, RawCapture.Data);
+            if (EthernetPacket == null)
             {
                 throw new Exception("Packet is not Ethernet Packet.");
             }
 
             // My packet?
-            if (Equals(packet.SourceHwAddress, Interface.PhysicalAddress))
+            if (Equals(EthernetPacket.SourceHwAddress, Interface.PhysicalAddress))
             {
                 PacketType = null;
                 return;
             }
 
-            ARPPacket arpPacket = (ARPPacket)packet.Extract(typeof(ARPPacket));
+            ARPPacket arpPacket = (ARPPacket)EthernetPacket.Extract(typeof(ARPPacket));
             if (arpPacket != null)
             {
                 PacketType = typeof(ARPPacket);
-                PacketHandler = () => ARP(arpPacket);
+                PacketPayload = arpPacket;
                 return;
             }
 
-            RIPPacket ripPacket = Protocols.RIP.Parse(packet, Interface);
+            RIPPacket ripPacket = Protocols.RIP.Parse(EthernetPacket, Interface);
             if (ripPacket != null)
             {
                 PacketType = typeof(RIPPacket);
-                PacketHandler = () => RIP(ripPacket);
+                PacketPayload = ripPacket;
                 return;
             }
 
-            IPv4Packet ipPacket = (IPv4Packet)packet.Extract(typeof(IPv4Packet));
+            IPv4Packet ipPacket = (IPv4Packet)EthernetPacket.Extract(typeof(IPv4Packet));
             if (ipPacket != null)
             {
                 PacketType = typeof(IPv4Packet);
-                PacketHandler = () => IP(ipPacket);
+                PacketPayload = ipPacket;
                 return;
             }
 
@@ -65,7 +61,7 @@ namespace Router
 
         public bool Exists()
         {
-            return PacketHandler != null;
+            return PacketType != null;
         }
 
         public bool CheckType(Type Type)
@@ -73,39 +69,7 @@ namespace Router
             return Equals(Type, PacketType);
         }
 
-        public void Execute()
-        {
-            if (PacketType != null)
-            {
-                PacketHandler();
-            }
-        }
-
-        public void RIP(RIPPacket RIPPacket)
-        {
-            Console.WriteLine("Got RIP.");
-            IPv4Packet IPPacket = (IPv4Packet)EthernetPacket.Extract(typeof(IPv4Packet));
-
-            if (RIPPacket.CommandType == RIPCommandType.Request)
-            {
-                UdpPacket UDPPacket = (UdpPacket)IPPacket.Extract(typeof(UdpPacket));
-                RIPRequest.OnReceived(EthernetPacket.SourceHwAddress, IPPacket.SourceAddress, UDPPacket.SourcePort, RIPPacket.RouteCollection, Interface);
-                return;
-            }
-
-            if (RIPPacket.CommandType == RIPCommandType.Response)
-            {
-                RIPResponse.OnReceived(IPPacket.SourceAddress, RIPPacket.RouteCollection, Interface);
-                return;
-            }
-        }
-
-        public void ARP(ARPPacket ARPPacket)
-        {
-            Console.WriteLine("Got ARP.");
-            ARPMiddleware.OnReceived(EthernetPacket.DestinationHwAddress, ARPPacket, Interface);
-        }
-
+        /*
         public void IP(IPv4Packet IPv4Packet)
         {
             Console.WriteLine("Got IPV4.");
@@ -129,5 +93,6 @@ namespace Router
             Console.WriteLine("Routing to {0}.", IPv4Packet.DestinationAddress);
             Routing.OnReceived(IPv4Packet);
         }
+        */
     }
 }

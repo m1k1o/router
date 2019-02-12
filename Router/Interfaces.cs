@@ -13,13 +13,13 @@ namespace Router
         public static Interfaces Instance { get; } = new Interfaces();
 
         private List<Interface> Available = new List<Interface>();
-
+        /*
         private static object QueueLock = new object();
         private static List<Handler> HandlerQueue = new List<Handler>();
 
         private static bool PacketProcessingStop = false;
         private Thread PacketProcessingThread;
-
+        */
         private Interfaces()
         {
             // Print SharpPcap version
@@ -32,9 +32,9 @@ namespace Router
                 Available.Add(new Interface(Device, i++));
             }
 
-            StartProcessing();
+            //StartProcessing();
         }
-
+        /*
         public void StartProcessing()
         {
             // start the background thread
@@ -51,7 +51,7 @@ namespace Router
             // wait for the background thread to terminate
             PacketProcessingThread.Join();
         }
-
+        */
         public Interface GetInterfaceById(string ID)
         {
             return Available[Int32.Parse(ID)];
@@ -71,7 +71,7 @@ namespace Router
         {
             return Available.ToList();
         }
-
+        /*
         public static void OnPacketArrival(RawCapture Packet, Interface Interface)
         {
             var Handler = new Handler(Packet, Interface);
@@ -131,5 +131,6 @@ namespace Router
                 }
             }
         }
+        */
     }
 }

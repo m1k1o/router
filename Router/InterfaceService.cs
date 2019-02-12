@@ -1,4 +1,6 @@
-﻿namespace Router
+﻿using System;
+
+namespace Router
 {
     interface InterfaceService
     {
@@ -14,6 +16,6 @@
 
         void OnChanged(Interface Interface);
 
-        void OnPacketArrival(object Packet, Interface Interface);
+        void OnPacketArrival(Handler Handler);
     }
 }
