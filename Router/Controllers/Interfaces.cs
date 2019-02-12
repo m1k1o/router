@@ -1,5 +1,6 @@
 ﻿using Router.Helpers;
 using System;
+using System.Collections.Generic;
 using System.Net;
 
 namespace Router.Controllers
@@ -7,6 +8,17 @@ namespace Router.Controllers
     static class Interfaces
     {
         private static readonly Router.Interfaces Instance = Router.Interfaces.Instance;
+        private static readonly List<InterfaceService> Services = Router.Interface.GetAvailableServices();
+
+        private static JSON InterfaceServices(Interface Interface)
+        {
+            var obj = new JSONObject();
+            foreach (var Service in Services)
+            {
+                obj.Push(Service.Name, Interface.ServiceRunning(Service.Name));
+            }
+            return obj;
+        }
 
         private static JSON Interface(Interface Interface)
         {
@@ -19,6 +31,53 @@ namespace Router.Controllers
             obj.Push("ip", Interface.IPAddress);
             obj.Push("mask", Interface.IPNetwork is IPNetwork ? Interface.IPNetwork.SubnetMask : null);
             obj.Push("mac", Interface.PhysicalAddress);
+            obj.Push("services", InterfaceServices(Interface));
+            return obj;
+        }
+
+        public static JSON AvailableServices(string Data = null)
+        {
+            var arr = new JSONArray();
+            var obj = new JSONObject();
+
+            foreach (var Service in Services)
+            {
+                obj.Empty();
+
+                obj.Push("name", Service.Name);
+                obj.Push("description", Service.Description);
+                obj.Push("only_running_interface", Service.OnlyRunningInterface);
+
+                arr.Push(obj);
+            }
+
+            return arr;
+        }
+
+        public static JSON ToggleService(string Data = null)
+        {
+            var Rows = Data.Split('\n');
+            if (Rows.Length != 2)
+            {
+                return new JSONError("Expected InterfaceID, ServiceName.");
+            }
+
+            Interface Interface;
+            String ServiceName = Rows[1];
+            try
+            {
+                Interface = Instance.GetInterfaceById(Rows[0]);
+                Interface.ServiceToggle(ServiceName);
+            }
+            catch (Exception e)
+            {
+                return new JSONError(e.Message);
+            }
+
+            var obj = new JSONObject();
+            obj.Push("interface", Interface.ID.ToString());
+            obj.Push("service", ServiceName);
+            obj.Push("status", Interface.ServiceRunning(ServiceName));
             return obj;
         }
 
@@ -86,6 +145,7 @@ namespace Router.Controllers
         {
             var obj = new JSONObject();
             obj.Push("table", Table());
+            obj.Push("services", AvailableServices());
             return obj;
         }
     }

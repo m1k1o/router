@@ -105,28 +105,36 @@ namespace Router
                 throw new Exception("Service " + ServiceName + " does not exist.");
             }
 
-            if (ServiceRunning(ServiceName))
+            if (!ServiceRunning(ServiceName))
             {
                 RunningServices.Add(Service);
 
-                if (Running)
+                if (Running || !Service.OnlyRunningInterface)
                 {
                     Service.OnStarted(this);
                 }
 
-                OnStarted += Service.OnStarted;
-                OnStopped += Service.OnStopped;
+                if (Service.OnlyRunningInterface)
+                {
+                    OnStarted += Service.OnStarted;
+                    OnStopped += Service.OnStopped;
+                }
+
                 OnChanged += Service.OnChanged;
             }
             else
             {
                 RunningServices.Remove(Service);
 
-                OnStarted -= Service.OnStarted;
-                OnStopped -= Service.OnStopped;
+                if (Service.OnlyRunningInterface)
+                {
+                    OnStarted -= Service.OnStarted;
+                    OnStopped -= Service.OnStopped;
+                }
+
                 OnChanged -= Service.OnChanged;
 
-                if (Running)
+                if (Running || !Service.OnlyRunningInterface)
                 {
                     Service.OnStopped(this);
                 }

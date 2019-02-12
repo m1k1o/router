@@ -2,9 +2,11 @@
 {
     interface InterfaceService
     {
-        string Name { get; set; }
+        string Name { get; }
 
-        string Description { get; set; }
+        string Description { get; }
+
+        bool OnlyRunningInterface { get; }
 
         void OnStarted(Interface Interface);
 
