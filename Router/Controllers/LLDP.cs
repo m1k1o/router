@@ -36,14 +36,14 @@ namespace Router.Controllers
 
                 try
                 {
-                    if(LLDPProcess.Running != (Rows[0] == "true"))
+                    if(LLDPResponse.Running != (Rows[0] == "true"))
                     {
-                        LLDPProcess.Toggle();
+                        LLDPResponse.Toggle();
                     }
 
-                    LLDPProcess.TimeToLive = UInt16.Parse(Rows[1]);
-                    LLDPProcess.SystemName = Rows[2];
-                    LLDPProcess.SystemDescription = Rows[3];
+                    LLDPResponse.TimeToLive = UInt16.Parse(Rows[1]);
+                    LLDPResponse.SystemName = Rows[2];
+                    LLDPResponse.SystemDescription = Rows[3];
                 }
                 catch (Exception e)
                 {
@@ -52,10 +52,10 @@ namespace Router.Controllers
             }
 
             var obj = new JSONObject();
-            obj.Push("running", LLDPProcess.Running);
-            obj.Push("time_to_live", LLDPProcess.TimeToLive);
-            obj.Push("system_name", LLDPProcess.SystemName);
-            obj.Push("system_description", LLDPProcess.SystemDescription);
+            obj.Push("running", LLDPResponse.Running);
+            obj.Push("time_to_live", LLDPResponse.TimeToLive);
+            obj.Push("system_name", LLDPResponse.SystemName);
+            obj.Push("system_description", LLDPResponse.SystemDescription);
             return obj;
         }
 

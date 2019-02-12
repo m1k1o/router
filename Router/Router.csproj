@@ -69,8 +69,9 @@
     <Compile Include="Interfaces.cs" />
     <Compile Include="Helpers\JSONObject.cs" />
     <Compile Include="Helpers\JSONArray.cs" />
-    <Compile Include="LLDP\LLDPProcess.cs" />
+    <Compile Include="LLDP\LLDPResponse.cs" />
     <Compile Include="LLDP\LLDPEntry.cs" />
+    <Compile Include="LLDP\LLDPService.cs" />
     <Compile Include="LLDP\LLDPTable.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Protocols\ARP.cs" />
