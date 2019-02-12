@@ -45,7 +45,7 @@ namespace Router.Protocols
 
             if (
                 // Interface is not Running RIP
-                !RIPInterfaces.IsRunning(Interface) ||
+                !Interface.ServiceRunning("rip") ||
 
                 // Sent from me
                 Equals(packet.SourceHwAddress, Interface.PhysicalAddress) ||

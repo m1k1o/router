@@ -94,36 +94,6 @@ namespace Router.RIP
             return RouteCollection;
         }
 
-        public static void SendUpdate()
-        {
-            var Interfaces = RIPInterfaces.GetRunningInterfaces();
-            foreach (var Interface in Interfaces)
-            {
-                var RIPResponse = new RIPResponse(Interface);
-                RIPResponse.Send();
-            }
-        }
-
-        public static void SendTriggeredUpdate(Interface SourceInterface, List<RIPEntry> RIPEntries)
-        {
-            var Interfaces = RIPInterfaces.GetRunningInterfaces();
-            foreach (var Interface in Interfaces)
-            {
-                if (Equals(Interface, SourceInterface))
-                {
-                    continue;
-                }
-
-                var RIPResponse = new RIPResponse(Interface);
-                RIPResponse.Send(RIPEntries);
-            }
-        }
-
-        public static void SendTriggeredUpdate(Interface SourceInterface, RIPEntry RIPEntry)
-        {
-            SendTriggeredUpdate(SourceInterface, new List<RIPEntry> { RIPEntry });
-        }
-
         public static void OnReceived(IPAddress SourceIP, RIPRouteCollection RouteCollection, Interface Interface)
         {
             var ChangedRIPEntries = new List<RIPEntry>();
@@ -189,7 +159,7 @@ namespace Router.RIP
             if (ChangedRIPEntries.Count > 0)
             {
                 RIPTable.Instance.SyncWithRT();
-                SendTriggeredUpdate(Interface, ChangedRIPEntries);
+                RIPUpdates.SendTriggered(Interface, ChangedRIPEntries);
             }
         }
     }

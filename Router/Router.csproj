@@ -77,7 +77,6 @@
     <Compile Include="Protocols\RIP.cs" />
     <Compile Include="Protocols\RIPRouteRequest.cs" />
     <Compile Include="RIP\RIPEntry.cs" />
-    <Compile Include="RIP\RIPInterfaces.cs" />
     <Compile Include="RIP\RIPRequest.cs" />
     <Compile Include="RIP\RIPTable.cs" />
     <Compile Include="Protocols\RIPCommandType.cs" />
@@ -86,11 +85,12 @@
     <Compile Include="Protocols\RIPRouteCollection.cs" />
     <Compile Include="RIP\RIPEntryTimers.cs" />
     <Compile Include="RIP\RIPResponse.cs" />
+    <Compile Include="RIP\RIPUpdates.cs" />
     <Compile Include="Routing.cs" />
     <Compile Include="RoutingTable.cs" />
     <Compile Include="RoutingEntry.cs" />
-    <Compile Include="Services\RIPService.cs" />
-    <Compile Include="Services\InterfaceService.cs" />
+    <Compile Include="RIP\RIPService.cs" />
+    <Compile Include="InterfaceService.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config">

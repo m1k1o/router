@@ -1,4 +1,4 @@
-﻿namespace Router.Services
+﻿namespace Router
 {
     interface InterfaceService
     {

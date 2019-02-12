@@ -49,7 +49,7 @@ namespace Router.Controllers
                     var HoldTimer = TimeSpan.FromSeconds(Int32.Parse(Rows[2]));
                     var FlushTimer = TimeSpan.FromSeconds(Int32.Parse(Rows[3]));
 
-                    RIPInterfaces.UpdateTimer = UpdateTimer;
+                    RIPUpdates.Timer = UpdateTimer;
                     RIPEntryTimers.InvalidTimer = InvalidTimer;
                     RIPEntryTimers.HoldTimer = HoldTimer;
                     RIPEntryTimers.FlushTimer = FlushTimer;
@@ -61,13 +61,14 @@ namespace Router.Controllers
             }
 
             var obj = new JSONObject();
-            obj.Push("update_timer", RIPInterfaces.UpdateTimer.TotalSeconds);
+            obj.Push("update_timer", RIPUpdates.Timer.TotalSeconds);
             obj.Push("invalid_timer", RIPEntryTimers.InvalidTimer.TotalSeconds);
             obj.Push("hold_timer", RIPEntryTimers.HoldTimer.TotalSeconds);
             obj.Push("flush_timer", RIPEntryTimers.FlushTimer.TotalSeconds);
             return obj;
         }
 
+        /*
         public static JSON Updates(string Data = null)
         {
             if (!string.IsNullOrEmpty(Data))
@@ -128,7 +129,7 @@ namespace Router.Controllers
 
             return obj;
         }
-
+        */
         public static JSON Table(string Data = null)
         {
             var obj = new JSONObject();

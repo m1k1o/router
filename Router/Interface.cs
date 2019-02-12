@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using Router.Helpers;
-using Router.Services;
 using SharpPcap;
 
 namespace Router
@@ -93,7 +92,7 @@ namespace Router
 
         private static List<InterfaceService> AvailableServices = new List<InterfaceService>
         {
-            new RIPService()
+            new RIP.RIPService()
         };
 
         private List<InterfaceService> RunningServices = new List<InterfaceService>();
