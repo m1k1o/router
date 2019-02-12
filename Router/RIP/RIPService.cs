@@ -1,13 +1,14 @@
 ﻿using System;
-using System.Collections.Generic;
 
 namespace Router.RIP
 {
     class RIPService : InterfaceService
     {
-        public string Name { get; set; } = "RIP";
+        public string Name { get; } = "rip";
 
-        public string Description { get; set; } = "Routing Information Protocol";
+        public string Description { get; } = "RIP";
+
+        public bool OnlyRunningInterface { get; } = true;
 
         public void OnStarted(Interface Interface)
         {
@@ -19,10 +20,9 @@ namespace Router.RIP
             };
 
             RIPTable.Instance.Add(RIPEntry);
-
             RIPUpdates.SendTriggered(Interface, RIPEntry);
-
             RIPRequest.AskForUpdate(Interface);
+            RIPUpdates.Add(Interface);
         }
 
         public void OnStopped(Interface Interface)
@@ -36,10 +36,9 @@ namespace Router.RIP
             RIPEntry.PossibblyDown = true;
 
             RIPUpdates.SendTriggered(Interface, RIPEntry);
-            
             RIPTable.Instance.Remove(Interface);
-
             RIPTable.Instance.SyncWithRT();
+            RIPUpdates.Remove(Interface);
         }
 
         public void OnChanged(Interface Interface)
