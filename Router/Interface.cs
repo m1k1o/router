@@ -94,6 +94,7 @@ namespace Router
 
         private static List<InterfaceService> AvailableServices = new List<InterfaceService>
         {
+            new RoutingService(),
             new ARP.ARPService(),
             new RIP.RIPService(),
             new LLDP.LLDPService()

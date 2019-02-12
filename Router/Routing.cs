@@ -2,12 +2,77 @@
 using System;
 using System.Net.NetworkInformation;
 using Router.ARP;
+using System.Threading;
+using System.Collections.Generic;
 
 namespace Router
 {
     static class Routing
     {
-        public static void OnReceived(IPv4Packet IPPacket)
+        private static object QueueLock = new object();
+        private static List<Handler> HandlerQueue = new List<Handler>();
+
+        private static bool PacketProcessingStop = false;
+        private static Thread PacketProcessingThread;
+
+        public static void Start()
+        {
+            PacketProcessingThread = new Thread(BackgroundThread);
+            PacketProcessingThread.Start();
+            PacketProcessingStop = false;
+        }
+
+        public static void Stop()
+        {
+            PacketProcessingStop = true;
+            PacketProcessingThread.Join();
+        }
+
+        public static void AddToQueue(Handler Handler)
+        {
+            lock (QueueLock)
+            {
+                HandlerQueue.Add(Handler);
+            }
+        }
+
+        private static void BackgroundThread()
+        {
+            while (!PacketProcessingStop)
+            {
+                bool shouldSleep = true;
+
+                lock (QueueLock)
+                {
+                    if (HandlerQueue.Count != 0)
+                    {
+                        shouldSleep = false;
+                    }
+                }
+
+                if (shouldSleep)
+                {
+                    Thread.Sleep(250);
+                }
+                else // should process the queue
+                {
+                    List<Handler> ourQueue;
+                    lock (QueueLock)
+                    {
+                        // swap queues, giving the capture callback a new one
+                        ourQueue = HandlerQueue;
+                        HandlerQueue = new List<Handler>();
+                    }
+
+                    foreach (var e in ourQueue)
+                    {
+                        PerformRouting((IPv4Packet)e.PacketPayload);
+                    }
+                }
+            }
+        }
+
+        private static void PerformRouting(IPv4Packet IPPacket)
         {
             IPPacket.TimeToLive--;
             if (IPPacket.TimeToLive <= 0)
@@ -36,9 +101,12 @@ namespace Router
                 return;
             }
 
+            var ethernetPacket = new EthernetPacket(RoutingEntry.Interface.PhysicalAddress, DestionationMac, EthernetPacketType.IpV4)
+            {
+                PayloadData = IPPacket.Bytes
+            };
+
             // Send
-            var ethernetPacket = new EthernetPacket(RoutingEntry.Interface.PhysicalAddress, DestionationMac, EthernetPacketType.IpV4);
-            ethernetPacket.PayloadData = IPPacket.Bytes;
             RoutingEntry.Interface.SendPacket(ethernetPacket.Bytes);
         }
     }
