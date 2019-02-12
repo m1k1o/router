@@ -135,6 +135,7 @@ namespace Router
                 (BaseIPNetwork, Routes) => Routes.BestRoute()).ToList();
         }
     }
+
     static class RoutingTableExtensions
     {
         public static RoutingEntry BestRoute(this IEnumerable<RoutingEntry> Entries)

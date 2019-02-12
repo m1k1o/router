@@ -29,16 +29,20 @@ namespace Router.Controllers
                 var Rows = Data.Split('\n');
 
                 // Validate
-                if (Rows.Length != 3)
+                if (Rows.Length != 4)
                 {
-                    return new JSONError("Expected TimeToLive, SystemName, SystemDescription.");
+                    return new JSONError("Expected AdvertisementsInterval, TimeToLive, SystemName, SystemDescription.");
                 }
 
                 try
                 {
-                    LLDPResponse.TimeToLive = UInt16.Parse(Rows[0]);
-                    LLDPResponse.SystemName = Rows[1];
-                    LLDPResponse.SystemDescription = Rows[2];
+                    var Timer = TimeSpan.FromSeconds(Int32.Parse(Rows[0]));
+                    var TimeToLive = UInt16.Parse(Rows[1]);
+
+                    LLDPAdvertisements.Timer = Timer;
+                    LLDPResponse.TimeToLive = TimeToLive;
+                    LLDPResponse.SystemName = Rows[2];
+                    LLDPResponse.SystemDescription = Rows[3];
                 }
                 catch (Exception e)
                 {
@@ -47,6 +51,7 @@ namespace Router.Controllers
             }
 
             var obj = new JSONObject();
+            obj.Push("adv_interval", LLDPAdvertisements.Timer);
             obj.Push("time_to_live", LLDPResponse.TimeToLive);
             obj.Push("system_name", LLDPResponse.SystemName);
             obj.Push("system_description", LLDPResponse.SystemDescription);

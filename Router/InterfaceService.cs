@@ -1,4 +1,6 @@
-﻿namespace Router
+﻿using System;
+
+namespace Router
 {
     interface InterfaceService
     {
@@ -8,10 +10,14 @@
 
         bool OnlyRunningInterface { get; }
 
+        bool DefaultRunning { get; }
+
         void OnStarted(Interface Interface);
 
         void OnStopped(Interface Interface);
 
         void OnChanged(Interface Interface);
+
+        void OnPacketArrival(Handler Handler);
     }
 }

@@ -3,19 +3,22 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using Router.Helpers;
+using PacketDotNet;
 using SharpPcap;
 
 namespace Router
 {
     delegate void InterfaceEvent(Interface Interface);
+    delegate void PacketArrival(Handler Handler);
 
     class Interface : Device
     {
         public int ID { get; private set; }
 
-        public InterfaceEvent OnStarted { get; set; } = new InterfaceEvent(I => { });
-        public InterfaceEvent OnStopped { get; set; } = new InterfaceEvent(I => { });
-        public InterfaceEvent OnChanged { get; set; } = new InterfaceEvent(I => { });
+        private InterfaceEvent OnStarted { get; set; } = new InterfaceEvent(I => { });
+        private InterfaceEvent OnStopped { get; set; } = new InterfaceEvent(I => { });
+        private InterfaceEvent OnChanged { get; set; } = new InterfaceEvent(I => { });
+        private PacketArrival OnPacketArrival { get; set; } = new PacketArrival(H => { });
 
         public IPAddress IPAddress { get; private set; }
         public IPNetwork IPNetwork { get; private set; }
@@ -24,10 +27,7 @@ namespace Router
         {
             this.ID = ID;
 
-            OnPacketArrival = (Packet) => 
-            {
-                Interfaces.OnPacketArrival(Packet, this);
-            };
+            PacketArrival = (Packet) => OnPacketArrival(new Handler(Packet, this));
 
             BeforeStarted = () =>
             {
@@ -59,6 +59,8 @@ namespace Router
                     RoutingTable.Instance.RemoveDirectlyConnected(this);
                 }
             };
+
+            ServicesInitialize();
         }
 
         public void SetIP(IPAddress IPAddress, IPSubnetMask IPSubnetMask)
@@ -92,11 +94,25 @@ namespace Router
 
         private static List<InterfaceService> AvailableServices = new List<InterfaceService>
         {
+            new RoutingService(),
+            new ARP.ARPService(),
             new RIP.RIPService(),
             new LLDP.LLDPService()
         };
 
         private List<InterfaceService> RunningServices = new List<InterfaceService>();
+
+        private void ServicesInitialize()
+        {
+            var Services = GetAvailableServices();
+            foreach (var Service in Services)
+            {
+                if (Service.DefaultRunning)
+                {
+                    ServiceToggle(Service.Name);
+                }
+            }
+        }
 
         public void ServiceToggle(string ServiceName)
         {
@@ -122,6 +138,7 @@ namespace Router
                 }
 
                 OnChanged += Service.OnChanged;
+                OnPacketArrival += Service.OnPacketArrival;
             }
             else
             {
@@ -134,6 +151,7 @@ namespace Router
                 }
 
                 OnChanged -= Service.OnChanged;
+                OnPacketArrival -= Service.OnPacketArrival;
 
                 if (Running || !Service.OnlyRunningInterface)
                 {
@@ -141,7 +159,7 @@ namespace Router
                 }
             }
         }
-
+ 
         public bool ServiceExists(string SerivceName)
         {
             return AvailableServices.Exists(Entry => Entry.Name == SerivceName);

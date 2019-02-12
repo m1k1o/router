@@ -43,7 +43,7 @@ namespace Router.Helpers
             this.ICaptureDevice.Close();
         }
 
-        protected Action<RawCapture> OnPacketArrival;
+        protected Action<RawCapture> PacketArrival;
         protected Action BeforeStarted;
         protected Action AfterStarted;
         protected Action AfterStopped;
@@ -58,8 +58,9 @@ namespace Router.Helpers
                 "ether dst " + DeviceMac + " or " +
                 "ether broadcast or " +
                 "ether multicast " +
-            ") and (ip or arp) ";
+            ")";
 
+            //Filter += "and (ip or arp)";
 
             if (DeviceIP != null)
             {
@@ -88,7 +89,7 @@ namespace Router.Helpers
                     return;
                 }
 
-                OnPacketArrival(e.Packet);
+                PacketArrival(e.Packet);
             };
 
             ICaptureDevice.OnCaptureStopped += (object sender, CaptureStoppedEventStatus e) =>
