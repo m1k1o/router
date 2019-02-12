@@ -25,8 +25,6 @@ namespace Router
             {
                 Available.Add(new Interface(Device, i++));
             }
-
-            //StartProcessing();
         }
 
         public Interface GetInterfaceById(string ID)

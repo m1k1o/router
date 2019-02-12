@@ -38,6 +38,14 @@ namespace Router
                 return;
             }
 
+            LLDPPacket lldpPacket = (LLDPPacket)EthernetPacket.Extract(typeof(LLDPPacket));
+            if (lldpPacket != null)
+            {
+                PacketType = typeof(LLDPPacket);
+                PacketPayload = lldpPacket;
+                return;
+            }
+
             RIPPacket ripPacket = Protocols.RIP.Parse(EthernetPacket, Interface);
             if (ripPacket != null)
             {
@@ -68,31 +76,5 @@ namespace Router
         {
             return Equals(Type, PacketType);
         }
-
-        /*
-        public void IP(IPv4Packet IPv4Packet)
-        {
-            Console.WriteLine("Got IPV4.");
-            if (
-                // Is from my MAC
-                Equals(EthernetPacket.SourceHwAddress, Interface.PhysicalAddress) || 
-
-                // Is not to my MAC
-                !Equals(EthernetPacket.DestinationHwAddress, Interface.PhysicalAddress) ||
-
-                // Is to my IP
-                Equals(IPv4Packet.DestinationAddress, Interface.IPAddress) ||
-
-                // Is to my Device IP
-                (Interface.DeviceIP != null && Equals(IPv4Packet.DestinationAddress, Interface.DeviceIP))
-            )
-            {
-                return;
-            }
-
-            Console.WriteLine("Routing to {0}.", IPv4Packet.DestinationAddress);
-            Routing.OnReceived(IPv4Packet);
-        }
-        */
     }
 }
