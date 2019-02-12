@@ -16,7 +16,8 @@ namespace Router.LLDP
         {
             var TlvCollection = new TLVCollection
             {
-                new ChassisID(ChassisSubTypes.NetworkAddress, Interface.IPAddress),
+                //new ChassisID(ChassisSubTypes.NetworkAddress, Interface.IPAddress),
+                new ChassisID(ChassisSubTypes.MACAddress, Interface.PhysicalAddress),
                 new PortID(PortSubTypes.MACAddress, Interface.PhysicalAddress),
                 new TimeToLive(TimeToLive),
 

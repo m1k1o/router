@@ -70,6 +70,7 @@
     <Compile Include="Interfaces.cs" />
     <Compile Include="Helpers\JSONObject.cs" />
     <Compile Include="Helpers\JSONArray.cs" />
+    <Compile Include="LLDP\LLDPAdvertisements.cs" />
     <Compile Include="LLDP\LLDPResponse.cs" />
     <Compile Include="LLDP\LLDPEntry.cs" />
     <Compile Include="LLDP\LLDPService.cs" />
@@ -89,6 +90,7 @@
     <Compile Include="RIP\RIPResponse.cs" />
     <Compile Include="RIP\RIPUpdates.cs" />
     <Compile Include="Routing.cs" />
+    <Compile Include="RoutingService.cs" />
     <Compile Include="RoutingTable.cs" />
     <Compile Include="RoutingEntry.cs" />
     <Compile Include="RIP\RIPService.cs" />

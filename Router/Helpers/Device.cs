@@ -58,8 +58,9 @@ namespace Router.Helpers
                 "ether dst " + DeviceMac + " or " +
                 "ether broadcast or " +
                 "ether multicast " +
-            ") and (ip or arp) ";
+            ")";
 
+            //Filter += "and (ip or arp)";
 
             if (DeviceIP != null)
             {

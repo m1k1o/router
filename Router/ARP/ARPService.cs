@@ -13,7 +13,7 @@ namespace Router.ARP
 
         public string Description { get; } = "ARP";
 
-        public bool OnlyRunningInterface { get; } = false;
+        public bool OnlyRunningInterface { get; } = true;
 
         public bool DefaultRunning { get; } = true;
 
