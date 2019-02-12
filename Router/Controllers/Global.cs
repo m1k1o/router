@@ -18,7 +18,7 @@ namespace Router.Controllers
         public static JSON UpdateTables(string Data = null)
         {
             var obj = new JSONObject();
-            obj.Push("interfaces", Interfaces.Table());
+            //obj.Push("interfaces", Interfaces.Table());
             obj.Push("arp", ARP.Table());
             obj.Push("routing", Routing.Table());
             obj.Push("rip", RIP.Table());
