@@ -19,12 +19,24 @@ namespace Router.RIP
         public void Send()
         {
             var RouteCollection = Export();
+
+            if (RouteCollection.Count == 0)
+            {
+                return;
+            }
+
             Protocols.RIP.Send(RIPCommandType.Response, RouteCollection, Interface);
         }
 
         public void Send(List<RIPEntry> RIPEntries)
         {
             var RouteCollection = Export(RIPEntries);
+
+            if (RouteCollection.Count == 0)
+            {
+                return;
+            }
+
             Protocols.RIP.Send(RIPCommandType.Response, RouteCollection, Interface);
         }
 
@@ -39,6 +51,11 @@ namespace Router.RIP
             {
                 RIPRequest.Export(Interface);
                 RouteCollection = RIPRequest.RouteCollection;
+            }
+
+            if (RouteCollection.Count == 0)
+            {
+                return;
             }
 
             Protocols.RIP.Send(RIPRequest.SrcMac, RIPRequest.SrcIP, RIPRequest.SrcPort, RIPCommandType.Response, RouteCollection, Interface);

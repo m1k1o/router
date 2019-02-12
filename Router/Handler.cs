@@ -1,6 +1,7 @@
 ﻿using PacketDotNet;
 using Router.Protocols;
 using Router.RIP;
+using Router.ARP;
 using SharpPcap;
 using System;
 
@@ -102,7 +103,7 @@ namespace Router
         public void ARP(ARPPacket ARPPacket)
         {
             Console.WriteLine("Got ARP.");
-            Router.ARP.OnReceived(EthernetPacket.DestinationHwAddress, ARPPacket, Interface);
+            ARPMiddleware.OnReceived(EthernetPacket.DestinationHwAddress, ARPPacket, Interface);
         }
 
         public void IP(IPv4Packet IPv4Packet)

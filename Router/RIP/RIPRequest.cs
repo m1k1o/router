@@ -21,11 +21,6 @@ namespace Router.RIP
 
         public void SendResponse(Interface Interface)
         {
-            if (RouteCollection.Count == 0)
-            {
-                return;
-            }
-
             var RIPResponse = new RIPResponse(Interface);
             RIPResponse.Send(this);
         }

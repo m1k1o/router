@@ -1,6 +1,7 @@
 ﻿using Router.Helpers;
 using System;
 using System.Net;
+using Router.ARP;
 
 namespace Router.Controllers
 {
@@ -45,15 +46,15 @@ namespace Router.Controllers
                 }
 
                 // Set
-                Router.ARPEntry.CacheTimeout = CacheTimeout;
-                Router.ARP.RequestTimeout = RequestTimeout;
-                Router.ARP.RequestInterval = RequestInterval;
+                Router.ARP.ARPEntry.CacheTimeout = CacheTimeout;
+                ARPMiddleware.RequestTimeout = RequestTimeout;
+                ARPMiddleware.RequestInterval = RequestInterval;
             }
 
             var obj = new JSONObject();
-            obj.Push("cache_timeout", Router.ARPEntry.CacheTimeout.TotalSeconds);
-            obj.Push("request_timeout", Router.ARP.RequestTimeout.TotalMilliseconds);
-            obj.Push("request_interval", Router.ARP.RequestInterval.TotalMilliseconds);
+            obj.Push("cache_timeout", Router.ARP.ARPEntry.CacheTimeout.TotalSeconds);
+            obj.Push("request_timeout", ARPMiddleware.RequestTimeout.TotalMilliseconds);
+            obj.Push("request_interval", ARPMiddleware.RequestInterval.TotalMilliseconds);
             return obj;
         }
 
@@ -69,11 +70,11 @@ namespace Router.Controllers
                     return new JSONError("Expected ProxyEnabled.");
                 }
 
-                Router.ARP.ProxyEnabled = Rows[0] == "true";
+                ARPMiddleware.ProxyEnabled = Rows[0] == "true";
             }
 
             var obj = new JSONObject();
-            obj.Push("enabled", Router.ARP.ProxyEnabled);
+            obj.Push("enabled", ARPMiddleware.ProxyEnabled);
             return obj;
         }
 
@@ -105,7 +106,7 @@ namespace Router.Controllers
             }
 
             // Action
-            var MAC = Router.ARP.Lookup(IPAddress, Interface);
+            var MAC = ARPMiddleware.Lookup(IPAddress, Interface);
 
             // Answer
             return new JSONObject("mac", MAC);

@@ -4,9 +4,9 @@ using System.Net;
 using System.Net.NetworkInformation;
 using System.Threading;
 
-namespace Router
+namespace Router.ARP
 {
-    static class ARP
+    static class ARPMiddleware
     {
         public static TimeSpan RequestTimeout { get; set; } = TimeSpan.FromMilliseconds(1500);
         public static TimeSpan RequestInterval { get; set; }  = TimeSpan.FromMilliseconds(500);
