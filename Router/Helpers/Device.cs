@@ -6,11 +6,10 @@ using SharpPcap;
 using SharpPcap.LibPcap;
 using SharpPcap.WinPcap;
 
-namespace Router
+namespace Router.Helpers
 {
     abstract class Device
     {
-
         private ICaptureDevice ICaptureDevice;
         public string Name { get => ICaptureDevice.Name; }
         public string FriendlyName { get => ICaptureDevice.ToString().Split('\n')[1].Substring(14); }
