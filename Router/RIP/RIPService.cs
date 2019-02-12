@@ -12,6 +12,8 @@ namespace Router.RIP
 
         public bool OnlyRunningInterface { get; } = true;
 
+        public bool DefaultRunning { get; } = false;
+
         public void OnStarted(Interface Interface)
         {
             var RIPEntry = new RIPEntry(Interface, Interface.IPNetwork, Interface.IPAddress, 1)

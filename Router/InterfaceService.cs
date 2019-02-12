@@ -10,6 +10,8 @@ namespace Router
 
         bool OnlyRunningInterface { get; }
 
+        bool DefaultRunning { get; }
+
         void OnStarted(Interface Interface);
 
         void OnStopped(Interface Interface);

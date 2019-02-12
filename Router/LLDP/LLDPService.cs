@@ -15,6 +15,8 @@ namespace Router.LLDP
 
         public bool OnlyRunningInterface { get; } = true;
 
+        public bool DefaultRunning { get; } = false;
+
         public void OnStarted(Interface Interface)
         {
             throw new NotImplementedException();
@@ -41,7 +43,6 @@ namespace Router.LLDP
         }
 
         /*
-
         public static bool Running { get; private set; } = false;
 
         private static Thread Thread;

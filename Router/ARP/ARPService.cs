@@ -15,6 +15,8 @@ namespace Router.ARP
 
         public bool OnlyRunningInterface { get; } = false;
 
+        public bool DefaultRunning { get; } = true;
+
         public void OnStarted(Interface Interface) { }
 
         public void OnStopped(Interface Interface) { }

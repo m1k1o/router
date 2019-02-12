@@ -59,6 +59,8 @@ namespace Router
                     RoutingTable.Instance.RemoveDirectlyConnected(this);
                 }
             };
+
+            ServicesInitialize();
         }
 
         public void SetIP(IPAddress IPAddress, IPSubnetMask IPSubnetMask)
@@ -98,6 +100,18 @@ namespace Router
         };
 
         private List<InterfaceService> RunningServices = new List<InterfaceService>();
+
+        private void ServicesInitialize()
+        {
+            var Services = GetAvailableServices();
+            foreach (var Service in Services)
+            {
+                if (Service.DefaultRunning)
+                {
+                    ServiceToggle(Service.Name);
+                }
+            }
+        }
 
         public void ServiceToggle(string ServiceName)
         {
@@ -144,7 +158,7 @@ namespace Router
                 }
             }
         }
-
+ 
         public bool ServiceExists(string SerivceName)
         {
             return AvailableServices.Exists(Entry => Entry.Name == SerivceName);
