@@ -29,6 +29,11 @@ namespace Router.LLDP
             throw new NotImplementedException();
         }
 
+        public void OnPacketArrival(object RawData, Interface Interface)
+        {
+            throw new NotImplementedException();
+        }
+
         /*
 
         public static bool Running { get; private set; } = false;

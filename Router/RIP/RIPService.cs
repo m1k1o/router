@@ -55,5 +55,10 @@ namespace Router.RIP
 
             RIPTable.Instance.SyncWithRT();
         }
+
+        public void OnPacketArrival(object RawData, Interface Interface)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

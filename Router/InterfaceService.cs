@@ -13,5 +13,7 @@
         void OnStopped(Interface Interface);
 
         void OnChanged(Interface Interface);
+
+        void OnPacketArrival(object Packet, Interface Interface);
     }
 }

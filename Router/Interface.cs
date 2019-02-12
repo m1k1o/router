@@ -8,14 +8,16 @@ using SharpPcap;
 namespace Router
 {
     delegate void InterfaceEvent(Interface Interface);
+    delegate void PacketArrival(object Packet, Interface Interface);
 
     class Interface : Device
     {
         public int ID { get; private set; }
 
-        public InterfaceEvent OnStarted { get; set; } = new InterfaceEvent(I => { });
-        public InterfaceEvent OnStopped { get; set; } = new InterfaceEvent(I => { });
-        public InterfaceEvent OnChanged { get; set; } = new InterfaceEvent(I => { });
+        private InterfaceEvent OnStarted { get; set; } = new InterfaceEvent(I => { });
+        private InterfaceEvent OnStopped { get; set; } = new InterfaceEvent(I => { });
+        private InterfaceEvent OnChanged { get; set; } = new InterfaceEvent(I => { });
+        private PacketArrival OnPacketArrival { get; set; } = new PacketArrival((P, I) => { });
 
         public IPAddress IPAddress { get; private set; }
         public IPNetwork IPNetwork { get; private set; }
@@ -24,9 +26,10 @@ namespace Router
         {
             this.ID = ID;
 
-            OnPacketArrival = (Packet) => 
+            PacketArrival = (Packet) => 
             {
                 Interfaces.OnPacketArrival(Packet, this);
+                OnPacketArrival(Packet, this);
             };
 
             BeforeStarted = () =>
@@ -122,6 +125,7 @@ namespace Router
                 }
 
                 OnChanged += Service.OnChanged;
+                OnPacketArrival += Service.OnPacketArrival;
             }
             else
             {
@@ -134,6 +138,7 @@ namespace Router
                 }
 
                 OnChanged -= Service.OnChanged;
+                OnPacketArrival -= Service.OnPacketArrival;
 
                 if (Running || !Service.OnlyRunningInterface)
                 {
