@@ -92,7 +92,8 @@ namespace Router
 
         private static List<InterfaceService> AvailableServices = new List<InterfaceService>
         {
-            new RIP.RIPService()
+            new RIP.RIPService(),
+            new LLDP.LLDPService()
         };
 
         private List<InterfaceService> RunningServices = new List<InterfaceService>();

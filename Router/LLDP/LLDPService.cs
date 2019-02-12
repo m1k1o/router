@@ -6,8 +6,29 @@ using System.Threading.Tasks;
 
 namespace Router.LLDP
 {
-    class LLDPService
+    class LLDPService : InterfaceService
     {
+        public string Name { get; } = "lldp";
+
+        public string Description { get; } = "LLDP";
+
+        public bool OnlyRunningInterface { get; } = true;
+
+        public void OnStarted(Interface Interface)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void OnStopped(Interface Interface)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void OnChanged(Interface Interface)
+        {
+            throw new NotImplementedException();
+        }
+
         /*
 
         public static bool Running { get; private set; } = false;
