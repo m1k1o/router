@@ -1,6 +1,8 @@
 ﻿using PacketDotNet;
 using Router.Protocols;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Router.RIP
 {
@@ -47,16 +49,32 @@ namespace Router.RIP
 
         public void OnChanged(Interface Interface)
         {
-            throw new NotImplementedException();
-
-            var RIPEntry = RIPTable.Instance.Find(Interface, Interface.IPNetwork);
-            if (RIPEntry == null)
+            // Poison old
+            var OldRIPEntry = RIPTable.Instance.FindAll(Interface).Where(Entry => Entry.Metric == 1).First();
+            if (OldRIPEntry == null)
             {
-                throw new Exception("RIPEntry not found while Updating");
+                throw new Exception("RIPEntry not found while Stopping");
             }
 
-            RIPUpdates.SendTriggered(Interface, RIPEntry);
+            OldRIPEntry.PossibblyDown = true;
 
+            // Remove all routes from that interface ?
+            RIPTable.Instance.Remove(Interface);
+
+            // Insert new
+            var NewRIPEntry = new RIPEntry(Interface, Interface.IPNetwork, Interface.IPAddress, 1)
+            {
+                SyncWithRT = false,
+                CanBeUpdated = false,
+                TimersEnabled = false
+            };
+            RIPTable.Instance.Add(NewRIPEntry);
+
+            RIPUpdates.SendTriggered(Interface, new List<RIPEntry> {
+                OldRIPEntry,
+                NewRIPEntry
+            });
+            RIPRequest.AskForUpdate(Interface);
             RIPTable.Instance.SyncWithRT();
         }
 

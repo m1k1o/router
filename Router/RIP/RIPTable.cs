@@ -83,9 +83,20 @@ namespace Router.RIP
             });
         }
 
+        private int LastHashCode;
+
         public void SyncWithRT()
         {
             GarbageCollector();
+
+            var Entries = BestEntries();
+
+            var HashCode = RIPListExtensions.GetHashCode(Entries);
+            if (Entries.Count == 0 || LastHashCode == HashCode)
+            {
+                return;
+            }
+            LastHashCode = HashCode;
 
             foreach (var Entry in Entries)
             {
@@ -120,6 +131,19 @@ namespace Router.RIP
         public static RIPEntry Find(this List<RIPEntry> Entries, IPNetwork IPNetwork)
         {
             return Entries.Find(Entry => Entry.IPNetwork == IPNetwork);
+        }
+
+        public static int GetHashCode(List<RIPEntry> Entries)
+        {
+            unchecked
+            {
+                int hash = 19;
+                foreach (var Entry in Entries)
+                {
+                    hash = hash * 31 + Entry.GetHashCode();
+                }
+                return hash;
+            }
         }
     }
 }
