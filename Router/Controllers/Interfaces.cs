@@ -37,21 +37,20 @@ namespace Router.Controllers
 
         public static JSON AvailableServices(string Data = null)
         {
-            var arr = new JSONArray();
+            var services = new JSONObject();
             var obj = new JSONObject();
 
             foreach (var Service in Services)
             {
                 obj.Empty();
-
-                obj.Push("name", Service.Name);
+                
                 obj.Push("description", Service.Description);
                 obj.Push("only_running_interface", Service.OnlyRunningInterface);
 
-                arr.Push(obj);
+                services.Push(Service.Name, obj);
             }
 
-            return arr;
+            return services;
         }
 
         public static JSON ToggleService(string Data = null)
