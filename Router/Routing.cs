@@ -1,6 +1,7 @@
 ﻿using PacketDotNet;
 using System;
 using System.Net.NetworkInformation;
+using Router.ARP;
 
 namespace Router
 {
@@ -28,7 +29,7 @@ namespace Router
                 return;
             }
 
-            PhysicalAddress DestionationMac = ARP.Lookup(RoutingEntry.NextHopIP, RoutingEntry.Interface);
+            PhysicalAddress DestionationMac = ARPMiddleware.Lookup(RoutingEntry.NextHopIP, RoutingEntry.Interface);
             if (DestionationMac == null)
             {
                 Console.WriteLine("No DestionationMac after ARP Lookup for {0}.", RoutingEntry.NextHopIP);

@@ -2,7 +2,7 @@
 using System.Net;
 using System.Net.NetworkInformation;
 
-namespace Router
+namespace Router.ARP
 {
     class ARPEntry
     {

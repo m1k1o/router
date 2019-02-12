@@ -48,9 +48,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ARP.cs" />
-    <Compile Include="ARPEntry.cs" />
-    <Compile Include="ARPTable.cs" />
+    <Compile Include="ARP\ARPMiddleware.cs" />
+    <Compile Include="ARP\ARPEntry.cs" />
+    <Compile Include="ARP\ARPTable.cs" />
     <Compile Include="Controllers\ARP.cs" />
     <Compile Include="Controllers\Global.cs" />
     <Compile Include="Controllers\Interfaces.cs" />
