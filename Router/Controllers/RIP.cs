@@ -70,6 +70,9 @@ namespace Router.Controllers
         
         public static JSON Table(string Data = null)
         {
+            // TODO: Bad Practices.
+            RIPTable.Instance.SyncWithRT();
+
             var obj = new JSONObject();
 
             var Rows = RIPTable.GetEntries();
