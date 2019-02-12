@@ -49,7 +49,7 @@ namespace Router.Controllers
                     var HoldTimer = TimeSpan.FromSeconds(Int32.Parse(Rows[2]));
                     var FlushTimer = TimeSpan.FromSeconds(Int32.Parse(Rows[3]));
 
-                    RIPInterfaces.UpdateTimer = UpdateTimer;
+                    RIPUpdates.Timer = UpdateTimer;
                     RIPEntryTimers.InvalidTimer = InvalidTimer;
                     RIPEntryTimers.HoldTimer = HoldTimer;
                     RIPEntryTimers.FlushTimer = FlushTimer;
@@ -61,74 +61,13 @@ namespace Router.Controllers
             }
 
             var obj = new JSONObject();
-            obj.Push("update_timer", RIPInterfaces.UpdateTimer.TotalSeconds);
+            obj.Push("update_timer", RIPUpdates.Timer.TotalSeconds);
             obj.Push("invalid_timer", RIPEntryTimers.InvalidTimer.TotalSeconds);
             obj.Push("hold_timer", RIPEntryTimers.HoldTimer.TotalSeconds);
             obj.Push("flush_timer", RIPEntryTimers.FlushTimer.TotalSeconds);
             return obj;
         }
-
-        public static JSON Updates(string Data = null)
-        {
-            if (!string.IsNullOrEmpty(Data))
-            {
-                if(Data == "start")
-                {
-                    RIPInterfaces.ActiveUpdates = true;
-                }
-
-                if (Data == "stop")
-                {
-                    RIPInterfaces.ActiveUpdates = false;
-                }
-            }
-
-            return new JSONObject("active", RIPInterfaces.ActiveUpdates);
-        }
-
-        public static JSON InterfaceToggle(string Data)
-        {
-            try
-            {
-                var Interface = Router.Interfaces.Instance.GetInterfaceById(Data);
-                if (RIPInterfaces.IsActive(Interface))
-                {
-                    RIPInterfaces.Remove(Interface);
-                }
-                else
-                {
-                    RIPInterfaces.Add(Interface);
-                }
-
-                var obj = new JSONObject();
-                obj.Push("active", RIPInterfaces.IsActive(Interface));
-                obj.Push("running", RIPInterfaces.IsRunning(Interface));
-                return obj;
-            }
-            catch (Exception e)
-            {
-                return new JSONError(e.Message);
-            }
-        }
         
-        public static JSON Interfaces(string Data = null)
-        {
-            var obj = new JSONObject();
-            var obj2 = new JSONObject();
-
-            var Interfaces = Router.Interfaces.Instance.GetInteraces();
-            foreach (var Interface in Interfaces)
-            {
-                obj2.Empty();
-                obj2.Push("active", RIPInterfaces.IsActive(Interface));
-                obj2.Push("running", RIPInterfaces.IsRunning(Interface));
-
-                obj.Push(Interface.ID.ToString(), obj2);
-            }
-
-            return obj;
-        }
-
         public static JSON Table(string Data = null)
         {
             var obj = new JSONObject();
@@ -146,8 +85,6 @@ namespace Router.Controllers
         {
             var obj = new JSONObject();
             obj.Push("table", Table());
-            obj.Push("updates", Updates());
-            obj.Push("interfaces", Interfaces());
             obj.Push("timers", Timers());
             return obj;
         }

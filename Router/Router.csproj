@@ -69,15 +69,15 @@
     <Compile Include="Interfaces.cs" />
     <Compile Include="Helpers\JSONObject.cs" />
     <Compile Include="Helpers\JSONArray.cs" />
-    <Compile Include="LLDP\LLDPProcess.cs" />
+    <Compile Include="LLDP\LLDPResponse.cs" />
     <Compile Include="LLDP\LLDPEntry.cs" />
+    <Compile Include="LLDP\LLDPService.cs" />
     <Compile Include="LLDP\LLDPTable.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Protocols\ARP.cs" />
     <Compile Include="Protocols\RIP.cs" />
     <Compile Include="Protocols\RIPRouteRequest.cs" />
     <Compile Include="RIP\RIPEntry.cs" />
-    <Compile Include="RIP\RIPInterfaces.cs" />
     <Compile Include="RIP\RIPRequest.cs" />
     <Compile Include="RIP\RIPTable.cs" />
     <Compile Include="Protocols\RIPCommandType.cs" />
@@ -86,9 +86,12 @@
     <Compile Include="Protocols\RIPRouteCollection.cs" />
     <Compile Include="RIP\RIPEntryTimers.cs" />
     <Compile Include="RIP\RIPResponse.cs" />
+    <Compile Include="RIP\RIPUpdates.cs" />
     <Compile Include="Routing.cs" />
     <Compile Include="RoutingTable.cs" />
     <Compile Include="RoutingEntry.cs" />
+    <Compile Include="RIP\RIPService.cs" />
+    <Compile Include="InterfaceService.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config">

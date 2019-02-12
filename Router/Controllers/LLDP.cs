@@ -29,21 +29,16 @@ namespace Router.Controllers
                 var Rows = Data.Split('\n');
 
                 // Validate
-                if (Rows.Length != 4)
+                if (Rows.Length != 3)
                 {
-                    return new JSONError("Expected Running, TimeToLive, SystemName, SystemDescription.");
+                    return new JSONError("Expected TimeToLive, SystemName, SystemDescription.");
                 }
 
                 try
                 {
-                    if(LLDPProcess.Running != (Rows[0] == "true"))
-                    {
-                        LLDPProcess.Toggle();
-                    }
-
-                    LLDPProcess.TimeToLive = UInt16.Parse(Rows[1]);
-                    LLDPProcess.SystemName = Rows[2];
-                    LLDPProcess.SystemDescription = Rows[3];
+                    LLDPResponse.TimeToLive = UInt16.Parse(Rows[0]);
+                    LLDPResponse.SystemName = Rows[1];
+                    LLDPResponse.SystemDescription = Rows[2];
                 }
                 catch (Exception e)
                 {
@@ -52,10 +47,9 @@ namespace Router.Controllers
             }
 
             var obj = new JSONObject();
-            obj.Push("running", LLDPProcess.Running);
-            obj.Push("time_to_live", LLDPProcess.TimeToLive);
-            obj.Push("system_name", LLDPProcess.SystemName);
-            obj.Push("system_description", LLDPProcess.SystemDescription);
+            obj.Push("time_to_live", LLDPResponse.TimeToLive);
+            obj.Push("system_name", LLDPResponse.SystemName);
+            obj.Push("system_description", LLDPResponse.SystemDescription);
             return obj;
         }
 

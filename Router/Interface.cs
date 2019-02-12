@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using Router.Helpers;
 using SharpPcap;
@@ -84,6 +86,80 @@ namespace Router
             }
 
             return FriendlyName + " (" + IPAddress.ToString() + "/" + IPNetwork.SubnetMask.CIDR.ToString() + ")";
+        }
+
+        // Services
+
+        private static List<InterfaceService> AvailableServices = new List<InterfaceService>
+        {
+            new RIP.RIPService(),
+            new LLDP.LLDPService()
+        };
+
+        private List<InterfaceService> RunningServices = new List<InterfaceService>();
+
+        public void ServiceToggle(string ServiceName)
+        {
+            var Service = AvailableServices.Find(Entry => Entry.Name == ServiceName);
+            if (Service == null)
+            {
+                throw new Exception("Service " + ServiceName + " does not exist.");
+            }
+
+            if (!ServiceRunning(ServiceName))
+            {
+                RunningServices.Add(Service);
+
+                if (Running || !Service.OnlyRunningInterface)
+                {
+                    Service.OnStarted(this);
+                }
+
+                if (Service.OnlyRunningInterface)
+                {
+                    OnStarted += Service.OnStarted;
+                    OnStopped += Service.OnStopped;
+                }
+
+                OnChanged += Service.OnChanged;
+            }
+            else
+            {
+                RunningServices.Remove(Service);
+
+                if (Service.OnlyRunningInterface)
+                {
+                    OnStarted -= Service.OnStarted;
+                    OnStopped -= Service.OnStopped;
+                }
+
+                OnChanged -= Service.OnChanged;
+
+                if (Running || !Service.OnlyRunningInterface)
+                {
+                    Service.OnStopped(this);
+                }
+            }
+        }
+
+        public bool ServiceExists(string SerivceName)
+        {
+            return AvailableServices.Exists(Entry => Entry.Name == SerivceName);
+        }
+
+        public bool ServiceRunning(string SerivceName)
+        {
+            return RunningServices.Exists(Entry => Entry.Name == SerivceName);
+        }
+
+        public List<InterfaceService> GetRunningServices()
+        {
+            return RunningServices.ToList();
+        }
+
+        public static List<InterfaceService> GetAvailableServices()
+        {
+            return AvailableServices.ToList();
         }
 
         // Equality
