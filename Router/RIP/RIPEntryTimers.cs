@@ -42,9 +42,8 @@ namespace Router.RIP
         public bool PossibblyDown
         {
             get =>
-                TimersEnabled &&
-                (PossibblyDownSince != DateTime.MinValue ||
-                DateTime.Now > TimeUpdated + InvalidTimer);
+                PossibblyDownSince != DateTime.MinValue ||
+                (TimersEnabled && DateTime.Now > TimeUpdated + InvalidTimer);
             set
             {
                 if (value && PossibblyDownSince == DateTime.MinValue)
@@ -62,7 +61,7 @@ namespace Router.RIP
         {
             get =>
                 TimersEnabled &&
-                ((PossibblyDownSince != DateTime.MinValue && DateTime.Now <= PossibblyDownSince + HoldTimer) ||
+                ((PossibblyDownSince != DateTime.MinValue && DateTime.Now <= PossibblyDownSince + InvalidTimer + HoldTimer) ||
                 (PossibblyDownSince == DateTime.MinValue && DateTime.Now > TimeUpdated + InvalidTimer && DateTime.Now <= TimeUpdated + InvalidTimer + HoldTimer));
         }
     }
