@@ -112,6 +112,12 @@ namespace Router.Controllers
             return new JSONObject("mac", MAC);
         }
 
+        public static JSON Flush(string Data = null)
+        {
+            ARPTable.Flush();
+            return new JSONObject("success", true);
+        }
+
         public static JSON Table(string Data = null)
         {
             var obj = new JSONObject();
