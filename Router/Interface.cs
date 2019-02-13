@@ -97,7 +97,8 @@ namespace Router
             new RoutingService(),
             new ARP.ARPService(),
             new RIP.RIPService(),
-            new LLDP.LLDPService()
+            new LLDP.LLDPService(),
+            new Sniffing.SniffingService()
         };
 
         private List<InterfaceService> RunningServices = new List<InterfaceService>();

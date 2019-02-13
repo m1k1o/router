@@ -1,5 +1,4 @@
 ﻿using PacketDotNet;
-using Router.Protocols;
 using SharpPcap;
 using System;
 
@@ -8,73 +7,103 @@ namespace Router
     class Handler
     {
         public Interface Interface { get; private set; }
-        public EthernetPacket EthernetPacket { get; private set; }
 
-        public object PacketPayload { get; private set; }
-        public Type PacketType { get; private set; }
+        public RawCapture RawCapture { get; private set; }
+        public InternetLinkLayerPacket InternetLinkLayerPacket { get; private set; }
+        public InternetPacket InternetPacket { get; private set; }
+        public TransportPacket TransportPacket { get; private set; }
+        public ApplicationPacket ApplicationPacket { get; private set; }
+
+        public int Layer { get; private set; } = 0;
 
         public Handler(RawCapture RawCapture, Interface Interface)
         {
+            this.RawCapture = RawCapture;
             this.Interface = Interface;
 
-            EthernetPacket = (EthernetPacket)Packet.ParsePacket(RawCapture.LinkLayerType, RawCapture.Data);
-            if (EthernetPacket == null)
+            Parse();
+        }
+
+        private void Parse()
+        {
+            if (!LinkLayer())
             {
-                throw new Exception("Packet is not Ethernet Packet.");
+                Layer = 1;
+                throw new Exception("Failed to parse Link Layer");
             }
 
-            // My packet?
-            if (Equals(EthernetPacket.SourceHwAddress, Interface.PhysicalAddress))
+            if(!(InternetLinkLayerPacket is EthernetPacket))
             {
-                PacketType = null;
+                throw new Exception("Packet is not Ethernet");
+            }
+
+            if (!InternetLayer())
+            {
+                Layer = 2;
                 return;
             }
 
-            ARPPacket arpPacket = (ARPPacket)EthernetPacket.Extract(typeof(ARPPacket));
-            if (arpPacket != null)
+            if (!TransportLayer())
             {
-                PacketType = typeof(ARPPacket);
-                PacketPayload = arpPacket;
+                Layer = 3;
                 return;
             }
 
-            LLDPPacket lldpPacket = (LLDPPacket)EthernetPacket.Extract(typeof(LLDPPacket));
-            if (lldpPacket != null)
+            if (!ApplicationLayer())
             {
-                PacketType = typeof(LLDPPacket);
-                PacketPayload = lldpPacket;
+                Layer = 4;
                 return;
             }
 
-            RIPPacket ripPacket = Protocols.RIP.Parse(EthernetPacket, Interface);
-            if (ripPacket != null)
-            {
-                PacketType = typeof(RIPPacket);
-                PacketPayload = ripPacket;
-                return;
-            }
-
-            IPv4Packet ipPacket = (IPv4Packet)EthernetPacket.Extract(typeof(IPv4Packet));
-            if (ipPacket != null)
-            {
-                PacketType = typeof(IPv4Packet);
-                PacketPayload = ipPacket;
-                return;
-            }
-
-            // Other packets ignore
-            PacketType = null;
+            Layer = 5;
             return;
         }
 
-        public bool Exists()
+        private bool LinkLayer()
         {
-            return PacketType != null;
+            InternetLinkLayerPacket = (InternetLinkLayerPacket)Packet.ParsePacket(RawCapture.LinkLayerType, RawCapture.Data);
+            return InternetLinkLayerPacket != null;
         }
 
-        public bool CheckType(Type Type)
+        private bool InternetLayer()
         {
-            return Equals(Type, PacketType);
+            InternetPacket = (InternetPacket)InternetLinkLayerPacket.Extract(typeof(InternetPacket));
+            return InternetPacket != null;
         }
+
+        private bool TransportLayer()
+        {
+            TransportPacket = (TransportPacket)InternetPacket.Extract(typeof(TransportPacket));
+            return TransportPacket != null;
+        }
+
+        private bool ApplicationLayer()
+        {
+            ApplicationPacket = (ApplicationPacket)TransportPacket.Extract(typeof(ApplicationPacket));
+            return TransportPacket != null;
+        }
+
+        public bool IsFromMe
+            => Equals(((EthernetPacket)InternetLinkLayerPacket).SourceHwAddress, Interface.PhysicalAddress);
+
+        public bool CheckEtherType(EthernetPacketType EthernetPacketType)
+        {
+            if (IsFromMe)
+            {
+                return false;
+            }
+
+            return EthernetPacket.Type == EthernetPacketType;
+        }
+
+        // Shortcuts - most common protocols
+
+        public EthernetPacket EthernetPacket => (EthernetPacket)InternetLinkLayerPacket;
+
+        public IPv4Packet IPv4Packet => (IPv4Packet)InternetPacket;
+
+        public UdpPacket UdpPacket => (UdpPacket)TransportPacket;
+
+        public TcpPacket TcpPacket => (TcpPacket)TransportPacket;
     }
 }

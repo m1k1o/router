@@ -31,12 +31,14 @@ namespace Router.LLDP
 
         public void OnPacketArrival(Handler Handler)
         {
-            if (!Handler.CheckType(typeof(LLDPPacket)))
+            if (!Handler.CheckEtherType(EthernetPacketType.LLDP))
             {
                 return;
             }
 
-            LLDPResponse.OnReceived(Handler.Interface, (LLDPPacket)Handler.PacketPayload);
+            var LLDPPacket = (LLDPPacket)Handler.InternetLinkLayerPacket.PayloadPacket;
+
+            LLDPResponse.OnReceived(Handler.Interface, LLDPPacket);
         }
     }
 }

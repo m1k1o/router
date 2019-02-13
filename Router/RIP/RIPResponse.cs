@@ -105,7 +105,7 @@ namespace Router.RIP
                     NextHop = RIPEntry.NextHopIP;
                 }
 
-                RouteCollection.Add(RIPEntry.IPNetwork, Interface.IPAddress, Metric);
+                RouteCollection.Add(RIPEntry.IPNetwork, NextHop, Metric);
             }
 
             return RouteCollection;

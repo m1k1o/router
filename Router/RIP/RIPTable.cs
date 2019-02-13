@@ -73,7 +73,7 @@ namespace Router.RIP
         public void GarbageCollector()
         {
             Entries.RemoveAll(RIPEntry => {
-                if (!RIPEntry.SyncWithRT || !RIPEntry.ToBeRemoved)
+                if (!RIPEntry.SyncWithRT || RIPEntry.ToBeRemoved)
                 {
                     // Remove from RT
                     RoutingTable.Instance.Remove(RIPEntry.IPNetwork, ADistance.RIP);

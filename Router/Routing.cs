@@ -66,7 +66,7 @@ namespace Router
 
                     foreach (var e in ourQueue)
                     {
-                        PerformRouting((IPv4Packet)e.PacketPayload);
+                        PerformRouting(e.IPv4Packet);
                     }
                 }
             }

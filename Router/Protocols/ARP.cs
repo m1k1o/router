@@ -77,10 +77,5 @@ namespace Router.Protocols
                 Interface
            );
         }
-
-        public static ARPPacket Parse(Packet packet)
-        {
-            return (ARPPacket) packet.Extract(typeof(ARPPacket));
-        }
     }
 }
