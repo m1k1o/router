@@ -39,51 +39,42 @@ namespace Router.Protocols
             Send(MulticastMac, MulticastIp, PortUDP, CommandType, RTEs, Interface);
         }
 
-        public static RIPPacket Parse(EthernetPacket packet, Interface Interface)
+        public static bool Validate(Handler H)
         {
-            IPv4Packet ipPacket;
-            UdpPacket udpPacket;
-
-            if (
-                // Interface is not Running RIP
-                !Interface.ServiceRunning("rip") ||
+            return
+                // Interface is Running RIP
+                H.Interface.ServiceRunning("rip") &&
 
                 // Sent from me
-                Equals(packet.SourceHwAddress, Interface.PhysicalAddress) ||
+                !H.IsFromMe &&
 
                 (
-                    // Not to RIP Multicast MAC
-                    !Equals(packet.DestinationHwAddress, MulticastMac) &&
+                    // To RIP Multicast MAC
+                    Equals(H.EthernetPacket.DestinationHwAddress, MulticastMac) ||
 
-                    // Not to Unicast for me
-                    !Equals(packet.DestinationHwAddress, Interface.PhysicalAddress)
-                ) ||
+                    // To Unicast for me
+                    Equals(H.EthernetPacket.DestinationHwAddress, H.Interface.PhysicalAddress)
+                ) &&
+                
+                // Is IPv4
+                H.EthernetPacket.Type == EthernetPacketType.IpV4 &&
 
-                // Not IP Packet
-                (ipPacket = (IPv4Packet)packet.Extract(typeof(IPv4Packet))) == null ||
-
-                // Not from this network
-                !Interface.IsReachable(ipPacket.SourceAddress) ||
+                // From this network
+                H.Interface.IsReachable(H.IPv4Packet.SourceAddress) &&
 
                 (
-                    // Not to RIP Multicast IP
-                    !Equals(ipPacket.DestinationAddress, MulticastIp) &&
+                    // To RIP Multicast IP
+                    Equals(H.IPv4Packet.DestinationAddress, MulticastIp) ||
 
-                    // Not to me 
-                    !Equals(ipPacket.DestinationAddress, Interface.IPAddress)
-                ) ||
+                    // To Unicast IP for me
+                    Equals(H.IPv4Packet.DestinationAddress, H.Interface.IPAddress)
+                ) &&
 
-                // Not UDP Packet
-                (udpPacket = (UdpPacket)ipPacket.Extract(typeof(UdpPacket))) == null ||
+                // Is UDP
+                H.IPv4Packet.Protocol == IPProtocolType.UDP &&
 
-                // Not to 520 Port
-                udpPacket.DestinationPort != PortUDP
-            )
-            {
-                return null;
-            }
-
-            return Parse(udpPacket);
+                // To 520 Port
+                H.UdpPacket.DestinationPort == PortUDP;
         }
 
         public static RIPPacket Parse(UdpPacket UdpPacket)
