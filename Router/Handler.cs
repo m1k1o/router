@@ -26,8 +26,6 @@ namespace Router
 
         private void Parse()
         {
-            Console.WriteLine("\nPacket:");
-
             if (!LinkLayer())
             {
                 Layer = 1;
