@@ -23,6 +23,9 @@ namespace Router.Sniffing
 
         public void Extract()
         {
+            Result.Push("interface", Handler.Interface.ID);
+            Result.Push("layer", Handler.Layer);
+
             EthernetPacket(Handler.EthernetPacket);
 
             // ARPPacket
