@@ -1,7 +1,4 @@
-﻿using PacketDotNet;
-using System;
-
-namespace Router.Sniffing
+﻿namespace Router.Sniffing
 {
     class SniffingService : InterfaceService
     {
