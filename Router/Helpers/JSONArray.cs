@@ -4,7 +4,7 @@ namespace Router.Helpers
 {
     class JSONArray : JSON
     {
-        public JSONArray(List<object> List = null)
+        public JSONArray(List<JSON> List = null)
         {
             if (List != null)
             {
