@@ -80,6 +80,9 @@ namespace Router.RIP
 
         public void OnPacketArrival(Handler Handler)
         {
+            throw new NotImplementedException();
+
+            /*
             if (!Handler.CheckType(typeof(RIPPacket)))
             {
                 return;
@@ -102,6 +105,7 @@ namespace Router.RIP
                 RIPResponse.OnReceived(IPPacket.SourceAddress, RIPPacket.RouteCollection, Handler.Interface);
                 return;
             }
+            */
         }
     }
 }

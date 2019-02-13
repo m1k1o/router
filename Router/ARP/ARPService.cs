@@ -25,13 +25,15 @@ namespace Router.ARP
 
         public void OnPacketArrival(Handler Handler)
         {
-            if (!Handler.CheckType(typeof(ARPPacket)))
+            if (!Handler.CheckEtherType(EthernetPacketType.Arp))
             {
                 return;
             }
 
+            var ARPPacket = (ARPPacket)Handler.InternetLinkLayerPacket.PayloadPacket;
+
             Console.WriteLine("Got ARP.");
-            ARPMiddleware.OnReceived(Handler.EthernetPacket.DestinationHwAddress, (ARPPacket)Handler.PacketPayload, Handler.Interface);
+            ARPMiddleware.OnReceived(Handler.EthernetPacket.DestinationHwAddress, ARPPacket, Handler.Interface);
         }
     }
 }
