@@ -77,6 +77,7 @@
     <Compile Include="LLDP\LLDPTable.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Protocols\ARP.cs" />
+    <Compile Include="Protocols\DHCPPacket.cs" />
     <Compile Include="Protocols\RIP.cs" />
     <Compile Include="Protocols\RIPRouteRequest.cs" />
     <Compile Include="RIP\RIPEntry.cs" />
