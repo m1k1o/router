@@ -12,7 +12,7 @@ namespace Router.Sniffing
 {
     class SniffingJSON
     {
-        public JSONObject Result { get; private set; }
+        public JSONObject Result { get; private set; } = new JSONObject();
 
         private Handler Handler;
 
