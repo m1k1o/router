@@ -34,7 +34,10 @@ namespace Router
                 throw new Exception("Failed to parse Link Layer");
             }
 
-            Console.WriteLine("^ - LinkLayer");
+            if(!(InternetLinkLayerPacket is EthernetPacket))
+            {
+                throw new Exception("Packet is not Ethernet");
+            }
 
             if (!InternetLayer())
             {
@@ -42,15 +45,11 @@ namespace Router
                 return;
             }
 
-            Console.WriteLine("^ - InternetLayer");
-
             if (!TransportLayer())
             {
                 Layer = 3;
                 return;
             }
-
-            Console.WriteLine("^ - TransportLayer");
 
             if (!ApplicationLayer())
             {
@@ -58,7 +57,6 @@ namespace Router
                 return;
             }
 
-            Console.WriteLine("^ - ApplicationLayer");
             Layer = 5;
             return;
         }
@@ -92,7 +90,7 @@ namespace Router
 
         public bool CheckEtherType(EthernetPacketType EthernetPacketType)
         {
-            if (IsFromMe || !(InternetLinkLayerPacket is EthernetPacket))
+            if (IsFromMe)
             {
                 return false;
             }
