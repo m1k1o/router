@@ -24,6 +24,7 @@ namespace Router.Protocols
             {
                 PayloadPacket = udpPacket
             };
+            ipPacket.Checksum = ipPacket.CalculateIPChecksum();
 
             var ethernetPacket = new EthernetPacket(Interface.PhysicalAddress, DstMAC, EthernetPacketType.IpV4)
             {

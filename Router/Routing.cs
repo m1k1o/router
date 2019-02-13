@@ -75,6 +75,8 @@ namespace Router
         private static void PerformRouting(IPv4Packet IPPacket)
         {
             IPPacket.TimeToLive--;
+            IPPacket.Checksum = IPPacket.CalculateIPChecksum();
+
             if (IPPacket.TimeToLive <= 0)
             {
                 Console.WriteLine("TimeToLive reached 0, dropping packet.");
