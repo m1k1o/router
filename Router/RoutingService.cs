@@ -39,26 +39,24 @@ namespace Router
 
         public void OnPacketArrival(Handler Handler)
         {
-            if (!Handler.CheckType(typeof(IPv4Packet)))
+            if (!Handler.CheckEtherType(EthernetPacketType.IpV4))
             {
                 return;
             }
 
-            IPv4Packet IPv4Packet = (IPv4Packet)Handler.PacketPayload;
-
             Console.WriteLine("Got IPV4.");
             if (
-                // Is from my MAC
-                Equals(Handler.EthernetPacket.SourceHwAddress, Handler.Interface.PhysicalAddress) ||
-
                 // Is not to my MAC
                 !Equals(Handler.EthernetPacket.DestinationHwAddress, Handler.Interface.PhysicalAddress) ||
 
+                // Is from my IP
+                Equals(Handler.IPv4Packet.SourceAddress, Handler.Interface.IPAddress) ||
+
                 // Is to my IP
-                Equals(IPv4Packet.DestinationAddress, Handler.Interface.IPAddress) ||
+                Equals(Handler.IPv4Packet.DestinationAddress, Handler.Interface.IPAddress) ||
 
                 // Is to my Device IP
-                (Handler.Interface.DeviceIP != null && Equals(IPv4Packet.DestinationAddress, Handler.Interface.DeviceIP))
+                (Handler.Interface.DeviceIP != null && Equals(Handler.IPv4Packet.DestinationAddress, Handler.Interface.DeviceIP))
             )
             {
                 return;

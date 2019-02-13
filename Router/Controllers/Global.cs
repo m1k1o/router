@@ -23,6 +23,7 @@ namespace Router.Controllers
             obj.Push("routing", Routing.Table());
             obj.Push("rip", RIP.Table());
             obj.Push("lldp", LLDP.Table());
+            obj.Push("sniffing", Sniffing.SniffingList.Pop());
             return obj;
         }
     }

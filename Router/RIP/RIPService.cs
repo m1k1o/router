@@ -80,12 +80,12 @@ namespace Router.RIP
 
         public void OnPacketArrival(Handler Handler)
         {
-            if (!Handler.CheckType(typeof(RIPPacket)))
+            if(!Protocols.RIP.Validate(Handler))
             {
                 return;
             }
 
-            RIPPacket RIPPacket = (RIPPacket)Handler.PacketPayload;
+            RIPPacket RIPPacket = Protocols.RIP.Parse(Handler.UdpPacket);
 
             Console.WriteLine("Got RIP.");
             IPv4Packet IPPacket = (IPv4Packet)Handler.EthernetPacket.Extract(typeof(IPv4Packet));
