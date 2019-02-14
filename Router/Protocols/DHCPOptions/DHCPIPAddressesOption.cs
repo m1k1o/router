@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Net;
 
@@ -13,7 +14,7 @@ namespace Router.Protocols.DHCPOptions
             var Length = Bytes.Length;
             for (var i = 0; i < Length; i += 4)
             {
-                IPAddresses.Add(new IPAddress((uint)Bytes[i]));
+                IPAddresses.Add(new IPAddress(BitConverter.ToUInt32(Bytes, i)));
             }
         }
 

@@ -59,7 +59,7 @@
         /// additional fields after it concludes interpretation of the standard
         /// option fields.
         /// </summary>
-        OptionOverload = 52,
+        //OptionOverload = 52,
 
         /// <summary>
         /// RFC 2132.
