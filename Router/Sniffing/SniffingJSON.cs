@@ -17,7 +17,6 @@ namespace Router.Sniffing
 
         public void Extract()
         {
-            Result.Push("interface", Handler.Interface.ID);
             Result.Push("layer", Handler.Layer);
 
             EthernetPacket(Handler.EthernetPacket);
@@ -54,7 +53,7 @@ namespace Router.Sniffing
                     UDPPacket(Handler.UdpPacket);
 
                     // RIPPacket
-                    if (Protocols.RIP.Validate(Handler))
+                    if (Handler.UdpPacket.SourcePort == 520)
                     {
                         RIPPacket(Protocols.RIP.Parse(Handler.UdpPacket));
                     }
