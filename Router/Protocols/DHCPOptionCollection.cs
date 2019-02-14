@@ -21,6 +21,12 @@ namespace Router.Protocols
             {
                 var Type = Bytes[offset++];
 
+                // Pad
+                if (Type == 0)
+                {
+                    continue;
+                }
+
                 if (Type == (byte)DHCPOptionCode.End)
                 {
                     break;
@@ -45,7 +51,11 @@ namespace Router.Protocols
                 var ms = new MemoryStream();
                 foreach (var Option in this)
                 {
-                    ms.Write(new byte[] { (byte)Option.Type, Option.Length }, 0, 2);
+                    if (Option.Type != DHCPOptionCode.End && Option.Type != DHCPOptionCode.Pad)
+                    {
+                        ms.Write(new byte[] { (byte)Option.Type, Option.Length }, 0, 2);
+                    }
+
                     ms.Write(Option.Bytes, 0, Option.Length);
                 }
 
