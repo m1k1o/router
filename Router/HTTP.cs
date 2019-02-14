@@ -1,9 +1,12 @@
 ﻿using System;
 using System.IO;
 using System.Net;
+using System.Net.NetworkInformation;
 using System.Reflection;
 using System.Text;
+using PacketDotNet;
 using Router.Helpers;
+using Router.Protocols;
 
 namespace Router
 {
@@ -99,9 +102,43 @@ namespace Router
         private static void Main(string[] args)
         {
             var Preload = Interfaces.Instance;
-
+            /*
             var HTTP = new HTTP("http://localhost:5000/");
             HTTP.Listen();
+            */
+
+            var Interface = Interfaces.Instance.GetInterfaceById("2");
+            Interface.SetIP(IPAddress.Parse("192.168.1.5"), IPSubnetMask.Parse("255.255.255.0"));
+            Interface.Start();
+
+            Console.WriteLine("Started");
+
+            var dhcpPacket = new DHCPPacket();
+            dhcpPacket.OperationCode = DHCPOperatonCode.BootRequest;
+            dhcpPacket.HardwareType = LinkLayers.Ethernet;
+            dhcpPacket.HardwareAddressLength = 6;
+            dhcpPacket.TransactionID = 0x3903F326;
+            dhcpPacket.ClientMACAddress = Interface.PhysicalAddress;
+            dhcpPacket.IsDHCP = true;
+
+            var udpPacket = new UdpPacket(68, 67)
+            {
+                PayloadData = dhcpPacket.Bytes
+            };
+
+            var ipPacket = new IPv4Packet(IPAddress.Parse("0.0.0.0"), IPAddress.Parse("255.255.255.255"))
+            {
+                PayloadPacket = udpPacket
+            };
+            ipPacket.Checksum = ipPacket.CalculateIPChecksum();
+
+            var ethernetPacket = new EthernetPacket(Interface.PhysicalAddress, PhysicalAddress.Parse("FF-FF-FF-FF-FF-FF"), EthernetPacketType.IpV4)
+            {
+                PayloadPacket = ipPacket
+            };
+
+            Interface.SendPacket(ethernetPacket.Bytes);
+            Console.WriteLine("Sent");
         }
     }
 }
