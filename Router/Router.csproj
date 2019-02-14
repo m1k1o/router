@@ -80,7 +80,16 @@
     <Compile Include="Protocols\ARP.cs" />
     <Compile Include="Protocols\DHCPFlags.cs" />
     <Compile Include="Protocols\DHCPOperatonCode.cs" />
-    <Compile Include="Protocols\DHCPOptions.cs" />
+    <Compile Include="Protocols\DHCPOptionCollection.cs" />
+    <Compile Include="Protocols\DHCPOptions\DHCPOption.cs" />
+    <Compile Include="Protocols\DHCPOptions\DHCPOptionCode.cs" />
+    <Compile Include="Protocols\DHCPOptions\DHCPPadOption.cs" />
+    <Compile Include="Protocols\DHCPOptions\DHCPIPAddressesOption.cs" />
+    <Compile Include="Protocols\DHCPOptions\DHCPDomainNameServerOption.cs" />
+    <Compile Include="Protocols\DHCPOptions\DHCPRouterOption.cs" />
+    <Compile Include="Protocols\DHCPOptions\DHCPIPAddressOption.cs" />
+    <Compile Include="Protocols\DHCPOptions\DHCPRequestedIPAddressOption.cs" />
+    <Compile Include="Protocols\DHCPOptions\DHCPSubnetMaskOption.cs" />
     <Compile Include="Protocols\DHCPPacket.cs" />
     <Compile Include="Protocols\RIP.cs" />
     <Compile Include="Protocols\RIPRouteRequest.cs" />

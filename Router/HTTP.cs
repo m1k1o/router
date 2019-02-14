@@ -1,9 +1,14 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Net;
+using System.Net.NetworkInformation;
 using System.Reflection;
 using System.Text;
+using PacketDotNet;
 using Router.Helpers;
+using Router.Protocols;
+using Router.Protocols.DHCPOptions;
 
 namespace Router
 {
@@ -98,10 +103,70 @@ namespace Router
 
         private static void Main(string[] args)
         {
-            var Preload = Interfaces.Instance;
-
+           // var Preload = Interfaces.Instance;
+           /*
+            var MyClass = DHCPOption.Factory(1, 10, new Byte[] { 1, 2, 3, 4, 5 });
+            Console.Write(MyClass.GetType());
+            Console.ReadKey();
+            */
+            /*
             var HTTP = new HTTP("http://localhost:5000/");
             HTTP.Listen();
+            */
+            var Interface = Interfaces.Instance.GetInterfaceById("2");
+            Interface.SetIP(IPAddress.Parse("192.168.1.5"), IPSubnetMask.Parse("255.255.255.0"));
+            Interface.Start();
+
+            Console.WriteLine("Started");
+
+            var Options = new DHCPOptionCollection
+            {
+                new DHCPPadOption(5),
+                new DHCPSubnetMaskOption(IPAddress.Parse("192.168.2.5")),
+                new DHCPRouterOption(new List<IPAddress> {
+                    IPAddress.Parse("8.8.8.8"),
+                    IPAddress.Parse("10.10.2.5"),
+                    IPAddress.Parse("192.168.1.0")
+                }),
+                new DHCPDomainNameServerOption(new List<IPAddress> {
+                    IPAddress.Parse("8.9.8.8"),
+                    IPAddress.Parse("10.1.2.5"),
+                    IPAddress.Parse("192.4.1.0")
+                }),
+                new DHCPRequestedIPAddressOption(IPAddress.Parse("9.8.1.0"))
+            };
+
+            var dhcpPacket = new DHCPPacket
+            {
+                OperationCode = DHCPOperatonCode.BootRequest,
+                HardwareType = LinkLayers.Ethernet,
+                HardwareAddressLength = 6,
+                TransactionID = 0x3903F326,
+                ClientMACAddress = Interface.PhysicalAddress,
+                IsDHCP = true,
+                Options = Options
+            };
+
+            Console.WriteLine(Encoding.Default.GetString(dhcpPacket.Options.Bytes));
+
+            var udpPacket = new UdpPacket(68, 67)
+            {
+                PayloadData = dhcpPacket.Bytes
+            };
+
+            var ipPacket = new IPv4Packet(IPAddress.Parse("0.0.0.0"), IPAddress.Parse("255.255.255.255"))
+            {
+                PayloadPacket = udpPacket
+            };
+            ipPacket.Checksum = ipPacket.CalculateIPChecksum();
+
+            var ethernetPacket = new EthernetPacket(Interface.PhysicalAddress, PhysicalAddress.Parse("FF-FF-FF-FF-FF-FF"), EthernetPacketType.IpV4)
+            {
+                PayloadPacket = ipPacket
+            };
+
+            Interface.SendPacket(ethernetPacket.Bytes);
+            Console.WriteLine("Sent");
         }
     }
 }

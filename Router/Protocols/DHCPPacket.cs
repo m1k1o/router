@@ -168,9 +168,9 @@ namespace Router.Protocols
         }
 
         // Optional parameters field.
-        public DHCPOptions DHCPOptions
+        public DHCPOptionCollection Options
         {
-            get => new DHCPOptions(Slice(240, Length - 240));
+            get => new DHCPOptionCollection(Slice(240, Length - 240));
             set => Inject(240, value.Bytes, value.Length);
         }
 
