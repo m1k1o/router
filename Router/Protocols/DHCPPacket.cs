@@ -17,9 +17,9 @@ namespace Router.Protocols
         }
 
         // Hardware address type.
-        public PacketDotNet.LinkLayers HardwareType
+        public PacketDotNet.ARPOperation HardwareType
         {
-            get => (PacketDotNet.LinkLayers)Slice(1, typeof(byte));
+            get => (PacketDotNet.ARPOperation)Slice(1, typeof(byte));
             set => Inject(1, (byte)value);
         }
 
