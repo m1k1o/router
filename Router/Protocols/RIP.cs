@@ -42,12 +42,6 @@ namespace Router.Protocols
         public static bool Validate(Handler H)
         {
             return
-                // Interface is Running RIP
-                H.Interface.ServiceRunning("rip") &&
-
-                // Sent from me
-                !H.IsFromMe &&
-
                 (
                     // To RIP Multicast MAC
                     Equals(H.EthernetPacket.DestinationHwAddress, MulticastMac) ||

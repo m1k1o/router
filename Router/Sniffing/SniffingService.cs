@@ -8,7 +8,9 @@
 
         public bool OnlyRunningInterface { get; } = true;
 
-        public bool DefaultRunning { get; } = false;
+        public bool DefaultRunning { get; } = true;
+
+        public bool Anonymous { get; } = true;
 
         public void OnStarted(Interface Interface) { }
 
@@ -18,9 +20,12 @@
 
         public void OnPacketArrival(Handler Handler)
         {
-            var SniffingJSON = new SniffingJSON(Handler);
-            SniffingJSON.Extract();
-            SniffingList.Push(SniffingJSON.Result);
+            if (Equals(Handler.Interface, SniffingList.Interface))
+            {
+                var SniffingJSON = new SniffingJSON(Handler);
+                SniffingJSON.Extract();
+                SniffingList.Push(SniffingJSON.Result);
+            }
         }
     }
 }

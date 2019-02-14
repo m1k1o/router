@@ -12,6 +12,7 @@ namespace Router.Controllers
             obj.Push("routing", Routing.Initialize());
             obj.Push("rip", RIP.Initialize());
             obj.Push("lldp", LLDP.Initialize());
+            obj.Push("sniffing", Sniffing.Initialize());
             return obj;
         }
 
@@ -23,7 +24,7 @@ namespace Router.Controllers
             obj.Push("routing", Routing.Table());
             obj.Push("rip", RIP.Table());
             obj.Push("lldp", LLDP.Table());
-            obj.Push("sniffing", Sniffing.SniffingList.Pop());
+            obj.Push("sniffing", Sniffing.Pop());
             return obj;
         }
     }

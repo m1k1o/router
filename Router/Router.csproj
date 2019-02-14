@@ -58,6 +58,7 @@
     <Compile Include="Controllers\LLDP.cs" />
     <Compile Include="Controllers\RIP.cs" />
     <Compile Include="Controllers\Routing.cs" />
+    <Compile Include="Controllers\Sniffing.cs" />
     <Compile Include="Handler.cs" />
     <Compile Include="Helpers\Device.cs" />
     <Compile Include="Helpers\IPSubnetMask.cs" />

@@ -46,6 +46,8 @@ namespace Router.Controllers
                 
                 obj.Push("description", Service.Description);
                 obj.Push("only_running_interface", Service.OnlyRunningInterface);
+                obj.Push("default_running", Service.DefaultRunning);
+                obj.Push("anonymous", Service.Anonymous);
 
                 services.Push(Service.Name, obj);
             }

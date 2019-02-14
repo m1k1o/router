@@ -3,13 +3,15 @@ using System.Collections.Generic;
 
 namespace Router.Sniffing
 {
-    class SniffingList
+    static class SniffingList
     {
         public static int MaxEntries { get; set; } = 50;
         private static int TotalEntries = 0;
 
         private static List<JSON> Entries = new List<JSON>();
-        
+
+        public static Interface Interface { get; set; }
+
         public static JSONArray Pop()
         {
             List<JSON> OProcessingEntries;
@@ -26,14 +28,16 @@ namespace Router.Sniffing
 
         public static void Push(JSON Input)
         {
-            if (TotalEntries > MaxEntries)
+            if (TotalEntries > MaxEntries || Input == null)
             {
                 return;
             }
 
-            TotalEntries++;
-
-            Entries.Add(Input);
+            lock (Entries)
+            {
+                TotalEntries++;
+                Entries.Add(Input);
+            }
         }
     }
 }
