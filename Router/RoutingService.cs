@@ -55,10 +55,7 @@ namespace Router
                 Equals(Handler.IPv4Packet.SourceAddress, Handler.Interface.IPAddress) ||
 
                 // Is to my IP
-                Equals(Handler.IPv4Packet.DestinationAddress, Handler.Interface.IPAddress) ||
-
-                // Is to my Device IP
-                (Handler.Interface.DeviceIP != null && Equals(Handler.IPv4Packet.DestinationAddress, Handler.Interface.DeviceIP))
+                Equals(Handler.IPv4Packet.DestinationAddress, Handler.Interface.IPAddress)
             )
             {
                 return;

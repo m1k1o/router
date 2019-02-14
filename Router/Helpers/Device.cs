@@ -56,6 +56,7 @@ namespace Router.Helpers
 
             String Filter = "(" +
                 "ether dst " + DeviceMac + " or " +
+                "ether src " + DeviceMac + " or " +
                 "ether broadcast or " +
                 "ether multicast " +
             ")";
@@ -65,6 +66,7 @@ namespace Router.Helpers
             if (DeviceIP != null)
             {
                 Filter += " and (not dst host " + DeviceIP + ")";
+                Filter += " and (not src host " + DeviceIP + ")";
             }
 
             ICaptureDevice.Filter = Filter;
