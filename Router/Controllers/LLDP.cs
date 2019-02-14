@@ -10,15 +10,16 @@ namespace Router.Controllers
         {
             var obj = new JSONObject();
             //obj.Push("id", LLDPEntry.ID);
-            obj.Push("chassis_id", LLDPEntry.ChassisID);
-            obj.Push("port_id", LLDPEntry.PortID);
-            obj.Push("time_to_live", LLDPEntry.TimeToLive);
-            obj.Push("port_description", LLDPEntry.PortDescription);
-            obj.Push("system_name", LLDPEntry.SystemName);
-            obj.Push("system_description", LLDPEntry.SystemDescription);
-            obj.Push("system_capabilities", LLDPEntry.SystemCapabilities);
-            obj.Push("management_address", LLDPEntry.ManagementAddress);
-            obj.Push("organization_specific", LLDPEntry.OrganizationSpecific);
+            obj.Push("chassis_id", LLDPEntry.ChassisID.SubTypeValue);
+            obj.Push("port_id", LLDPEntry.PortID.SubTypeValue);
+            obj.Push("time_to_live", LLDPEntry.ExpiresIn);
+            obj.Push("port_description", LLDPEntry.PortDescription == null ? null : LLDPEntry.PortDescription.StringValue);
+            obj.Push("system_name", LLDPEntry.SystemName == null ? null : LLDPEntry.SystemName.StringValue);
+            //obj.Push("system_description", LLDPEntry.SystemDescription.StringValue);
+            //obj.Push("system_capabilities", LLDPEntry.SystemCapabilities.ToString());
+            //obj.Push("management_address", LLDPEntry.ManagementAddress.ToString());
+            //obj.Push("organization_specific", LLDPEntry.OrganizationSpecific.ToString());
+            obj.Push("interface", LLDPEntry.Interface.ID);
             return obj;
         }
 
