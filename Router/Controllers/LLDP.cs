@@ -51,7 +51,7 @@ namespace Router.Controllers
             }
 
             var obj = new JSONObject();
-            obj.Push("adv_interval", LLDPAdvertisements.Timer);
+            obj.Push("adv_interval", LLDPAdvertisements.Timer.TotalSeconds);
             obj.Push("time_to_live", LLDPResponse.TimeToLive);
             obj.Push("system_name", LLDPResponse.SystemName);
             obj.Push("system_description", LLDPResponse.SystemDescription);
