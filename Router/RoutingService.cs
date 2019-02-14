@@ -13,6 +13,8 @@ namespace Router
 
         public bool DefaultRunning { get; } = true;
 
+        public bool Anonymous { get; } = true;
+
         private int TotalRunning = 0;
 
         public void OnStarted(Interface Interface)

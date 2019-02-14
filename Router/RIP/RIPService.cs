@@ -16,6 +16,8 @@ namespace Router.RIP
 
         public bool DefaultRunning { get; } = false;
 
+        public bool Anonymous { get; } = false;
+
         public void OnStarted(Interface Interface)
         {
             var RIPEntry = new RIPEntry(Interface, Interface.IPNetwork, Interface.IPAddress, 1)
@@ -80,7 +82,16 @@ namespace Router.RIP
 
         public void OnPacketArrival(Handler Handler)
         {
-            if(!Protocols.RIP.Validate(Handler))
+            if (
+                // Interface is Running RIP
+                !Handler.Interface.ServiceRunning("rip") ||
+
+                // Sent from me
+                Handler.IsFromMe ||
+                
+                // Valid RIP
+                !Protocols.RIP.Validate(Handler)
+            )
             {
                 return;
             }

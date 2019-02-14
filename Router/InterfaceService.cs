@@ -12,6 +12,8 @@ namespace Router
 
         bool DefaultRunning { get; }
 
+        bool Anonymous { get; }
+
         void OnStarted(Interface Interface);
 
         void OnStopped(Interface Interface);
