@@ -1,98 +1,177 @@
 ﻿using Router.Helpers;
 using System.Net;
+using System.Net.NetworkInformation;
+using System.Text;
 
 namespace Router.Protocols
 {
     sealed class DHCPPacket : Packet
     {
-        public byte OperationCode
+        private const uint DHCP_MAGIC_COOKIE = 0x63825363;
+
+        // Message op code.
+        public DHCPOperatonCode OperationCode
         {
-            get => (byte)Slice(0, typeof(byte));
-            set => Inject(0, value);
+            get => (DHCPOperatonCode)Slice(0, typeof(byte));
+            set => Inject(0, (byte)value);
         }
 
-        public byte HardwareType
+        // Hardware address type.
+        public PacketDotNet.ARPOperation HardwareType
         {
-            get => (byte)Slice(1, typeof(byte));
-            set => Inject(1, value);
+            get => (PacketDotNet.ARPOperation)Slice(1, typeof(byte));
+            set => Inject(1, (byte)value);
         }
 
+        // Hardware address length.
         public byte HardwareAddressLength
         {
             get => (byte)Slice(2, typeof(byte));
             set => Inject(2, value);
         }
 
+        // Client sets to zero, optionally used by relay agents when booting via a relay agent.
         public byte Hops
         {
             get => (byte)Slice(3, typeof(byte));
             set => Inject(3, value);
         }
 
-        public uint TransactionIdentifier
+        // Transaction ID, a random number chosen by the client, used by the client and server to associate messages and responses between a client and a server.
+        public uint TransactionID
         {
             get => (uint)Slice(4, typeof(uint));
             set => Inject(4, value);
         }
 
+        // Filled in by client, seconds elapsed since client began address acquisition or renewal process.
         public ushort Seconds
         {
             get => (ushort)Slice(8, typeof(ushort));
             set => Inject(8, value);
         }
 
-        public ushort Flags
+        // Flags.
+        public DHCPFlags Flags
         {
-            get => (ushort)Slice(10, typeof(ushort));
-            set => Inject(10, value);
+            get => (DHCPFlags)Slice(10, typeof(ushort));
+            set => Inject(10, (ushort)value);
         }
 
+        // Client IP address; only filled in if client is in BOUND, RENEW or REBINDING state and can respond to ARP requests.
         public IPAddress ClientIPAddress
         {
             get => (IPAddress)Slice(12, typeof(IPAddress));
             set => Inject(12, value);
         }
 
-        public IPAddress YourIPAddress
+        // 'your' (client) IP address.
+        public IPAddress YourClientIPAddress
         {
             get => (IPAddress)Slice(16, typeof(IPAddress));
             set => Inject(16, value);
         }
 
-        public IPAddress ServerIPAddress
+        // IP address of next server to use in bootstrap; returned in DHCPOFFER, DHCPACK by server.
+        public IPAddress NextServerIPAddress
         {
             get => (IPAddress)Slice(20, typeof(IPAddress));
             set => Inject(20, value);
         }
 
-        public IPAddress GatewayIPAddress
+        // Relay agent IP address, used in booting via a relay agent.
+        public IPAddress RelayAgentIPAddress
         {
             get => (IPAddress)Slice(24, typeof(IPAddress));
             set => Inject(24, value);
         }
 
+        // Client hardware address.
         public byte[] ClientHardwareAddress
         {
             get => Slice(28, 16);
             set => Inject(28, value, 16);
         }
 
-        public byte[] ServerName
+        // Client MAC address.
+        public PhysicalAddress ClientMACAddress
         {
-            get => Slice(44, 64);
-            set => Inject(44, value, 64);
+            get => (PhysicalAddress)Slice(28, typeof(PhysicalAddress));
+            set => Inject(28, value);
         }
 
-        public byte[] BootFilename
+        // Optional server host name.
+        public string ServerName
         {
-            get => Slice(108, 128);
-            set => Inject(108, value, 128);
+            get
+            {
+                // TODO: endianness
+                var _ServerName = Slice(44, 64);
+                return Encoding.ASCII.GetString(_ServerName).TrimEnd('\0');
+            }
+            set
+            {
+                // TODO: endianness
+                var _ServerName = Encoding.ASCII.GetBytes(value);
+                Inject(44, _ServerName, 64);
+            }
         }
 
-        public byte[] Options
+        // Boot file name; "generic" name or null in DHCPDISCOVER, fully qualified directory-path name in DHCPOFFER.
+        public string BootFilename
         {
-            get => Slice(236, Length - 236);
-            set => Inject(236, value, Length - 236);
+            get
+            {
+                // TODO: endianness
+                var _BootFilename = Slice(108, 128);
+                return Encoding.ASCII.GetString(_BootFilename).TrimEnd('\0');
+            }
+            set
+            {
+                // TODO: endianness
+                var _BootFilename = Encoding.ASCII.GetBytes(value);
+                Inject(108, _BootFilename, 128);
+            }
+        }
+
+        // Whether the magic dhcp-cookie is set. If set this datagram is a dhcp-datagram. Otherwise it's a bootp-datagram.
+        public bool IsDHCP
+        {
+            get
+            {
+                if (Length >= 240)
+                {
+                    return (uint)Slice(236, typeof(uint)) == DHCP_MAGIC_COOKIE;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            set
+            {
+                if (value)
+                {
+                    if (Length < 240)
+                    {
+                        Expand(240);
+                    }
+
+                    Inject(236, DHCP_MAGIC_COOKIE);
+                }
+                else
+                {
+                    if (Length >= 240)
+                        Inject(236, (uint)0);
+                }
+            }
+        }
+
+        // Optional parameters field.
+        public DHCPOptions DHCPOptions
+        {
+            get => new DHCPOptions(Slice(240, Length - 240));
+            set => Inject(240, value.Bytes, value.Length);
         }
 
         public DHCPPacket() : base(236)
