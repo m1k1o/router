@@ -1,5 +1,6 @@
 ﻿using PacketDotNet;
 using Router.Helpers;
+using Router.LLDP;
 using Router.Protocols;
 
 namespace Router.Sniffing
@@ -17,7 +18,6 @@ namespace Router.Sniffing
 
         public void Extract()
         {
-            Result.Push("interface", Handler.Interface.ID);
             Result.Push("layer", Handler.Layer);
 
             EthernetPacket(Handler.EthernetPacket);
@@ -54,7 +54,7 @@ namespace Router.Sniffing
                     UDPPacket(Handler.UdpPacket);
 
                     // RIPPacket
-                    if (Protocols.RIP.Validate(Handler))
+                    if (Handler.UdpPacket.SourcePort == 520)
                     {
                         RIPPacket(Protocols.RIP.Parse(Handler.UdpPacket));
                     }
@@ -87,6 +87,14 @@ namespace Router.Sniffing
         private void LLDPPacket(LLDPPacket Packet)
         {
             var obj = new JSONObject();
+
+            // TODO: Bad practces
+            var LLDPEntry = new LLDPEntry(Packet.TlvCollection, null);
+            obj.Push("chassis_id", LLDPEntry.ChassisID.SubTypeValue);
+            obj.Push("port_id", LLDPEntry.PortID.SubTypeValue);
+            obj.Push("time_to_live", LLDPEntry.ExpiresIn);
+            obj.Push("port_description", LLDPEntry.PortDescription == null ? null : LLDPEntry.PortDescription.StringValue);
+            obj.Push("system_name", LLDPEntry.SystemName == null ? null : LLDPEntry.SystemName.StringValue);
 
             Result.Push("lldp", obj);
         }
@@ -132,6 +140,7 @@ namespace Router.Sniffing
                 route.Empty();
 
                 route.Push("afi", Route.AddressFamilyIdentifier);
+                route.Push("route_tag", Route.RouteTag);
                 route.Push("ip", Route.IPAddress);
                 route.Push("mask", Route.IPSubnetMask);
                 route.Push("network", Route.IPNetwork);

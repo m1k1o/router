@@ -1,9 +1,5 @@
 ﻿using PacketDotNet;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Router.ARP
 {
@@ -16,6 +12,8 @@ namespace Router.ARP
         public bool OnlyRunningInterface { get; } = true;
 
         public bool DefaultRunning { get; } = true;
+
+        public bool Anonymous { get; } = true;
 
         public void OnStarted(Interface Interface) { }
 

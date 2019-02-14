@@ -1,9 +1,4 @@
 ﻿using PacketDotNet;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Router.LLDP
 {
@@ -16,6 +11,8 @@ namespace Router.LLDP
         public bool OnlyRunningInterface { get; } = true;
 
         public bool DefaultRunning { get; } = false;
+
+        public bool Anonymous { get; } = false;
 
         public void OnStarted(Interface Interface)
         {
