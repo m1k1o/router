@@ -162,7 +162,9 @@ namespace Router.Protocols
                 else
                 {
                     if (Length >= 240)
+                    {
                         Inject(236, (uint)0);
+                    }
                 }
             }
         }
@@ -174,11 +176,8 @@ namespace Router.Protocols
             set => Inject(240, value.Bytes, value.Length);
         }
 
-        public DHCPPacket() : base(236)
-        {
+        public DHCPPacket() : base(236) { }
 
-        }
-
-        public DHCPPacket(byte[] Data) : base(Data) {}
+        public DHCPPacket(byte[] Data) : base(Data) { }
     }
 }

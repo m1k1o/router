@@ -20,9 +20,8 @@ namespace Router.Protocols
             do
             {
                 var Type = Bytes[offset++];
-
-                // Pad
-                if (Type == 0)
+                
+                if (Type == (byte)DHCPOptionCode.Pad)
                 {
                     continue;
                 }
