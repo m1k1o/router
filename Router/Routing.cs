@@ -66,13 +66,13 @@ namespace Router
 
                     foreach (var e in ourQueue)
                     {
-                        PerformRouting(e.IPv4Packet);
+                        PerformRouting(e.IPv4Packet, e.Interface);
                     }
                 }
             }
         }
 
-        private static void PerformRouting(IPv4Packet IPPacket)
+        private static void PerformRouting(IPv4Packet IPPacket, Interface Interface)
         {
             IPPacket.TimeToLive--;
             IPPacket.Checksum = IPPacket.CalculateIPChecksum();
@@ -93,6 +93,12 @@ namespace Router
             if (!RoutingEntry.HasInterface)
             {
                 Console.WriteLine("No Interface after RoutingTable Lookup for {0}.", IPPacket.DestinationAddress);
+                return;
+            }
+
+            if (Equals(RoutingEntry.Interface, Interface))
+            {
+                Console.WriteLine("Out and In Interfaces match for {0}.", IPPacket.DestinationAddress);
                 return;
             }
 
