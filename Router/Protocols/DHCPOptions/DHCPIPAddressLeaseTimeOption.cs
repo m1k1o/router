@@ -10,7 +10,7 @@ namespace Router.Protocols.DHCPOptions
 
         public DHCPIPAddressLeaseTimeOption(uint LeaseTime) : base(DHCPOptionCode.IPAddressLeaseTime, LeaseTime) { }
 
-        public DHCPIPAddressLeaseTimeOption(TimeSpan LeaseTime) : base(DHCPOptionCode.IPAddressLeaseTime, (uint)LeaseTime.Seconds) { }
+        public DHCPIPAddressLeaseTimeOption(TimeSpan LeaseTime) : base(DHCPOptionCode.IPAddressLeaseTime, (uint)LeaseTime.TotalSeconds) { }
 
     }
 }
