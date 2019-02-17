@@ -74,6 +74,7 @@
     <Compile Include="LLDP\LLDPAdvertisements.cs" />
     <Compile Include="LLDP\LLDPResponse.cs" />
     <Compile Include="LLDP\LLDPEntry.cs" />
+    <Compile Include="DHCP\DHCPServerService.cs" />
     <Compile Include="LLDP\LLDPService.cs" />
     <Compile Include="LLDP\LLDPTable.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

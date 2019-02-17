@@ -11,9 +11,9 @@ namespace Router.Protocols
     static class DHCP
     {
         public static TimeSpan IPAddressLeaseTime { get; set; } = TimeSpan.Parse("01:00:00");
-        public static TimeSpan RenewalTimeValue = TimeSpan.Parse("00:30:00");
-        public static TimeSpan RebindingTimeValue = TimeSpan.Parse("00:52:30");
-        public static List<IPAddress> DNS = new List<IPAddress>()
+        public static TimeSpan RenewalTimeValue { get; set; } = TimeSpan.Parse("00:30:00");
+        public static TimeSpan RebindingTimeValue { get; set; } = TimeSpan.Parse("00:52:30");
+        public static List<IPAddress> DNS { get; set; } = new List<IPAddress>()
         {
             // Cloudflare Public DNS
             IPAddress.Parse("1.1.1.1"),
@@ -23,6 +23,9 @@ namespace Router.Protocols
             IPAddress.Parse("8.8.8.8"),
             IPAddress.Parse("8.8.4.4")
         };
+
+        public const ushort ServerPort = 67;
+        public const ushort ClientPort = 68;
 
         public static void SendDiscover(uint TransactionID, Interface Interface)
         {
@@ -187,6 +190,43 @@ namespace Router.Protocols
             };
 
             Interface.SendPacket(ethernetPacket.Bytes);
+        }
+
+        public static bool Validate(Handler H)
+        {
+            return
+                // Is not from me
+                !H.IsFromMe &&
+
+                (
+                    // To Broadcast MAC
+                    Equals(H.EthernetPacket.DestinationHwAddress, PhysicalAddress.Parse("FF-FF-FF-FF-FF-FF")) ||
+
+                    // To Unicast MAC for me
+                    Equals(H.EthernetPacket.DestinationHwAddress, H.Interface.PhysicalAddress)
+                ) &&
+
+                // Is IPv4
+                H.EthernetPacket.Type == EthernetPacketType.IpV4 &&
+
+                (
+                    // To Broadcast IP
+                    Equals(H.IPv4Packet.DestinationAddress, IPAddress.Parse("255.255.255.255")) ||
+
+                    // To Unicast IP for me
+                    Equals(H.IPv4Packet.DestinationAddress, H.Interface.IPAddress)
+                ) &&
+
+                // Is UDP
+                H.IPv4Packet.Protocol == IPProtocolType.UDP &&
+
+                (
+                    // Port 67 => 68 (Server to Client)
+                    H.UdpPacket.SourcePort == ServerPort && H.UdpPacket.DestinationPort == ClientPort ||
+
+                    // Port 68 => 67 (Client to Server)
+                    H.UdpPacket.SourcePort == ClientPort && H.UdpPacket.DestinationPort == ServerPort
+                );
         }
 
         public static void Test() {
