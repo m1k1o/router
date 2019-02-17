@@ -48,7 +48,7 @@
         /// the lease time it is willing to offer.
         /// </summary>
         IPAddressLeaseTime = 51,
-
+/*
         /// <summary>
         /// RFC 2132.
         /// This option is used to indicate that the DHCP 'sname' or 'file'
@@ -59,8 +59,8 @@
         /// additional fields after it concludes interpretation of the standard
         /// option fields.
         /// </summary>
-        //OptionOverload = 52,
-
+        OptionOverload = 52,
+*/
         /// <summary>
         /// RFC 2132.
         /// This option is used to convey the type of the DHCP message.
@@ -92,7 +92,55 @@
         /// by the client.
         /// </summary>
         ParameterRequestList = 55,
+/*
+        /// <summary>
+        /// RFC 2132.
+        /// This option is used by a DHCP server to provide an error message to a
+        /// DHCP client in a DHCPNAK message in the event of a failure. A client
+        /// may use this option in a DHCPDECLINE message to indicate the why the
+        /// client declined the offered parameters.
+        /// </summary>
+        Message = 56,
 
+        /// <summary>
+        /// RFC 2132.
+        /// This option specifies the maximum length DHCP message that it is
+        /// willing to accept. A client may use the maximum DHCP message size option in
+        /// DHCPDISCOVER or DHCPREQUEST messages, but should not use the option
+        /// in DHCPDECLINE messages.
+        /// </summary>
+        MaximumDhcpMessageSize = 57,
+*/
+        /// <summary>
+        /// RFC 2132.
+        /// This option specifies the time interval from address assignment until
+        /// the client transitions to the RENEWING state.
+        /// </summary>
+        RenewalTimeValue = 58,
+
+        /// <summary>
+        /// RFC 2132.
+        /// This option specifies the time interval from address assignment until
+        /// the client transitions to the REBINDING state.
+        /// </summary>
+        RebindingTimeValue = 59,
+/*
+        /// <summary>
+        /// RFC 2132.
+        /// This option is used by DHCP clients to optionally identify the vendor
+        /// type and configuration of a DHCP client.
+        /// </summary>
+        VendorClassidentifier = 60,
+
+        /// <summary>
+        /// RFC 2132.
+        /// This option is used by DHCP clients to specify their unique
+        /// identifier.DHCP servers use this value to index their database of
+        /// address bindings.  This value is expected to be unique for all
+        /// clients in an administrative domain.
+        /// </summary>
+        ClientIdentifier = 61,
+*/
         /// <summary>
         /// RFC 2132.
         /// The end option marks the end of valid information in the vendor field.

@@ -41,6 +41,8 @@ namespace Router.Protocols
                     DHCPOptionCode.RequestedIPAddress,
                     DHCPOptionCode.Router
                 }),
+                new DHCPRenewalTimeValueOption(123),
+                new DHCPRebindingTimeValueOption(456),
                 new DHCPEndOption()
             };
 
