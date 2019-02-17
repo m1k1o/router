@@ -176,7 +176,15 @@ namespace Router.Protocols
             set => Inject(240, value.Bytes, value.Length);
         }
 
-        public DHCPPacket() : base(236) { }
+        public DHCPPacket(DHCPOperatonCode OperationCode, uint TransactionID, DHCPOptionCollection Options) : base(240 + Options.Length)
+        {
+            this.OperationCode = OperationCode;
+            HardwareType = PacketDotNet.LinkLayers.Ethernet;
+            HardwareAddressLength = 6;
+            this.TransactionID = TransactionID;
+            IsDHCP = true;
+            this.Options = Options;
+        }
 
         public DHCPPacket(byte[] Data) : base(Data) { }
     }
