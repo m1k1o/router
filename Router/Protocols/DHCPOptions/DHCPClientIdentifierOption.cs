@@ -4,6 +4,8 @@ namespace Router.Protocols.DHCPOptions
 {
     class DHCPClientIdentifierOption : DHCPOption
     {
+        public PhysicalAddress PhysicalAddress => new PhysicalAddress(IDValue);
+
         private byte IDType;
         private byte[] IDValue;
 

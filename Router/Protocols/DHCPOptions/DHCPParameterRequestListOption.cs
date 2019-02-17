@@ -5,7 +5,7 @@ namespace Router.Protocols.DHCPOptions
 {
     class DHCPParameterRequestListOption : DHCPOption
     {
-        private List<DHCPOptionCode> Codes;
+        public List<DHCPOptionCode> Codes { get; private set; }
 
         public DHCPParameterRequestListOption(byte[] Bytes) : base(DHCPOptionCode.ParameterRequestList)
         {

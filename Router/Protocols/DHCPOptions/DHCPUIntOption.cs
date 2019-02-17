@@ -4,7 +4,7 @@ namespace Router.Protocols.DHCPOptions
 {
     abstract class DHCPUIntOption : DHCPOption
     {
-        private uint Value;
+        public uint Value { get; private set; }
 
         public DHCPUIntOption(DHCPOptionCode DHCPOptionCode, byte[] Bytes) : base(DHCPOptionCode)
         {

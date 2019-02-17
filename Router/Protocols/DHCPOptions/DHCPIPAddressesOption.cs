@@ -7,7 +7,7 @@ namespace Router.Protocols.DHCPOptions
 {
     abstract class DHCPIPAddressesOption : DHCPOption
     {
-        private List<IPAddress> IPAddresses;
+        public List<IPAddress> IPAddresses { get; private set; }
 
         public DHCPIPAddressesOption(DHCPOptionCode DHCPOptionCode, byte[] Bytes) : base(DHCPOptionCode)
         {
