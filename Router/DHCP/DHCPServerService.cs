@@ -1,6 +1,7 @@
 ﻿using Router.Protocols;
 using Router.Protocols.DHCPOptions;
 using System;
+using System.Net;
 
 namespace Router.DHCP
 {
@@ -42,6 +43,18 @@ namespace Router.DHCP
             var Options = DHCPPacket.Options;
             Console.WriteLine("Got DHCP Packet MessageType: " + DHCPPacket.Options.MessageType);
             
+            if (DHCPPacket.Options.MessageType == DHCPMessageType.Discover)
+            {
+                Protocols.DHCP.SendOffer(DHCPPacket.TransactionID, DHCPPacket.ClientMACAddress, IPAddress.Parse("192.168.1.2"), Handler.Interface);
+                return;
+            }
+
+            if (DHCPPacket.Options.MessageType == DHCPMessageType.Request)
+            {
+                Protocols.DHCP.SendACK(DHCPPacket.TransactionID, DHCPPacket.ClientMACAddress, IPAddress.Parse("192.168.1.2"), Handler.Interface);
+                return;
+            }
+            /*
             foreach (var Option in Options)
             {
                 if (Option is DHCPUnknownOption)
@@ -53,6 +66,7 @@ namespace Router.DHCP
                     Console.WriteLine("\t^^ Option: " + Option.ToString());
                 }
             }
+            */
         }
     }
 }
