@@ -1,6 +1,5 @@
 ﻿using PacketDotNet;
 using Router.DHCP;
-using Router.Helpers;
 using Router.Protocols.DHCPOptions;
 using System;
 using System.Collections.Generic;
@@ -11,7 +10,7 @@ namespace Router.Protocols
 {
     static class DHCP
     {
-        private static TimeSpan IPAddressLeaseTime = DHCPLease.Time;
+        private static TimeSpan IPAddressLeaseTime = DHCPLease.LeaseTimeout;
         public static TimeSpan RenewalTimeValue { get; set; } = TimeSpan.Parse("00:30:00");
         public static TimeSpan RebindingTimeValue { get; set; } = TimeSpan.Parse("00:52:30");
         public static List<IPAddress> DNS { get; set; } = new List<IPAddress>()

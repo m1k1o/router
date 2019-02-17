@@ -4,22 +4,22 @@ using System.Net.NetworkInformation;
 
 namespace Router.DHCP
 {
-    class DHCPLeases
+    class DHCPTable
     {
-        public static DHCPLeases Instance { get; } = new DHCPLeases();
+        public static DHCPTable Instance { get; } = new DHCPTable();
 
         private List<DHCPLease> Entries = new List<DHCPLease>();
 
-        private DHCPLeases() { }
+        private DHCPTable() { }
 
         public void Push(DHCPLease DHCPLease)
         {
             Entries.Add(DHCPLease);
         }
 
-        public DHCPLease Find(PhysicalAddress PhysicalAddress)
+        public DHCPLease Find(PhysicalAddress PhysicalAddress, Interface Interface)
         {
-            return Entries.Find(Entry => Equals(Entry.PhysicalAddress, PhysicalAddress));
+            return Entries.Find(Entry => Equals(Entry.PhysicalAddress, PhysicalAddress) && Equals(Entry.Interface, Interface));
         }
 
         public void Flush()

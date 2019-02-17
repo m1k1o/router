@@ -53,6 +53,7 @@
     <Compile Include="ARP\ARPService.cs" />
     <Compile Include="ARP\ARPTable.cs" />
     <Compile Include="Controllers\ARP.cs" />
+    <Compile Include="Controllers\DHCP.cs" />
     <Compile Include="Controllers\Global.cs" />
     <Compile Include="Controllers\Interfaces.cs" />
     <Compile Include="Controllers\LLDP.cs" />
@@ -60,7 +61,7 @@
     <Compile Include="Controllers\Routing.cs" />
     <Compile Include="Controllers\Sniffing.cs" />
     <Compile Include="DHCP\DHCPLease.cs" />
-    <Compile Include="DHCP\DHCPLeases.cs" />
+    <Compile Include="DHCP\DHCPTable.cs" />
     <Compile Include="DHCP\DHCPServer.cs" />
     <Compile Include="Handler.cs" />
     <Compile Include="Helpers\Device.cs" />
