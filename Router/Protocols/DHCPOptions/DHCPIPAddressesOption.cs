@@ -11,6 +11,8 @@ namespace Router.Protocols.DHCPOptions
 
         public DHCPIPAddressesOption(DHCPOptionCode DHCPOptionCode, byte[] Bytes) : base(DHCPOptionCode)
         {
+            IPAddresses = new List<IPAddress>();
+
             var Length = Bytes.Length;
             for (var i = 0; i < Length; i += 4)
             {

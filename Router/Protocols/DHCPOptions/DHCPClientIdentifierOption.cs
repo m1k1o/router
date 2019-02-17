@@ -11,7 +11,7 @@ namespace Router.Protocols.DHCPOptions
         {
             // TODO: Bad Practices
             IDType = Bytes[0];
-            IDValue = new byte[Length - 1];
+            IDValue = new byte[Bytes.Length - 1];
             for (var i = 1; i < Bytes.Length; i++)
             {
                 IDValue[i - 1] = Bytes[i];

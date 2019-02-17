@@ -17,10 +17,11 @@ namespace Router.Protocols
         private void Parse(byte[] Bytes)
         {
             var offset = 0;
+
             do
             {
                 var Type = Bytes[offset++];
-                
+
                 if (Type == (byte)DHCPOptionCode.Pad)
                 {
                     continue;
@@ -40,7 +41,7 @@ namespace Router.Protocols
                 }
 
                 Add(DHCPOption.Factory(Type, Value));
-            } while (offset < Length);
+            } while (offset < Bytes.Length);
         }
 
         public byte[] Bytes

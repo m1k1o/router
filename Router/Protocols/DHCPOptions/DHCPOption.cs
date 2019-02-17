@@ -21,7 +21,7 @@ namespace Router.Protocols.DHCPOptions
             var OptionFound = OptionName != OptionType.ToString();
             if (!OptionFound)
             {
-                return null;
+                return new DHCPUnknownOption((DHCPOptionCode)OptionType, OptionValue);
             }
 
             Type Type = Type.GetType("Router.Protocols.DHCPOptions.DHCP" + OptionName + "Option");

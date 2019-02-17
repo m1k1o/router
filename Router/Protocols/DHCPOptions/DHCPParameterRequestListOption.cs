@@ -9,6 +9,7 @@ namespace Router.Protocols.DHCPOptions
 
         public DHCPParameterRequestListOption(byte[] Bytes) : base(DHCPOptionCode.ParameterRequestList)
         {
+            Codes = new List<DHCPOptionCode>();
             var Length = Bytes.Length;
             for (var i = 0; i < Length; i += 4)
             {
