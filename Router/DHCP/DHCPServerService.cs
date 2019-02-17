@@ -1,6 +1,8 @@
-﻿using System;
+﻿using Router.Protocols;
+using Router.Protocols.DHCPOptions;
+using System;
 
-namespace Router.LLDP
+namespace Router.DHCP
 {
     class DHCPServerService : InterfaceService
     {
@@ -10,7 +12,7 @@ namespace Router.LLDP
 
         public bool OnlyRunningInterface { get; } = true;
 
-        public bool DefaultRunning { get; } = false;
+        public bool DefaultRunning { get; } = true;
 
         public bool Anonymous { get; } = true;
 
@@ -32,8 +34,25 @@ namespace Router.LLDP
                 Console.WriteLine("Accepting only DHCP Server Port datagrams.");
                 return;
             }
-            
+
             // Proccess DHCP
+            var DHCPPacket = new DHCPPacket(Handler.UdpPacket.PayloadData);
+            Console.WriteLine("Got DHCP Packet with OperationCode: " + DHCPPacket.OperationCode.ToString());
+            Console.WriteLine("Got DHCP Packet with MAC: " + DHCPPacket.ClientMACAddress.ToString());
+            var Options = DHCPPacket.Options;
+            Console.WriteLine("Got DHCP Packet MessageType: " + DHCPPacket.Options.MessageType);
+            
+            foreach (var Option in Options)
+            {
+                if (Option is DHCPUnknownOption)
+                {
+                    Console.WriteLine("\t^^ unknown.");
+                }
+                else
+                {
+                    Console.WriteLine("\t^^ Option: " + Option.ToString());
+                }
+            }
         }
     }
 }

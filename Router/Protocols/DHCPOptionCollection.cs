@@ -14,6 +14,8 @@ namespace Router.Protocols
             Parse(RawData);
         }
 
+        public DHCPMessageType MessageType { get; private set; } = 0;
+
         private void Parse(byte[] Bytes)
         {
             var offset = 0;
@@ -38,6 +40,12 @@ namespace Router.Protocols
                 for (var i = 0; i < Length; i++)
                 {
                     Value[i] = Bytes[offset++];
+                }
+
+                // Shortcut
+                if (Type == (byte)DHCPOptionCode.MessageType)
+                {
+                    MessageType = (DHCPMessageType)Value[0];
                 }
 
                 Add(DHCPOption.Factory(Type, Value));
