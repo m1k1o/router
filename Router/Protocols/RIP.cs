@@ -1,5 +1,4 @@
 using PacketDotNet;
-using Router.RIP;
 using System.Net;
 using System.Net.NetworkInformation;
 
@@ -42,6 +41,9 @@ namespace Router.Protocols
         public static bool Validate(Handler H)
         {
             return
+                // Is not from me
+                !H.IsFromMe &&
+
                 (
                     // To RIP Multicast MAC
                     Equals(H.EthernetPacket.DestinationHwAddress, MulticastMac) ||
@@ -67,7 +69,7 @@ namespace Router.Protocols
                 // Is UDP
                 H.IPv4Packet.Protocol == IPProtocolType.UDP &&
 
-                // To 520 Port
+                // To RIP Port
                 H.UdpPacket.DestinationPort == PortUDP;
         }
 
