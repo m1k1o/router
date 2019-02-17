@@ -43,6 +43,7 @@ namespace Router.Protocols
                 }),
                 new DHCPRenewalTimeValueOption(123),
                 new DHCPRebindingTimeValueOption(456),
+                new DHCPClientIdentifierOption(PhysicalAddress.Parse("AA-BB-CC-DD-EE-FF")),
                 new DHCPEndOption()
             };
 

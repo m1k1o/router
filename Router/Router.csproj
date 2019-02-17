@@ -86,6 +86,7 @@
     <Compile Include="Protocols\DHCPOptions\DHCPRenewalTimeValueOption.cs" />
     <Compile Include="Protocols\DHCPOptions\DHCPIPAddressLeaseTimeOption.cs" />
     <Compile Include="Protocols\DHCPOptions\DHCPMessageTypeOption.cs" />
+    <Compile Include="Protocols\DHCPOptions\DHCPClientIdentifierOption.cs" />
     <Compile Include="Protocols\DHCPOptions\DHCPUIntOption.cs" />
     <Compile Include="Protocols\DHCPOptions\DHCPOption.cs" />
     <Compile Include="Protocols\DHCPOptions\DHCPOptionCode.cs" />

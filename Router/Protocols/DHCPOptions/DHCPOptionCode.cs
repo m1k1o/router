@@ -131,7 +131,7 @@
         /// type and configuration of a DHCP client.
         /// </summary>
         VendorClassidentifier = 60,
-
+*/
         /// <summary>
         /// RFC 2132.
         /// This option is used by DHCP clients to specify their unique
@@ -140,7 +140,7 @@
         /// clients in an administrative domain.
         /// </summary>
         ClientIdentifier = 61,
-*/
+        
         /// <summary>
         /// RFC 2132.
         /// The end option marks the end of valid information in the vendor field.
