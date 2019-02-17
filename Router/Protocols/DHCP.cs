@@ -209,14 +209,6 @@ namespace Router.Protocols
                 // Is IPv4
                 H.EthernetPacket.Type == EthernetPacketType.IpV4 &&
 
-                (
-                    // To Broadcast IP
-                    Equals(H.IPv4Packet.DestinationAddress, IPAddress.Parse("255.255.255.255")) ||
-
-                    // To Unicast IP for me
-                    Equals(H.IPv4Packet.DestinationAddress, H.Interface.IPAddress)
-                ) &&
-
                 // Is UDP
                 H.IPv4Packet.Protocol == IPProtocolType.UDP &&
 
@@ -228,13 +220,68 @@ namespace Router.Protocols
                     H.UdpPacket.SourcePort == ClientPort && H.UdpPacket.DestinationPort == ServerPort
                 );
         }
-
-        public static void Test() {
+        /*
+        public static void Test()
+        {
             var Interface = Interfaces.Instance.GetInterfaceById("2");
             Interface.SetIP(IPAddress.Parse("192.168.1.5"), IPSubnetMask.Parse("255.255.255.0"));
             Interface.Start();
 
-            SendDiscover(10, Interface);
+            Console.WriteLine("Started");
+
+            var Options = new DHCPOptionCollection
+            {
+                new DHCPPadOption(5),
+                new DHCPSubnetMaskOption(IPAddress.Parse("192.168.2.5")),
+                new DHCPRouterOption(new List<IPAddress> {
+                    IPAddress.Parse("8.8.8.8"),
+                    IPAddress.Parse("10.10.2.5"),
+                    IPAddress.Parse("192.168.1.0")
+                }),
+                new DHCPDomainNameServerOption(new List<IPAddress> {
+                    IPAddress.Parse("8.9.8.8"),
+                    IPAddress.Parse("10.1.2.5"),
+                    IPAddress.Parse("192.4.1.0")
+                }),
+                new DHCPRequestedIPAddressOption(IPAddress.Parse("9.8.1.0")),
+                new DHCPIPAddressLeaseTimeOption(569),
+                new DHCPMessageTypeOption(DHCPMessageType.Ack),
+                new DHCPServerIdentifierOption(IPAddress.Parse("1.2.3.4")),
+                new DHCPParameterRequestListOption(new List<DHCPOptionCode> {
+                    DHCPOptionCode.IPAddressLeaseTime,
+                    DHCPOptionCode.RequestedIPAddress,
+                    DHCPOptionCode.Router
+                }),
+                new DHCPRenewalTimeValueOption(123),
+                new DHCPRebindingTimeValueOption(456),
+                new DHCPClientIdentifierOption(PhysicalAddress.Parse("AA-BB-CC-DD-EE-FF")),
+                new DHCPEndOption()
+            };
+
+            var dhcpPacket = new DHCPPacket(DHCPOperatonCode.BootRequest, 0x3903F326, Options)
+            {
+                ClientMACAddress = PhysicalAddress.Parse("AA-BB-CC-DD-EE-FF")
+            };
+
+            var udpPacket = new UdpPacket(68, 67)
+            {
+                PayloadData = dhcpPacket.Bytes
+            };
+
+            var ipPacket = new IPv4Packet(IPAddress.Parse("0.0.0.0"), IPAddress.Parse("255.255.255.255"))
+            {
+                PayloadPacket = udpPacket
+            };
+            ipPacket.Checksum = ipPacket.CalculateIPChecksum();
+
+            var ethernetPacket = new EthernetPacket(PhysicalAddress.Parse("AA-BB-CC-DD-EE-FF"), PhysicalAddress.Parse("FF-FF-FF-FF-FF-FF"), EthernetPacketType.IpV4)
+            {
+                PayloadPacket = ipPacket
+            };
+
+            Interface.SendPacket(ethernetPacket.Bytes);
+            Console.WriteLine("Sent");
         }
+        */
     }
 }

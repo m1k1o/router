@@ -98,13 +98,10 @@ namespace Router
 
         private static void Main(string[] args)
         {
-            /*
             var Preload = Interfaces.Instance;
 
             var HTTP = new HTTP("http://localhost:5000/");
             HTTP.Listen();
-            */
-            Protocols.DHCP.Test();
         }
     }
 }
