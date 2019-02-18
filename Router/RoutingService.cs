@@ -55,7 +55,10 @@ namespace Router
                 Equals(Handler.IPv4Packet.SourceAddress, Handler.Interface.IPAddress) ||
 
                 // Is to my IP Network
-                Handler.Interface.IPNetwork.Contains(Handler.IPv4Packet.DestinationAddress)
+                Handler.Interface.IPNetwork.Contains(Handler.IPv4Packet.DestinationAddress) ||
+
+                // Is not valid checksum
+                !Handler.IPv4Packet.ValidChecksum
             )
             {
                 return;
