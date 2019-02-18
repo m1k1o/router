@@ -38,13 +38,9 @@ namespace Router.DHCP
                 DHCPServer.OnReceived(Handler.IPv4Packet.DestinationAddress, DHCPPacket, Handler.Interface);
                 return;
             }
-            /*
+
             // Client
-            if (Handler.UdpPacket.DestinationPort == Protocols.DHCP.ClientPort)
-            {
-                throw new NotImplementedException();
-            }
-            */
+            // if (Handler.UdpPacket.DestinationPort == Protocols.DHCP.ClientPort) { }
         }
     }
 }

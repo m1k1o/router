@@ -10,7 +10,6 @@ namespace Router.Protocols
 {
     static class DHCP
     {
-        private static TimeSpan IPAddressLeaseTime = DHCPLease.LeaseTimeout;
         public static TimeSpan RenewalTimeValue { get; set; } = TimeSpan.Parse("00:30:00");
         public static TimeSpan RebindingTimeValue { get; set; } = TimeSpan.Parse("00:52:30");
         public static List<IPAddress> DNS { get; set; } = new List<IPAddress>()
@@ -75,7 +74,7 @@ namespace Router.Protocols
                 new DHCPRouterOption(new List<IPAddress> {
                     Interface.IPAddress
                 }),
-                new DHCPIPAddressLeaseTimeOption(IPAddressLeaseTime),
+                new DHCPIPAddressLeaseTimeOption(DHCPLease.LeaseTimeout),
                 new DHCPRenewalTimeValueOption(RenewalTimeValue),
                 new DHCPRebindingTimeValueOption(RebindingTimeValue),
                 new DHCPServerIdentifierOption(Interface.IPAddress),
@@ -158,7 +157,7 @@ namespace Router.Protocols
                 new DHCPRouterOption(new List<IPAddress> {
                     Interface.IPAddress
                 }),
-                new DHCPIPAddressLeaseTimeOption(IPAddressLeaseTime),
+                new DHCPIPAddressLeaseTimeOption(DHCPLease.LeaseTimeout),
                 new DHCPRenewalTimeValueOption(RenewalTimeValue),
                 new DHCPRebindingTimeValueOption(RebindingTimeValue),
                 new DHCPServerIdentifierOption(Interface.IPAddress),

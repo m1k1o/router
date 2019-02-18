@@ -6,6 +6,8 @@ namespace Router.DHCP
 {
     class DHCPPool
     {
+        public static Dictionary<Interface, DHCPPool> Interfaces { get; set; } = new Dictionary<Interface, DHCPPool>();
+
         public uint FirstIP { get; private set; }
         public uint LastIP { get; private set; }
 

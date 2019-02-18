@@ -5,7 +5,7 @@ using System.Net;
 
 namespace Router.DHCP
 {
-    class DHCPServer
+    static class DHCPServer
     {
         public static void OnReceived(IPAddress DestinationIP, DHCPPacket DHCPPacket, Interface Interface)
         {
@@ -66,9 +66,35 @@ namespace Router.DHCP
                 return;
             }
 
-            // Create new Lease from Pool
-            Console.WriteLine("Create new Lease from Pool: NotImplementedException");
-            //throw new NotImplementedException();
+            // Get Pool
+            if (!DHCPPool.Interfaces.ContainsKey(Interface))
+            {
+                Console.WriteLine("No DHCP Pool defined for " + Interface);
+                return;
+            }
+            var Pool = DHCPPool.Interfaces[Interface];
+
+            // Fetch unused IP
+            IPAddress ClientIP;
+            do
+            {
+                ClientIP = Pool.Allocate();
+            }
+            while (DHCPTable.Instance.Exists(ClientIP));
+
+            if (ClientIP == null)
+            {
+                Console.WriteLine("No available IP in DHCP Pool for " + Interface);
+                return;
+            }
+
+            // Add new lease
+            DHCPLease = new DHCPLease(ClientMACAddress, Interface, ClientIP)
+            {
+                IsDynamic = true,
+                IsOffered = true
+            };
+            DHCPTable.Instance.Push(DHCPLease);
         }
 
         public static void Lease(DHCPPacket DHCPPacket, Interface Interface)
@@ -89,8 +115,22 @@ namespace Router.DHCP
 
         public static void Release(DHCPPacket DHCPPacket, Interface Interface)
         {
-            // Remove from Lease
-            throw new NotImplementedException();
+            var ClientMACAddress = DHCPPacket.ClientMACAddress;
+
+            var DHCPLease = DHCPTable.Instance.Find(ClientMACAddress, Interface);
+            if (DHCPLease == null)
+            {
+                return;
+            }
+
+            DHCPLease.IsOffered = false;
+            DHCPLease.IsLeased = false;
+
+            if (DHCPLease.IsDynamic)
+            {
+                // Remove from Table
+                DHCPTable.Instance.Remove(DHCPLease);
+            }
         }
     }
 }

@@ -24,6 +24,11 @@ namespace Router.DHCP
             return Entries.Find(Entry => Equals(Entry.PhysicalAddress, PhysicalAddress) && Equals(Entry.Interface, Interface));
         }
 
+        public bool Exists(IPAddress IPAddress)
+        {
+            return Entries.Exists(Entry => Equals(Entry.IPAddress, IPAddress));
+        }
+
         public void Flush()
         {
             Entries = new List<DHCPLease>();
@@ -52,6 +57,22 @@ namespace Router.DHCP
         public void RemoveStatic(PhysicalAddress PhysicalAddress, Interface Interface)
         {
             Entries.RemoveAll(Entry => Equals(Entry.PhysicalAddress, PhysicalAddress) && Equals(Entry.Interface, Interface));
+        }
+
+        public void Remove(DHCPLease DHCPLease)
+        {
+            if (DHCPLease.IsDynamic)
+            {
+                // Free from Pool
+                if (!DHCPPool.Interfaces.ContainsKey(DHCPLease.Interface))
+                {
+                    return;
+                }
+                var Pool = DHCPPool.Interfaces[DHCPLease.Interface];
+                Pool.Free(DHCPLease.IPAddress);
+            }
+
+            Entries.Remove(DHCPLease);
         }
     }
 }
