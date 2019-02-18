@@ -1,6 +1,7 @@
 ﻿using Router.DHCP;
 using Router.Helpers;
 using System;
+using System.Collections.Generic;
 using System.Net;
 using System.Net.NetworkInformation;
 
@@ -9,6 +10,18 @@ namespace Router.Controllers
     class DHCP
     {
         private static readonly DHCPTable DHCPTable = DHCPTable.Instance;
+
+        private static JSON DHCPPool(DHCPPool DHCPPool)
+        {
+            var obj = new JSONObject();
+            //obj.Push("id", DHCPPool.ID.ToString());
+            obj.Push("first_ip", DHCPPool.FirstIP);
+            obj.Push("last_ip", DHCPPool.LastIP);
+            obj.Push("is_dynamic", DHCPPool.IsDynamic);
+            obj.Push("available", DHCPPool.Available);
+            obj.Push("allocated", DHCPPool.Allocated);
+            return obj;
+        }
 
         private static JSON DHCPLease(DHCPLease DHCPLease)
         {
@@ -111,6 +124,75 @@ namespace Router.Controllers
             }
         }
 
+        public static JSON Pools(string Data = null)
+        {
+            var obj = new JSONObject();
+            foreach (KeyValuePair<Interface, DHCPPool> Entry in Router.DHCP.DHCPPool.Interfaces)
+            {
+                obj.Push(Entry.Key.ID.ToString(), DHCPPool(Entry.Value));
+            }
+            return obj;
+        }
+
+        public static JSON PoolPush(string Data)
+        {
+            var Rows = Data.Split('\n');
+            if (Rows.Length != 4)
+            {
+                return new JSONError("Expected InterfaceID, FisrtIP, LastIP, IsDynamic.");
+            }
+
+            try
+            {
+                var Interface = Router.Interfaces.Instance.GetInterfaceById(Rows[0]);
+                var FirstIP = IPAddress.Parse(Rows[1]);
+                var LastIP = IPAddress.Parse(Rows[2]);
+                var IsDynamic = Rows[3] == "true";
+
+                if (Router.DHCP.DHCPPool.Interfaces.ContainsKey(Interface))
+                {
+                    var ExistingPool = Router.DHCP.DHCPPool.Interfaces[Interface];
+                    if (ExistingPool.FirstIP != FirstIP || ExistingPool.LastIP != LastIP)
+                    {
+                        throw new NotImplementedException("You can't change DHCP borders.");
+                    }
+                    else
+                    {
+                        ExistingPool.IsDynamic = IsDynamic;
+                        return new JSONObject(Interface.ID.ToString(), DHCPPool(ExistingPool));
+                    }
+                }
+
+                // New Pool
+                var Pool = new DHCPPool(FirstIP, LastIP)
+                {
+                    IsDynamic = IsDynamic
+                };
+
+                // Add new Pool
+                Router.DHCP.DHCPPool.Interfaces.Add(Interface, Pool);
+                return new JSONObject(Interface.ID.ToString(), DHCPPool(Pool));
+            }
+            catch (Exception e)
+            {
+                return new JSONError(e.Message);
+            }
+        }
+
+        public static JSON PoolRemove(string Data)
+        {
+            try
+            {
+                var Interface = Router.Interfaces.Instance.GetInterfaceById(Data);
+                Router.DHCP.DHCPPool.Interfaces.Remove(Interface);
+                return new JSONObject("removed", true);
+            }
+            catch (Exception e)
+            {
+                return new JSONError(e.Message);
+            }
+        }
+
         public static JSON Table(string Data = null)
         {
             var obj = new JSONObject();
@@ -129,6 +211,7 @@ namespace Router.Controllers
             var obj = new JSONObject();
             obj.Push("table", Table());
             obj.Push("timers", Timers());
+            obj.Push("pools", Pools());
             return obj;
         }
     }

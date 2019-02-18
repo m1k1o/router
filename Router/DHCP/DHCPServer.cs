@@ -91,7 +91,7 @@ namespace Router.DHCP
             // Add new lease
             DHCPLease = new DHCPLease(ClientMACAddress, Interface, ClientIP)
             {
-                IsDynamic = true,
+                IsDynamic = Pool.IsDynamic,
                 IsOffered = true
             };
             DHCPTable.Instance.Push(DHCPLease);

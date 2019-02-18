@@ -68,6 +68,7 @@ namespace Router.DHCP
                 {
                     return;
                 }
+
                 var Pool = DHCPPool.Interfaces[DHCPLease.Interface];
                 Pool.Free(DHCPLease.IPAddress);
             }

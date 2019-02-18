@@ -8,17 +8,25 @@ namespace Router.DHCP
     {
         public static Dictionary<Interface, DHCPPool> Interfaces { get; set; } = new Dictionary<Interface, DHCPPool>();
 
-        public uint FirstIP { get; private set; }
-        public uint LastIP { get; private set; }
+        private uint _firstIP;
+        private uint _lastIP;
 
-        private List<uint> UsedIPs = new List<uint>();
+        public IPAddress FirstIP => UintToIp(_firstIP);
+        public IPAddress LastIP => UintToIp(_lastIP);
+
+        public int Available => (int)(_lastIP - _firstIP) + 1;
+        public int Allocated => AllocatedIPs.Count;
+
+        public bool IsDynamic { get; set; } = true;
+
+        private List<uint> AllocatedIPs = new List<uint>();
 
         public DHCPPool(IPAddress FirstIP, IPAddress LastIP)
         {
-            this.FirstIP = IpToUint(FirstIP);
-            this.LastIP = IpToUint(LastIP);
+            _firstIP = IpToUint(FirstIP);
+            _lastIP = IpToUint(LastIP);
 
-            if (this.FirstIP > this.LastIP)
+            if (_firstIP > _lastIP)
             {
                 throw new Exception("FirstIP can't be greater than LastIP.");
             }
@@ -26,14 +34,14 @@ namespace Router.DHCP
 
         public IPAddress Allocate()
         {
-            for (var IP = FirstIP; IP <= LastIP; IP++)
+            for (var IP = _firstIP; IP <= _lastIP; IP++)
             {
-                if (UsedIPs.Contains(IP))
+                if (AllocatedIPs.Contains(IP))
                 {
                     continue;
                 }
 
-                UsedIPs.Add(IP);
+                AllocatedIPs.Add(IP);
                 return UintToIp(IP);
             }
 
@@ -43,7 +51,7 @@ namespace Router.DHCP
         public void Free(IPAddress IPAddress)
         {
             var IP = IpToUint(IPAddress);
-            UsedIPs.Remove(IP);
+            AllocatedIPs.Remove(IP);
         }
 
         public static uint IpToUint(IPAddress IPAddress)
