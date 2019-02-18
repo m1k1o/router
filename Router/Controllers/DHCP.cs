@@ -1,6 +1,8 @@
 ﻿using Router.DHCP;
 using Router.Helpers;
 using System;
+using System.Net;
+using System.Net.NetworkInformation;
 
 namespace Router.Controllers
 {
@@ -8,7 +10,7 @@ namespace Router.Controllers
     {
         private static readonly DHCPTable DHCPTable = DHCPTable.Instance;
 
-        private static JSON RIPEntry(DHCPLease DHCPLease)
+        private static JSON DHCPLease(DHCPLease DHCPLease)
         {
             var obj = new JSONObject();
             //obj.Push("id", DHCPLease.ID.ToString());
@@ -22,6 +24,7 @@ namespace Router.Controllers
 
             obj.Push("offer_expires_in", DHCPLease.OfferExpiresIn);
             obj.Push("lease_expires_in", DHCPLease.LeaseExpiresIn);
+            obj.Push("lease_forever", DHCPLease.LeaseForever);
             return obj;
         }
 
@@ -44,8 +47,8 @@ namespace Router.Controllers
                     var RenewalTimeValue = TimeSpan.FromSeconds(Int32.Parse(Rows[2]));
                     var RebindingTimeValue = TimeSpan.FromSeconds(Int32.Parse(Rows[3]));
 
-                    DHCPLease.LeaseTimeout = LeaseTimeout;
-                    DHCPLease.OfferTimeout = OfferTimeout;
+                    Router.DHCP.DHCPLease.LeaseTimeout = LeaseTimeout;
+                    Router.DHCP.DHCPLease.OfferTimeout = OfferTimeout;
                     Protocols.DHCP.RenewalTimeValue = RenewalTimeValue;
                     Protocols.DHCP.RebindingTimeValue = RebindingTimeValue;
                 }
@@ -56,11 +59,56 @@ namespace Router.Controllers
             }
 
             var obj = new JSONObject();
-            obj.Push("lease_timeout", DHCPLease.LeaseTimeout.TotalSeconds);
-            obj.Push("offer_timeout", DHCPLease.OfferTimeout.TotalSeconds);
+            obj.Push("lease_timeout", Router.DHCP.DHCPLease.LeaseTimeout.TotalSeconds);
+            obj.Push("offer_timeout", Router.DHCP.DHCPLease.OfferTimeout.TotalSeconds);
             obj.Push("renewal_timeout", Protocols.DHCP.RenewalTimeValue.TotalSeconds);
             obj.Push("rebinding_timeout", Protocols.DHCP.RebindingTimeValue.TotalSeconds);
             return obj;
+        }
+
+        public static JSON AddStatic(string Data)
+        {
+            var Rows = Data.Split('\n');
+            if (Rows.Length != 3)
+            {
+                return new JSONError("Expected MACAddress, InterfaceID, IPAddress.");
+            }
+
+            try
+            {
+                var MAC = PhysicalAddress.Parse(Rows[0].ToUpper().Replace(":", "-"));
+                var Interface = Router.Interfaces.Instance.GetInterfaceById(Rows[1]);
+                var IP = IPAddress.Parse(Rows[2]);
+
+                var Entry = DHCPTable.AddStatic(MAC, Interface, IP);
+                return new JSONObject(Entry.ID.ToString(), DHCPLease(Entry));
+            }
+            catch (Exception e)
+            {
+                return new JSONError(e.Message);
+            }
+        }
+
+        public static JSON RemoveStatic(string Data)
+        {
+            var Rows = Data.Split('\n');
+            if (Rows.Length != 2)
+            {
+                return new JSONError("Expected MACAddress, InterfaceID.");
+            }
+
+            try
+            {
+                var MAC = PhysicalAddress.Parse(Rows[0].ToUpper().Replace(":", "-"));
+                var Interface = Router.Interfaces.Instance.GetInterfaceById(Rows[1]);
+
+                DHCPTable.RemoveStatic(MAC, Interface);
+                return new JSONObject("removed", true);
+            }
+            catch (Exception e)
+            {
+                return new JSONError(e.Message);
+            }
         }
 
         public static JSON Table(string Data = null)
@@ -70,7 +118,7 @@ namespace Router.Controllers
             var Rows = DHCPTable.GetEntries();
             foreach (var Row in Rows)
             {
-                obj.Push(Row.ID.ToString(), RIPEntry(Row));
+                obj.Push(Row.ID.ToString(), DHCPLease(Row));
             }
 
             return obj;

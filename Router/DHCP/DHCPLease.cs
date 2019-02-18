@@ -27,9 +27,11 @@ namespace Router.DHCP
 
         public bool IsDynamic { get; set; } = true;
 
+        public bool LeaseForever { get; set; } = false;
+
         public bool IsOffered
         {
-            get => OfferedUntil == DateTime.MinValue || OfferedUntil >= DateTime.Now;
+            get => !LeaseForever && (OfferedUntil == DateTime.MinValue || OfferedUntil >= DateTime.Now);
             set
             {
                 if (value && OfferedUntil == DateTime.MinValue)
@@ -46,7 +48,7 @@ namespace Router.DHCP
 
         public bool IsLeased
         {
-            get => LeasedUntil == DateTime.MinValue || LeasedUntil >= DateTime.Now;
+            get => LeaseForever || LeasedUntil == DateTime.MinValue || LeasedUntil >= DateTime.Now;
             set
             {
                 if (value)
@@ -66,12 +68,13 @@ namespace Router.DHCP
 
         public int LeaseExpiresIn => (int)(LeasedUntil - DateTime.Now).TotalSeconds;
 
+
         public override string ToString()
         {
             return
                 "DHCP" + (IsDynamic ? "-Dynamic-" : "-Static-") + "Lease: " + PhysicalAddress.ToString() +" is " + IPAddress.ToString() +
-                (IsOffered ? " offered, expires in " + OfferExpiresIn + "sec.") +
-                (IsLeased ? " leased for " + LeaseExpiresIn + "sec.");
+                (IsOffered ? " offered, expires in " + OfferExpiresIn + "sec." : "") +
+                (IsLeased ? " leased for " + LeaseExpiresIn + "sec." : "");
         }
 
         // Equality

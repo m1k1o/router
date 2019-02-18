@@ -1,5 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Net.NetworkInformation;
 
 namespace Router.DHCP
@@ -35,6 +37,22 @@ namespace Router.DHCP
         public void GarbageCollector()
         {
             Entries.RemoveAll(Entry => Entry.ToBeRemoved);
+        }
+
+        public DHCPLease AddStatic(PhysicalAddress PhysicalAddress, Interface Interface, IPAddress IPAddress)
+        {
+            var Lease = new DHCPLease(PhysicalAddress, Interface, IPAddress)
+            {
+                IsDynamic = false,
+                LeaseForever = true
+            };
+            Push(Lease);
+            return Lease;
+        }
+
+        public void RemoveStatic(PhysicalAddress PhysicalAddress, Interface Interface)
+        {
+            Entries.RemoveAll(Entry => Equals(Entry.PhysicalAddress, PhysicalAddress) && Equals(Entry.Interface, Interface));
         }
     }
 }
