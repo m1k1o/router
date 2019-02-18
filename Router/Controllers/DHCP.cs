@@ -134,7 +134,7 @@ namespace Router.Controllers
             return obj;
         }
 
-        public static JSON PoolPush(string Data)
+        public static JSON PoolAdd(string Data)
         {
             var Rows = Data.Split('\n');
             if (Rows.Length != 4)
@@ -149,20 +149,6 @@ namespace Router.Controllers
                 var LastIP = IPAddress.Parse(Rows[2]);
                 var IsDynamic = Rows[3] == "true";
 
-                if (Router.DHCP.DHCPPool.Interfaces.ContainsKey(Interface))
-                {
-                    var ExistingPool = Router.DHCP.DHCPPool.Interfaces[Interface];
-                    if (ExistingPool.FirstIP != FirstIP || ExistingPool.LastIP != LastIP)
-                    {
-                        throw new NotImplementedException("You can't change DHCP borders.");
-                    }
-                    else
-                    {
-                        ExistingPool.IsDynamic = IsDynamic;
-                        return new JSONObject(Interface.ID.ToString(), DHCPPool(ExistingPool));
-                    }
-                }
-
                 // New Pool
                 var Pool = new DHCPPool(FirstIP, LastIP)
                 {
@@ -172,6 +158,27 @@ namespace Router.Controllers
                 // Add new Pool
                 Router.DHCP.DHCPPool.Interfaces.Add(Interface, Pool);
                 return new JSONObject(Interface.ID.ToString(), DHCPPool(Pool));
+            }
+            catch (Exception e)
+            {
+                return new JSONError(e.Message);
+            }
+        }
+
+        public static JSON PoolToggle(string Data)
+        {
+            try
+            {
+                var Interface = Router.Interfaces.Instance.GetInterfaceById(Data);
+
+                if (!Router.DHCP.DHCPPool.Interfaces.ContainsKey(Interface))
+                {
+                    throw new Exception("Pool not available.");
+                }
+
+                var EPool = Router.DHCP.DHCPPool.Interfaces[Interface];
+                EPool.IsDynamic = !EPool.IsDynamic;
+                return new JSONObject("is_dynamic", EPool.IsDynamic);
             }
             catch (Exception e)
             {
