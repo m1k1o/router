@@ -27,11 +27,9 @@ namespace Router.DHCP
 
         public bool IsDynamic { get; set; } = true;
 
-        public bool LeaseForever { get; set; } = false;
-
         public bool IsOffered
         {
-            get => !LeaseForever && OfferedUntil != DateTime.MinValue && OfferedUntil >= DateTime.Now;
+            get => OfferedUntil != DateTime.MinValue && OfferedUntil >= DateTime.Now;
             set
             {
                 if (value && OfferedUntil == DateTime.MinValue)
@@ -48,7 +46,7 @@ namespace Router.DHCP
 
         public bool IsLeased
         {
-            get => LeaseForever || (LeasedUntil != DateTime.MinValue && LeasedUntil >= DateTime.Now);
+            get => LeasedUntil != DateTime.MinValue && LeasedUntil >= DateTime.Now;
             set
             {
                 if (value)

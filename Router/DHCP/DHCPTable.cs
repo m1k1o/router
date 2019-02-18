@@ -43,8 +43,7 @@ namespace Router.DHCP
         {
             var Lease = new DHCPLease(PhysicalAddress, Interface, IPAddress)
             {
-                IsDynamic = false,
-                LeaseForever = true
+                IsDynamic = false
             };
             Push(Lease);
             return Lease;

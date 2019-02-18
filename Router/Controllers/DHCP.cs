@@ -25,7 +25,6 @@ namespace Router.Controllers
 
             obj.Push("offer_expires_in", DHCPLease.OfferExpiresIn);
             obj.Push("lease_expires_in", DHCPLease.LeaseExpiresIn);
-            obj.Push("lease_forever", DHCPLease.LeaseForever);
             return obj;
         }
 
