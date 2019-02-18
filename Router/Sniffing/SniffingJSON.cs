@@ -57,6 +57,14 @@ namespace Router.Sniffing
                     if (Handler.UdpPacket.SourcePort == 520)
                     {
                         RIPPacket(Protocols.RIP.Parse(Handler.UdpPacket));
+                        return;
+                    }
+
+                    // DHCPPacket
+                    if (Handler.UdpPacket.SourcePort == 67 || Handler.UdpPacket.SourcePort == 68)
+                    {
+                        DHCPPacket(new DHCPPacket(Handler.UdpPacket.PayloadData));
+                        return;
                     }
                 }
             }
@@ -153,6 +161,22 @@ namespace Router.Sniffing
             obj.Push("routes", arr);
 
             Result.Push("rip", obj);
+        }
+
+        private void DHCPPacket(DHCPPacket DHCPPacket)
+        {
+            var obj = new JSONObject();
+            obj.Push("operation_code", DHCPPacket.OperationCode);
+            obj.Push("transaction_id", DHCPPacket.TransactionID);
+
+            obj.Push("client_ip", DHCPPacket.YourClientIPAddress);
+            obj.Push("server_ip", DHCPPacket.NextServerIPAddress);
+            obj.Push("client_mac", DHCPPacket.ClientMACAddress);
+
+            var Options = DHCPPacket.Options;
+            obj.Push("message_type", Options.MessageType);
+
+            Result.Push("dhcp", obj);
         }
     }
 }
