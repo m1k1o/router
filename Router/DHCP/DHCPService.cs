@@ -5,11 +5,11 @@ using System.Net;
 
 namespace Router.DHCP
 {
-    class DHCPServerService : InterfaceService
+    class DHCPService : InterfaceService
     {
-        public string Name { get; } = "dhcp_server";
+        public string Name { get; } = "dhcp";
 
-        public string Description { get; } = "DHCP Server";
+        public string Description { get; } = "DHCP";
 
         public bool OnlyRunningInterface { get; } = true;
 
@@ -42,7 +42,8 @@ namespace Router.DHCP
             Console.WriteLine("Got DHCP Packet with MAC: " + DHCPPacket.ClientMACAddress.ToString());
             var Options = DHCPPacket.Options;
             Console.WriteLine("Got DHCP Packet MessageType: " + DHCPPacket.Options.MessageType);
-            
+
+            /*
             if (DHCPPacket.Options.MessageType == DHCPMessageType.Discover)
             {
                 Protocols.DHCP.SendOffer(DHCPPacket.TransactionID, DHCPPacket.ClientMACAddress, IPAddress.Parse("192.168.1.2"), Handler.Interface);
@@ -54,6 +55,8 @@ namespace Router.DHCP
                 Protocols.DHCP.SendACK(DHCPPacket.TransactionID, DHCPPacket.ClientMACAddress, IPAddress.Parse("192.168.1.2"), Handler.Interface);
                 return;
             }
+            */
+
             /*
             foreach (var Option in Options)
             {
