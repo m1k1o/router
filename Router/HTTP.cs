@@ -100,6 +100,10 @@ namespace Router
         {
             var Preload = Interfaces.Instance;
 
+            var Interface = Interfaces.Instance.GetInterfaceById("2");
+            Interface.SetIP(IPAddress.Parse("192.168.1.5"), IPSubnetMask.Parse("255.255.255.0"));
+            Interface.Start();
+
             var HTTP = new HTTP("http://localhost:5000/");
             HTTP.Listen();
         }

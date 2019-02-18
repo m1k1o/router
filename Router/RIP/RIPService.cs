@@ -82,16 +82,7 @@ namespace Router.RIP
 
         public void OnPacketArrival(Handler Handler)
         {
-            if (
-                // Interface is Running RIP
-                !Handler.Interface.ServiceRunning("rip") ||
-
-                // Sent from me
-                Handler.IsFromMe ||
-                
-                // Valid RIP
-                !Protocols.RIP.Validate(Handler)
-            )
+            if (!Protocols.RIP.Validate(Handler))
             {
                 return;
             }

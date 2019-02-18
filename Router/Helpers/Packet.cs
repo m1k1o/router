@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Net;
+using System.Net.NetworkInformation;
 
 namespace Router.Helpers
 {
@@ -52,6 +53,13 @@ namespace Router.Helpers
                 return new IPSubnetMask(Dst);
             }
 
+            if (Type == typeof(PhysicalAddress))
+            {
+                byte[] Dst = new Byte[6];
+                Array.Copy(RawData, o, Dst, 0, 6);
+                return new PhysicalAddress(Dst);
+            }
+            
             return null;
         }
 
@@ -91,6 +99,13 @@ namespace Router.Helpers
             if (Value is IPSubnetMask)
             {
                 var IPBytes = ((IPSubnetMask)Value).GetAddressBytes();
+                Array.Copy(IPBytes, 0, RawData, o, IPBytes.Length);
+                return;
+            }
+
+            if (Value is PhysicalAddress)
+            {
+                var IPBytes = ((PhysicalAddress)Value).GetAddressBytes();
                 Array.Copy(IPBytes, 0, RawData, o, IPBytes.Length);
                 return;
             }

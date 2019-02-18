@@ -13,6 +13,7 @@ namespace Router.Controllers
             obj.Push("rip", RIP.Initialize());
             obj.Push("lldp", LLDP.Initialize());
             obj.Push("sniffing", Sniffing.Initialize());
+            obj.Push("dhcp", DHCP.Initialize());
             return obj;
         }
 
@@ -25,6 +26,7 @@ namespace Router.Controllers
             obj.Push("rip", RIP.Table());
             obj.Push("lldp", LLDP.Table());
             obj.Push("sniffing", Sniffing.Pop());
+            obj.Push("dhcp", DHCP.Table());
             return obj;
         }
     }
