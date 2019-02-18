@@ -61,6 +61,7 @@
     <Compile Include="Controllers\Routing.cs" />
     <Compile Include="Controllers\Sniffing.cs" />
     <Compile Include="DHCP\DHCPLease.cs" />
+    <Compile Include="DHCP\DHCPPool.cs" />
     <Compile Include="DHCP\DHCPServer.cs" />
     <Compile Include="DHCP\DHCPTable.cs" />
     <Compile Include="Handler.cs" />
