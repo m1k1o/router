@@ -21,6 +21,7 @@ namespace Router.Controllers
             obj.Push("is_dynamic", DHCPLease.IsDynamic);
             obj.Push("is_offered", DHCPLease.IsOffered);
             obj.Push("is_leased", DHCPLease.IsLeased);
+            obj.Push("is_available", DHCPLease.IsAvailable);
 
             obj.Push("offer_expires_in", DHCPLease.OfferExpiresIn);
             obj.Push("lease_expires_in", DHCPLease.LeaseExpiresIn);

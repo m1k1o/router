@@ -31,7 +31,7 @@ namespace Router.DHCP
 
         public bool IsOffered
         {
-            get => !LeaseForever && (OfferedUntil == DateTime.MinValue || OfferedUntil >= DateTime.Now);
+            get => !LeaseForever && OfferedUntil != DateTime.MinValue && OfferedUntil >= DateTime.Now;
             set
             {
                 if (value && OfferedUntil == DateTime.MinValue)
@@ -48,7 +48,7 @@ namespace Router.DHCP
 
         public bool IsLeased
         {
-            get => LeaseForever || LeasedUntil == DateTime.MinValue || LeasedUntil >= DateTime.Now;
+            get => LeaseForever || (LeasedUntil != DateTime.MinValue && LeasedUntil >= DateTime.Now);
             set
             {
                 if (value)
@@ -62,7 +62,9 @@ namespace Router.DHCP
             }
         }
 
-        public bool ToBeRemoved => !IsLeased && !IsOffered && IsDynamic;
+        public bool IsAvailable => !IsLeased && !IsOffered;
+
+        public bool ToBeRemoved => IsAvailable && IsDynamic;
 
         public int OfferExpiresIn => (int)(OfferedUntil - DateTime.Now).TotalSeconds;
 
