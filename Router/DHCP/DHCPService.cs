@@ -30,44 +30,19 @@ namespace Router.DHCP
                 return;
             }
 
-            if(Handler.UdpPacket.DestinationPort != Protocols.DHCP.ServerPort)
-            {
-                Console.WriteLine("Accepting only DHCP Server Port datagrams.");
-                return;
-            }
-
-            // Proccess DHCP
             var DHCPPacket = new DHCPPacket(Handler.UdpPacket.PayloadData);
-            Console.WriteLine("Got DHCP Packet with OperationCode: " + DHCPPacket.OperationCode.ToString());
-            Console.WriteLine("Got DHCP Packet with MAC: " + DHCPPacket.ClientMACAddress.ToString());
-            var Options = DHCPPacket.Options;
-            Console.WriteLine("Got DHCP Packet MessageType: " + DHCPPacket.Options.MessageType);
 
-            /*
-            if (DHCPPacket.Options.MessageType == DHCPMessageType.Discover)
+            // Server
+            if (Handler.UdpPacket.DestinationPort == Protocols.DHCP.ServerPort)
             {
-                Protocols.DHCP.SendOffer(DHCPPacket.TransactionID, DHCPPacket.ClientMACAddress, IPAddress.Parse("192.168.1.2"), Handler.Interface);
+                DHCPServer.OnReceived(Handler.IPv4Packet.DestinationAddress, DHCPPacket, Handler.Interface);
                 return;
             }
-
-            if (DHCPPacket.Options.MessageType == DHCPMessageType.Request)
-            {
-                Protocols.DHCP.SendACK(DHCPPacket.TransactionID, DHCPPacket.ClientMACAddress, IPAddress.Parse("192.168.1.2"), Handler.Interface);
-                return;
-            }
-            */
-
             /*
-            foreach (var Option in Options)
+            // Client
+            if (Handler.UdpPacket.DestinationPort == Protocols.DHCP.ClientPort)
             {
-                if (Option is DHCPUnknownOption)
-                {
-                    Console.WriteLine("\t^^ unknown.");
-                }
-                else
-                {
-                    Console.WriteLine("\t^^ Option: " + Option.ToString());
-                }
+                throw new NotImplementedException();
             }
             */
         }

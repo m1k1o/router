@@ -178,7 +178,7 @@ namespace Router.Protocols
                 PayloadData = dhcpPacket.Bytes
             };
 
-            var ipPacket = new IPv4Packet(Interface.IPAddress, IPAddress.Parse("255.255.255.255"))
+            var ipPacket = new IPv4Packet(Interface.IPAddress, ClientIPAddress)
             {
                 PayloadPacket = udpPacket
             };
