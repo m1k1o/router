@@ -34,6 +34,7 @@ namespace Router.Generator
             {
                 PayloadPacket = UdpPacket
             };
+            IPv4Packet.Checksum = IPv4Packet.CalculateIPChecksum();
 
             var EthernetPacket = new EthernetPacket(SourceHwAddress, DestinationHwAddress, EthernetPacketType.IpV4)
             {

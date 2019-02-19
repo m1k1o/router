@@ -37,8 +37,8 @@ namespace Router.Controllers
                }
 
                // Create instance
-               ConstructorInfo Constructor = GeneratorType.GetConstructor(null);
-               var Generator = ((Router.Generator.Generator)Constructor.Invoke(null));
+               ConstructorInfo Constructor = GeneratorType.GetConstructor(Type.EmptyTypes);
+               var Generator = ((Router.Generator.Generator)Constructor.Invoke(Type.EmptyTypes));
 
                // Fill Generator
                Data = string.Join("\n", Rows.Skip(i).ToArray());
