@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Router.Protocols
 {
-    sealed class DHCPPacket : Packet
+    class DHCPPacket : Packet
     {
         private const uint DHCP_MAGIC_COOKIE = 0x63825363;
 
