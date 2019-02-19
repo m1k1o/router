@@ -70,6 +70,7 @@
     <Compile Include="Helpers\JSON.cs" />
     <Compile Include="Helpers\JSONError.cs" />
     <Compile Include="Helpers\IPNetwork.cs" />
+    <Compile Include="Helpers\LOG.cs" />
     <Compile Include="Helpers\Packet.cs" />
     <Compile Include="HTTP.cs" />
     <Compile Include="Interface.cs" />
