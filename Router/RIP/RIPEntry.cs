@@ -41,7 +41,7 @@ namespace Router.RIP
         {
             if (!CanBeUpdated) return false;
 
-            var HasChanged = this.NextHopIP != NextHopIP || this.Metric != Metric;
+            var HasChanged = !Equals(this.NextHopIP, NextHopIP) || this.Metric != Metric;
             if (HasChanged)
             {
                 this.NextHopIP = NextHopIP;
