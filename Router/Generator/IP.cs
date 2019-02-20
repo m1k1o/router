@@ -8,6 +8,7 @@ namespace Router.Generator
     {
         public IPAddress SourceAddress { get; set; }
         public IPAddress DestinationAddress { get; set; }
+        public int TimeToLive { get; set; }
 
         protected IP() { }
 
@@ -16,6 +17,7 @@ namespace Router.Generator
             // Create IP
             var IPv4Packet = new IPv4Packet(SourceAddress, DestinationAddress)
             {
+                TimeToLive = TimeToLive,
                 Protocol = IPProtocolType,
                 PayloadPacket = PayloadPacket
             };
@@ -31,13 +33,14 @@ namespace Router.Generator
             base.Parse(Rows, ref i);
 
             // Parse IP
-            if (Rows.Length - i < 3)
+            if (Rows.Length - i < 4)
             {
-                throw new Exception("Expected SourceAddress, DestinationAddress.");
+                throw new Exception("Expected SourceAddress, DestinationAddress, TimeToLive.");
             }
 
             SourceAddress = IPAddress.Parse(Rows[i++]);
             DestinationAddress = IPAddress.Parse(Rows[i++]);
+            TimeToLive = Int32.Parse(Rows[i++]);
         }
     }
 }
