@@ -5,11 +5,8 @@ using System.Net.NetworkInformation;
 
 namespace Router.Generator
 {
-    sealed class ARP : Generator
+    sealed class ARP : Ethernet, Generator
     {
-        public PhysicalAddress SourceHwAddress { get; set; }
-        public PhysicalAddress DestinationHwAddress { get; set; }
-
         public ARPOperation Operation { get; set; }
         public PhysicalAddress SenderHardwareAddress { get; set; }
         public IPAddress SenderProtocolAddress { get; set; }
@@ -20,27 +17,24 @@ namespace Router.Generator
 
         public Packet Export()
         {
+            // Create ARP
             var ARPPacket = new ARPPacket(Operation, TargetHardwareAddress, TargetProtocolAddress, SenderHardwareAddress, SenderProtocolAddress);
 
-            var EthernetPacket = new EthernetPacket(SourceHwAddress, DestinationHwAddress, EthernetPacketType.Arp)
-            {
-                PayloadPacket = ARPPacket
-            };
-
-            return EthernetPacket;
+            // Create Ethernet
+            return Export(EthernetPacketType.Arp, ARPPacket);
         }
 
-        public void Parse(string Data)
+        public new void Parse(string[] Rows, ref int i)
         {
-            var Rows = Data.Split('\n');
-            if (Rows.Length != 7)
+            // Parse Ethernet
+            base.Parse(Rows, ref i);
+
+            // Parse ARP
+            if (Rows.Length - i != 5)
             {
-                throw new Exception("Expected SourceHwAddress, DestinationHwAddress, Operation, SenderHardwareAddress, SenderProtocolAddress, TargetHardwareAddress, TargetProtocolAddress.");
+                throw new Exception("Expected Operation, SenderHardwareAddress, SenderProtocolAddress, TargetHardwareAddress, TargetProtocolAddress.");
             }
 
-            var i = 0;
-            SourceHwAddress = PhysicalAddress.Parse(Rows[i++].ToUpper().Replace(":", "-"));
-            DestinationHwAddress = PhysicalAddress.Parse(Rows[i++].ToUpper().Replace(":", "-"));
             Operation = (ARPOperation)UInt16.Parse(Rows[i++]);
             SenderHardwareAddress = PhysicalAddress.Parse(Rows[i++].ToUpper().Replace(":", "-"));
             SenderProtocolAddress = IPAddress.Parse(Rows[i++]);

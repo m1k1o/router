@@ -4,6 +4,6 @@
     {
         PacketDotNet.Packet Export();
 
-        void Parse(string Data);
+        void Parse(string[] Rows, ref int i);
     }
 }

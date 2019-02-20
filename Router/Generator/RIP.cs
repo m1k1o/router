@@ -1,7 +1,6 @@
 ﻿using Router.Helpers;
 using Router.Protocols;
 using System;
-using System.Linq;
 using System.Net;
 
 namespace Router.Generator
@@ -34,26 +33,28 @@ namespace Router.Generator
 
         public override PacketDotNet.Packet Export()
         {
+            // Create RIP Packet
             var RIPPacket = new RIPPacket(CommandType, RouteCollection)
             {
                 Version = Version
             };
+
+            // Create UDP Packet
             base.Payload = RIPPacket.Bytes;
             return base.Export();
         }
 
-        public override void Parse(string Data)
+        public new void Parse(string[] Rows, ref int i)
         {
             // Parse UDP
-            base.Parse(Data);
+            base.Parse(Rows, ref i);
 
-            var Rows = Data.Split('\n').Skip(6).ToArray();
-            if (Rows.Length < 3 && (Rows.Length - 2) % 6 != 0)
+            // Parse RIP
+            if (Rows.Length - i < 3 && (Rows.Length - i - 2) % 6 != 0)
             {
                 throw new Exception("Expected CommandType, Version, [AddressFamilyIdentifier, RouteTag, Network, SubnetMask, NextHop, Metric]+.");
             }
 
-            var i = 0;
             CommandType = (RIPCommandType)Convert.ToByte(Rows[i++]);
             Version = Convert.ToByte(Rows[i++]);
 

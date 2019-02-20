@@ -117,8 +117,8 @@ namespace Router.Generator
                 DHCPPacket.NextServerIPAddress = NextServerIPAddress;
             }
 
+            // Create UDP Packet
             base.Payload = DHCPPacket.Bytes;
-
             return base.Export();
         }
 
@@ -166,18 +166,17 @@ namespace Router.Generator
             return Result;
         }
 
-        public override void Parse(string Data)
+        public new void Parse(string[] Rows, ref int i)
         {
             // Parse UDP
-            base.Parse(Data);
+            base.Parse(Rows, ref i);
 
-            var Rows = Data.Split('\n').Skip(6).ToArray();
-            if (Rows.Length != 16)
+            // Parse DHCP
+            if (Rows.Length - i != 16)
             {
                 throw new Exception("Expected OperationCode, TransactionID, MessageType, [ClientMACAddress], [YourClientIPAddress], [NextServerIPAddress], [ClientIdentifier(MAC)], [RequestedIPAddress], [ParameterRequestList], [SubnetMask], [Router], [IPAddressLeaseTime], [RenewalTimeValue], [RebindingTimeValue], [ServerIdentifier], [DNS].");
             }
 
-            var i = 0;
             // Required
             OperationCode = (DHCPOperatonCode)Convert.ToByte(Rows[i++]);// DHCPOperatonCode
             TransactionID = UInt32.Parse(Rows[i++]);// uint

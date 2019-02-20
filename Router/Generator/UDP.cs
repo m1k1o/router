@@ -1,19 +1,11 @@
 ﻿using PacketDotNet;
 using System;
 using System.Linq;
-using System.Net;
-using System.Net.NetworkInformation;
 
 namespace Router.Generator
 {
-    class UDP : Generator
+    class UDP : IP, Generator
     {
-        public PhysicalAddress SourceHwAddress { get; set; }
-        public PhysicalAddress DestinationHwAddress { get; set; }
-
-        public IPAddress SourceAddress { get; set; }
-        public IPAddress DestinationAddress { get; set; }
-
         public ushort SourcePort { get; set; }
         public ushort DestinationPort { get; set; }
 
@@ -23,6 +15,7 @@ namespace Router.Generator
 
         public virtual Packet Export()
         {
+            // Export UDP
             var UdpPacket = new UdpPacket(SourcePort, DestinationPort);
 
             if(Payload != null)
@@ -30,33 +23,20 @@ namespace Router.Generator
                 UdpPacket.PayloadData = Payload;
             }
 
-            var IPv4Packet = new IPv4Packet(SourceAddress, DestinationAddress)
-            {
-                PayloadPacket = UdpPacket
-            };
-            IPv4Packet.Checksum = IPv4Packet.CalculateIPChecksum();
-
-            var EthernetPacket = new EthernetPacket(SourceHwAddress, DestinationHwAddress, EthernetPacketType.IpV4)
-            {
-                PayloadPacket = IPv4Packet
-            };
-
-            return EthernetPacket;
+            // Export IP
+            return base.Export(IPProtocolType.UDP, UdpPacket);
         }
 
-        public virtual void Parse(string Data)
+        public new void Parse(string[] Rows, ref int i)
         {
-            var Rows = Data.Split('\n');
-            if (Rows.Length < 6)
+            // Parse IP
+            base.Parse(Rows, ref i);
+
+            if (Rows.Length - i < 3)
             {
-                throw new Exception("Expected SourceHwAddress, DestinationHwAddress, SourceAddress, DestinationAddress, SourcePort, DestinationPort, [Payload].");
+                throw new Exception("Expected SourcePort, DestinationPort, [Payload].");
             }
 
-            var i = 0;
-            SourceHwAddress = PhysicalAddress.Parse(Rows[i++].ToUpper().Replace(":", "-"));
-            DestinationHwAddress = PhysicalAddress.Parse(Rows[i++].ToUpper().Replace(":", "-"));
-            SourceAddress = IPAddress.Parse(Rows[i++]);
-            DestinationAddress = IPAddress.Parse(Rows[i++]);
             SourcePort = UInt16.Parse(Rows[i++]);
             DestinationPort = UInt16.Parse(Rows[i++]);
 

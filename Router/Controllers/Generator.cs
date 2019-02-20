@@ -41,8 +41,7 @@ namespace Router.Controllers
                var Generator = ((Router.Generator.Generator)Constructor.Invoke(Type.EmptyTypes));
 
                // Fill Generator
-               Data = string.Join("\n", Rows.Skip(i).ToArray());
-               Generator.Parse(Data);
+               Generator.Parse(Rows, ref i);
 
                // Get Packet
                PacketDotNet.Packet Packet = Generator.Export();
