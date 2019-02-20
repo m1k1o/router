@@ -48,7 +48,11 @@ namespace Router.Controllers
 
                // Send
                Interface.SendPacket(Packet.Bytes);
-               return new JSONObject("sent", true);
+
+               var obj = new JSONObject();
+                obj.Push("interface", Interface);
+                obj.Push("packet", Packet);
+                return obj;
            }
            catch (Exception e)
            {
