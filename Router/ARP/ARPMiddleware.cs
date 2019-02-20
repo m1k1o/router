@@ -56,7 +56,8 @@ namespace Router.ARP
                 }
 
                 // Exists this IP in RoutingTable?
-                if (RoutingTable.Instance.Exists(ARPPacket.TargetProtocolAddress))
+                var RoutingEntry = RoutingTable.Instance.Lookup(ARPPacket.TargetProtocolAddress);
+                if (RoutingEntry != null && !Equals(RoutingEntry.Interface, Interface))
                 {
                     Protocols.ARP.SendProxyResponse(ARPPacket.TargetProtocolAddress, ARPPacket.SenderHardwareAddress, ARPPacket.SenderProtocolAddress, Interface);
                 }
