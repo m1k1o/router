@@ -9,14 +9,19 @@ namespace Router.Generator
         public ushort SourcePort { get; set; }
         public ushort DestinationPort { get; set; }
 
+        public byte Flags { get; set; }
+
         public virtual byte[] Payload { get; set; }
 
         public TCP() { }
 
         public virtual Packet Export()
         {
-            // Export UDP
-            var UdpPacket = new UdpPacket(SourcePort, DestinationPort);
+            // Export TCP
+            var UdpPacket = new TcpPacket(SourcePort, DestinationPort)
+            {
+                AllFlags = Flags
+            };
 
             if (Payload != null)
             {
@@ -34,11 +39,12 @@ namespace Router.Generator
 
             if (Rows.Length - i < 3)
             {
-                throw new Exception("Expected SourcePort, DestinationPort, [Payload].");
+                throw new Exception("Expected SourcePort, DestinationPort, Flags, [Payload].");
             }
 
             SourcePort = UInt16.Parse(Rows[i++]);
             DestinationPort = UInt16.Parse(Rows[i++]);
+            Flags = Convert.ToByte(Rows[i++]);
 
             // String Payload
             if (Rows.Length > i && Payload == null)
