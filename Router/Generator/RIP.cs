@@ -5,7 +5,7 @@ using System.Net;
 
 namespace Router.Generator
 {
-    class RIP : UDP
+    class RIP : UDP, Generator
     {
         public RIPCommandType CommandType { get; set; }
 
@@ -58,17 +58,16 @@ namespace Router.Generator
             CommandType = (RIPCommandType)Convert.ToByte(Rows[i++]);
             Version = Convert.ToByte(Rows[i++]);
 
-            do
+            while (i < Rows.Length - 1)
             {
                 AddRoute(
-                    UInt16.Parse(Rows[i++]), // AddressFamilyIdentifier
-                    UInt16.Parse(Rows[i++]), // RouteTag
-                    IPNetwork.Parse(Rows[i++], Rows[i++]), // Network
-                    IPAddress.Parse(Rows[i++]), // NextHop
-                    UInt32.Parse(Rows[i++]) // Metric
+                    UInt16.Parse(Rows[i++].Or("0")), // AddressFamilyIdentifier
+                    UInt16.Parse(Rows[i++].Or("0")), // RouteTag
+                    IPNetwork.Parse(Rows[i++].Or("0.0.0.0"), Rows[i++].Or("0.0.0.0")), // Network
+                    IPAddress.Parse(Rows[i++].Or("0.0.0.0")), // NextHop
+                    UInt32.Parse(Rows[i++].Or("0")) // Metric
                 );
             }
-            while (i < Rows.Length - 1);
         }
     }
 }

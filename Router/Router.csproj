@@ -81,6 +81,7 @@
     <Compile Include="Helpers\IPNetwork.cs" />
     <Compile Include="Helpers\LOG.cs" />
     <Compile Include="Helpers\Packet.cs" />
+    <Compile Include="Helpers\Utilities.cs" />
     <Compile Include="HTTP.cs" />
     <Compile Include="Interface.cs" />
     <Compile Include="Interfaces.cs" />

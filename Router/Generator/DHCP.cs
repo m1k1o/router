@@ -10,7 +10,7 @@ using System.Net.NetworkInformation;
 namespace Router.Generator
 {
     // TODO: Mega UGLY
-    class DHCP : UDP
+    class DHCP : UDP, Generator
     {
         public DHCPOperatonCode OperationCode { get; set; }
         public uint TransactionID { get; set; }
