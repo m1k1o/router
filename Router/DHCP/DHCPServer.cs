@@ -25,13 +25,9 @@ namespace Router.DHCP
 
             // Check if is for me
             IPAddress DHCPServerID = DestinationIP;
-            foreach (var Option in Options)
+            if (Options.ContainsKey(DHCPOptionCode.ServerIdentifier))
             {
-                if (Option is DHCPServerIdentifierOption)
-                {
-                    DHCPServerID = ((DHCPServerIdentifierOption)Option).IPAddress;
-                    break;
-                }
+                DHCPServerID = ((DHCPServerIdentifierOption)Options[DHCPOptionCode.ServerIdentifier]).IPAddress;
             }
 
             if (!Equals(DHCPServerID, Interface.IPAddress))
