@@ -2,6 +2,7 @@
 using System;
 using System.Net;
 using System.Net.NetworkInformation;
+using Router.Helpers;
 
 namespace Router.Generator
 {
@@ -15,7 +16,7 @@ namespace Router.Generator
 
         public ARP() { }
 
-        public Packet Export()
+        public PacketDotNet.Packet Export()
         {
             // Create ARP
             var ARPPacket = new ARPPacket(Operation, TargetHardwareAddress, TargetProtocolAddress, SenderHardwareAddress, SenderProtocolAddress);
@@ -36,9 +37,9 @@ namespace Router.Generator
             }
 
             Operation = (ARPOperation)UInt16.Parse(Rows[i++]);
-            SenderHardwareAddress = PhysicalAddress.Parse(Rows[i++].ToUpper().Replace(":", "-"));
+            SenderHardwareAddress = Utilities.ParseMAC(Rows[i++]);
             SenderProtocolAddress = IPAddress.Parse(Rows[i++]);
-            TargetHardwareAddress = PhysicalAddress.Parse(Rows[i++].ToUpper().Replace(":", "-"));
+            TargetHardwareAddress = Utilities.ParseMAC(Rows[i++]);
             TargetProtocolAddress = IPAddress.Parse(Rows[i++]);
         }
     }

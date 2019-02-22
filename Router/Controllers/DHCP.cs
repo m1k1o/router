@@ -89,7 +89,7 @@ namespace Router.Controllers
 
             try
             {
-                var MAC = PhysicalAddress.Parse(Rows[0].ToUpper().Replace(":", "-"));
+                var MAC = Utilities.ParseMAC(Rows[0]);
                 var Interface = Router.Interfaces.Instance.GetInterfaceById(Rows[1]);
                 var IP = IPAddress.Parse(Rows[2]);
 
@@ -112,7 +112,7 @@ namespace Router.Controllers
 
             try
             {
-                var MAC = PhysicalAddress.Parse(Rows[0].ToUpper().Replace(":", "-"));
+                var MAC = Utilities.ParseMAC(Rows[0]);
                 var Interface = Router.Interfaces.Instance.GetInterfaceById(Rows[1]);
 
                 DHCPTable.RemoveStatic(MAC, Interface);

@@ -34,7 +34,7 @@ namespace Router.Generator
 
         public DHCP() { }
 
-        public override PacketDotNet.Packet Export()
+        private DHCPOptionCollection ExportOptions()
         {
             var Options = new DHCPOptionCollection
             {
@@ -42,80 +42,54 @@ namespace Router.Generator
             };
 
             /*
-             * Client
+             * Client Options
              */
             if (ClientIdentifier != null)
-            {
                 Options.Add(new DHCPClientIdentifierOption(ClientIdentifier));
-            }
-
             if (RequestedIPAddress != null)
-            {
                 Options.Add(new DHCPRequestedIPAddressOption(RequestedIPAddress));
-            }
-
             if (ParameterRequestList != null)
-            {
                 Options.Add(new DHCPParameterRequestListOption(ParameterRequestList));
-            }
-
 
             /*
-             * Server
+             * Server Options
              */
             if (SubnetMask != null)
-            {
                 Options.Add(new DHCPSubnetMaskOption(SubnetMask));
-            }
-
             if (Router != null)
-            {
                 Options.Add(new DHCPRouterOption(Router));
-            }
-
             if (IPAddressLeaseTime != 0)
-            {
                 Options.Add(new DHCPIPAddressLeaseTimeOption(IPAddressLeaseTime));
-            }
-
             if (RenewalTimeValue != 0)
-            {
                 Options.Add(new DHCPRenewalTimeValueOption(RenewalTimeValue));
-            }
-
             if (RebindingTimeValue != 0)
-            {
                 Options.Add(new DHCPRebindingTimeValueOption(RebindingTimeValue));
-            }
-
             if (ServerIdentifier != null)
-            {
                 Options.Add(new DHCPServerIdentifierOption(ServerIdentifier));
-            }
-
             if (DNS != null)
-            {
                 Options.Add(new DHCPDomainNameServerOption(DNS));
-            }
 
+            /*
+             * END Option
+             */
             Options.Add(new DHCPEndOption());
+
+            return Options;
+        }
+
+        public override PacketDotNet.Packet Export()
+        {
+            // Create DHCP Packet
+            var Options = ExportOptions();
 
             var DHCPPacket = new DHCPPacket(OperationCode, TransactionID, Options);
 
             if (ClientMACAddress != null)
-            {
                 DHCPPacket.ClientMACAddress = ClientMACAddress;
-            }
-
             if (YourClientIPAddress != null)
-            {
                 DHCPPacket.YourClientIPAddress = YourClientIPAddress;
-            }
-
             if (NextServerIPAddress != null)
-            {
                 DHCPPacket.NextServerIPAddress = NextServerIPAddress;
-            }
 
             // Create UDP Packet
             base.Payload = DHCPPacket.Bytes;
@@ -183,10 +157,10 @@ namespace Router.Generator
             MessageType = string.IsNullOrEmpty(Rows[i]) ? 0 : (DHCPMessageType)Convert.ToByte(Rows[i++]);// DHCPMessageType
 
             // Optional
-            ClientMACAddress = string.IsNullOrEmpty(Rows[i]) ? null : PhysicalAddress.Parse(Rows[i++].ToUpper().Replace(":", "-"));// PhysicalAddress
+            ClientMACAddress = string.IsNullOrEmpty(Rows[i]) ? null : Utilities.ParseMAC(Rows[i++]);// PhysicalAddress
             YourClientIPAddress = string.IsNullOrEmpty(Rows[i]) ? null : IPAddress.Parse(Rows[i++]);// IPAddress
             NextServerIPAddress = string.IsNullOrEmpty(Rows[i]) ? null : IPAddress.Parse(Rows[i++]);// IPAddress
-            ClientIdentifier = string.IsNullOrEmpty(Rows[i]) ? null : PhysicalAddress.Parse(Rows[i++].ToUpper().Replace(":", "-")).GetAddressBytes();// byte[] MAC ADDRESS
+            ClientIdentifier = string.IsNullOrEmpty(Rows[i]) ? null : Utilities.ParseMAC(Rows[i++]).GetAddressBytes();// byte[] MAC ADDRESS
             RequestedIPAddress = string.IsNullOrEmpty(Rows[i]) ? null : IPAddress.Parse(Rows[i++]);// IPAddress
             ParameterRequestList = string.IsNullOrEmpty(Rows[i]) ? null : Opts(Rows[i++]);// List<DHCPOptionCode>
             SubnetMask = string.IsNullOrEmpty(Rows[i]) ? null : IPSubnetMask.Parse(Rows[i++]);// IPSubnetMask

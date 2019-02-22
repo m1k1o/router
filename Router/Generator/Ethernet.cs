@@ -1,4 +1,5 @@
 ﻿using PacketDotNet;
+using Router.Helpers;
 using System;
 using System.Net.NetworkInformation;
 
@@ -11,7 +12,7 @@ namespace Router.Generator
 
         protected Ethernet() { }
 
-        protected Packet Export(EthernetPacketType EthernetPacketType, Packet PayloadPacket)
+        protected PacketDotNet.Packet Export(EthernetPacketType EthernetPacketType, PacketDotNet.Packet PayloadPacket)
         {
             var EthernetPacket = new EthernetPacket(SourceHwAddress, DestinationHwAddress, EthernetPacketType)
             {
@@ -28,8 +29,8 @@ namespace Router.Generator
                 throw new Exception("Expected SourceHwAddress, DestinationHwAddress.");
             }
 
-            SourceHwAddress = PhysicalAddress.Parse(Rows[i++].ToUpper().Replace(":", "-"));
-            DestinationHwAddress = PhysicalAddress.Parse(Rows[i++].ToUpper().Replace(":", "-"));
+            SourceHwAddress = Utilities.ParseMAC(Rows[i++]);
+            DestinationHwAddress = Utilities.ParseMAC(Rows[i++]);
         }
     }
 }
