@@ -6,6 +6,11 @@ namespace Router.Protocols.DHCPOptions
     {
         public uint Value { get; private set; }
 
+        public DHCPUIntOption(DHCPOptionCode DHCPOptionCode, string String) : base(DHCPOptionCode)
+        {
+            Value = UInt32.Parse(String);
+        }
+
         public DHCPUIntOption(DHCPOptionCode DHCPOptionCode, byte[] Bytes) : base(DHCPOptionCode)
         {
             // TODO: Bad Practices

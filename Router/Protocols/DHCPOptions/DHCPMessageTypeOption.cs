@@ -1,8 +1,15 @@
-﻿namespace Router.Protocols.DHCPOptions
+﻿using System;
+
+namespace Router.Protocols.DHCPOptions
 {
     class DHCPMessageTypeOption : DHCPOption
     {
         public byte MessageType { get; private set; }
+
+        public DHCPMessageTypeOption(string String) : base(DHCPOptionCode.MessageType)
+        {
+            MessageType = Convert.ToByte(String);
+        }
 
         public DHCPMessageTypeOption(byte[] Bytes) : base(DHCPOptionCode.MessageType)
         {

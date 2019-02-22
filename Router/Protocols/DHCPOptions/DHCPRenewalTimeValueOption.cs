@@ -6,6 +6,8 @@ namespace Router.Protocols.DHCPOptions
     {
         public TimeSpan TimeSpan => TimeSpan.FromSeconds(Value);
 
+        public DHCPRenewalTimeValueOption(string String) : base(DHCPOptionCode.RenewalTimeValue, String) { }
+
         public DHCPRenewalTimeValueOption(byte[] Bytes) : base(DHCPOptionCode.RenewalTimeValue, Bytes) { }
 
         public DHCPRenewalTimeValueOption(uint RenewalTime) : base(DHCPOptionCode.RenewalTimeValue, RenewalTime) { }

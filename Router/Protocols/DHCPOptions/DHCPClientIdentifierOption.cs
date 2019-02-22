@@ -1,4 +1,5 @@
-﻿using System.Net.NetworkInformation;
+﻿using Router.Helpers;
+using System.Net.NetworkInformation;
 
 namespace Router.Protocols.DHCPOptions
 {
@@ -8,6 +9,12 @@ namespace Router.Protocols.DHCPOptions
 
         private byte IDType;
         private byte[] IDValue;
+
+        public DHCPClientIdentifierOption(string String) : base(DHCPOptionCode.ClientIdentifier)
+        {
+            IDType = 1;
+            IDValue = Utilities.ParseMAC(String).GetAddressBytes();
+        }
 
         public DHCPClientIdentifierOption(byte[] Bytes) : base(DHCPOptionCode.ClientIdentifier)
         {

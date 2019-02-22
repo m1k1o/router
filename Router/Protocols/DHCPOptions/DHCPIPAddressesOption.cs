@@ -9,6 +9,17 @@ namespace Router.Protocols.DHCPOptions
     {
         public List<IPAddress> IPAddresses { get; private set; }
 
+        public DHCPIPAddressesOption(DHCPOptionCode DHCPOptionCode, string String) : base(DHCPOptionCode)
+        {
+            IPAddresses = new List<IPAddress>();
+
+            var Entries = String.Split(',');
+            foreach (var Entry in Entries)
+            {
+                Add(IPAddress.Parse(Entry));
+            }
+        }
+
         public DHCPIPAddressesOption(DHCPOptionCode DHCPOptionCode, byte[] Bytes) : base(DHCPOptionCode)
         {
             IPAddresses = new List<IPAddress>();
@@ -16,7 +27,7 @@ namespace Router.Protocols.DHCPOptions
             var Length = Bytes.Length;
             for (var i = 0; i < Length; i += 4)
             {
-                IPAddresses.Add(new IPAddress(BitConverter.ToUInt32(Bytes, i)));
+                Add(new IPAddress(BitConverter.ToUInt32(Bytes, i)));
             }
         }
 

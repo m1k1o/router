@@ -6,6 +6,8 @@ namespace Router.Protocols.DHCPOptions
     {
         public TimeSpan TimeSpan => TimeSpan.FromSeconds(Value);
 
+        public DHCPRebindingTimeValueOption(string String) : base(DHCPOptionCode.RebindingTimeValue, String) { }
+
         public DHCPRebindingTimeValueOption(byte[] Bytes) : base(DHCPOptionCode.RebindingTimeValue, Bytes) { }
 
         public DHCPRebindingTimeValueOption(uint RebindingTime) : base(DHCPOptionCode.RebindingTimeValue, RebindingTime) { }
