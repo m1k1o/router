@@ -10,6 +10,8 @@ namespace Router.Protocols.DHCPOptions
 
         public abstract byte[] Bytes { get; }
 
+        public abstract void Parse(string String);
+
         public DHCPOption(DHCPOptionCode DHCPOptionCode)
         {
             Type = DHCPOptionCode;
@@ -33,7 +35,7 @@ namespace Router.Protocols.DHCPOptions
             return (DHCPOption)Activator.CreateInstance(Type, new object[] { OptionValue });
         }
 
-        public static DHCPOption Factory(byte OptionType, string OptionValue)
+        public static DHCPOption Factory(byte OptionType)
         {
             var OptionName = ((DHCPOptionCode)OptionType).ToString();
             var OptionFound = OptionName != OptionType.ToString();
@@ -48,7 +50,7 @@ namespace Router.Protocols.DHCPOptions
                 throw new Exception("Option class not found.");
             }
 
-            return (DHCPOption)Activator.CreateInstance(Type, new object[] { OptionValue });
+            return (DHCPOption)Activator.CreateInstance(Type, Type.EmptyTypes);
         }
     }
 }

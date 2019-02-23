@@ -4,7 +4,7 @@ namespace Router.Protocols.DHCPOptions
 {
     class DHCPRequestedIPAddressOption : DHCPIPAddressOption
     {
-        public DHCPRequestedIPAddressOption(string String) : base(DHCPOptionCode.RequestedIPAddress, String) { }
+        public DHCPRequestedIPAddressOption() : base(DHCPOptionCode.RequestedIPAddress) { }
 
         public DHCPRequestedIPAddressOption(byte[] Bytes) : base(DHCPOptionCode.RequestedIPAddress, Bytes) { }
 

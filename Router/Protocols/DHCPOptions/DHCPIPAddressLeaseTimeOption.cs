@@ -6,7 +6,7 @@ namespace Router.Protocols.DHCPOptions
     {
         public TimeSpan TimeSpan => TimeSpan.FromSeconds(Value);
 
-        public DHCPIPAddressLeaseTimeOption(string String) : base(DHCPOptionCode.IPAddressLeaseTime, String) { }
+        public DHCPIPAddressLeaseTimeOption() : base(DHCPOptionCode.IPAddressLeaseTime) { }
 
         public DHCPIPAddressLeaseTimeOption(byte[] Bytes) : base(DHCPOptionCode.IPAddressLeaseTime, Bytes) { }
 

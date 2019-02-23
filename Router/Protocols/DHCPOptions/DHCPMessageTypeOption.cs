@@ -6,10 +6,7 @@ namespace Router.Protocols.DHCPOptions
     {
         public byte MessageType { get; private set; }
 
-        public DHCPMessageTypeOption(string String) : base(DHCPOptionCode.MessageType)
-        {
-            MessageType = Convert.ToByte(String);
-        }
+        public DHCPMessageTypeOption() : base(DHCPOptionCode.MessageType) { }
 
         public DHCPMessageTypeOption(byte[] Bytes) : base(DHCPOptionCode.MessageType)
         {
@@ -24,6 +21,11 @@ namespace Router.Protocols.DHCPOptions
         public override byte Length => 1;
 
         public override byte[] Bytes => new byte[] { MessageType };
+
+        public override void Parse(string String)
+        {
+            MessageType = Convert.ToByte(String);
+        }
     }
 
     enum DHCPMessageType : byte

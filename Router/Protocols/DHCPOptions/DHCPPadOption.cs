@@ -17,5 +17,7 @@
         public DHCPPadOption() : base(DHCPOptionCode.Pad) { }
 
         public override byte[] Bytes => new byte[Size];
+
+        public override void Parse(string String) { }
     }
 }

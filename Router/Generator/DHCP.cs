@@ -42,14 +42,14 @@ namespace Router.Generator
             base.Parse(Rows, ref i);
 
             // Parse DHCP
-            if (Rows.Length - i < 6)
+            if (Rows.Length - i < 5)
             {
                 throw new Exception("Expected OperationCode, TransactionID, YourClientIPAddress, NextServerIPAddress, ClientMACAddress, [DHCP Options].");
             }
 
             // BOOTP
             OperationCode = (DHCPOperatonCode)Convert.ToByte(Rows[i++]);
-            TransactionID = UInt32.Parse(Rows[i++]);
+            TransactionID = UInt32.Parse(Rows[i++].Or("0"));
             YourClientIPAddress = IPAddress.Parse(Rows[i++].Or("0.0.0.0"));
             NextServerIPAddress = IPAddress.Parse(Rows[i++].Or("0.0.0.0"));
             ClientMACAddress = Utilities.ParseMAC(Rows[i++].Or("00-00-00-00-00-00"));
@@ -58,7 +58,8 @@ namespace Router.Generator
             Options = new DHCPOptionCollection();
             while (i < Rows.Length - 1)
             {
-                var Instance = DHCPOption.Factory(Convert.ToByte(Rows[i++]), Rows[i++]);
+                var Instance = DHCPOption.Factory(Convert.ToByte(Rows[i++]));
+                Instance.Parse(Rows[i++]);
                 Options.Add(Instance);
             }
 

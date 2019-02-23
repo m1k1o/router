@@ -7,17 +7,6 @@ namespace Router.Protocols.DHCPOptions
     {
         public List<DHCPOptionCode> Codes { get; private set; }
 
-        public DHCPParameterRequestListOption(string String) : base(DHCPOptionCode.ParameterRequestList)
-        {
-            Codes = new List<DHCPOptionCode>();
-
-            var Entries = String.Split(',');
-            foreach (var Entry in Entries)
-            {
-                Add((DHCPOptionCode)Convert.ToByte(Entry));
-            }
-        }
-
         public DHCPParameterRequestListOption(byte[] Bytes) : base(DHCPOptionCode.ParameterRequestList)
         {
             Codes = new List<DHCPOptionCode>();
@@ -46,6 +35,17 @@ namespace Router.Protocols.DHCPOptions
         public void Remove(DHCPOptionCode Code)
         {
             Codes.Remove(Code);
+        }
+
+        public override void Parse(string String)
+        {
+            Codes = new List<DHCPOptionCode>();
+
+            var Entries = String.Split(',');
+            foreach (var Entry in Entries)
+            {
+                Add((DHCPOptionCode)Convert.ToByte(Entry));
+            }
         }
 
         public override byte[] Bytes

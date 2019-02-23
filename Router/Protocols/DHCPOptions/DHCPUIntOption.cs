@@ -6,10 +6,7 @@ namespace Router.Protocols.DHCPOptions
     {
         public uint Value { get; private set; }
 
-        public DHCPUIntOption(DHCPOptionCode DHCPOptionCode, string String) : base(DHCPOptionCode)
-        {
-            Value = UInt32.Parse(String);
-        }
+        public DHCPUIntOption(DHCPOptionCode DHCPOptionCode) : base(DHCPOptionCode) { }
 
         public DHCPUIntOption(DHCPOptionCode DHCPOptionCode, byte[] Bytes) : base(DHCPOptionCode)
         {
@@ -35,6 +32,11 @@ namespace Router.Protocols.DHCPOptions
                 RawData[0] = Bytes[3];
                 return RawData;
             }
+        }
+
+        public override void Parse(string String)
+        {
+            Value = UInt32.Parse(String);
         }
     }
 }

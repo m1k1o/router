@@ -4,7 +4,7 @@ namespace Router.Protocols.DHCPOptions
 {
     class DHCPSubnetMaskOption : DHCPIPAddressOption
     {
-        public DHCPSubnetMaskOption(string String) : base(DHCPOptionCode.SubnetMask, String) { }
+        public DHCPSubnetMaskOption() : base(DHCPOptionCode.SubnetMask) { }
 
         public DHCPSubnetMaskOption(byte[] Bytes) : base(DHCPOptionCode.SubnetMask, Bytes) { }
 

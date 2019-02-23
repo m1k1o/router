@@ -10,11 +10,7 @@ namespace Router.Protocols.DHCPOptions
         private byte IDType;
         private byte[] IDValue;
 
-        public DHCPClientIdentifierOption(string String) : base(DHCPOptionCode.ClientIdentifier)
-        {
-            IDType = 1;
-            IDValue = Utilities.ParseMAC(String).GetAddressBytes();
-        }
+        public DHCPClientIdentifierOption() : base(DHCPOptionCode.ClientIdentifier) { }
 
         public DHCPClientIdentifierOption(byte[] Bytes) : base(DHCPOptionCode.ClientIdentifier)
         {
@@ -52,6 +48,12 @@ namespace Router.Protocols.DHCPOptions
                 }
                 return RawData;
             }
+        }
+
+        public override void Parse(string String)
+        {
+            IDType = 1;
+            IDValue = Utilities.ParseMAC(String).GetAddressBytes();
         }
     }
 }
