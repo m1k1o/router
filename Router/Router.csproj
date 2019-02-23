@@ -69,6 +69,7 @@
     <Compile Include="Generator\DHCP.cs" />
     <Compile Include="Generator\Ethernet.cs" />
     <Compile Include="Generator\Generator.cs" />
+    <Compile Include="Generator\ICMP.cs" />
     <Compile Include="Generator\IP.cs" />
     <Compile Include="Generator\RIP.cs" />
     <Compile Include="Generator\TCP.cs" />
