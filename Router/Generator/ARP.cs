@@ -39,8 +39,8 @@ namespace Router.Generator
             Operation = (ARPOperation)UInt16.Parse(Rows[i++]);
             SenderHardwareAddress = Utilities.ParseMAC(Rows[i++]);
             SenderProtocolAddress = IPAddress.Parse(Rows[i++]);
-            TargetHardwareAddress = Utilities.ParseMAC(Rows[i++]);
-            TargetProtocolAddress = IPAddress.Parse(Rows[i++]);
+            TargetHardwareAddress = Utilities.ParseMAC(Rows[i++].Or("00:00:00:00:00:00"));
+            TargetProtocolAddress = IPAddress.Parse(Rows[i++].Or("0.0.0.0"));
         }
     }
 }
