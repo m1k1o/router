@@ -1,16 +1,16 @@
 ﻿namespace Router.Helpers
 {
-    class JSONObject : JSON
+    class old_JSONObject : old_JSON
     {
-        public JSONObject(string Key = null, object Value = null)
+        public old_JSONObject(string Key = null, object Value = null)
         {
             if (Key != null)
             {
-                Push(Key, Value);
+                Add(Key, Value);
             }
         }
 
-        public void Push(string key, object value)
+        public void Add(string key, object value)
         {
             if (Data != "")
             {

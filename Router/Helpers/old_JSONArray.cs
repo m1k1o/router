@@ -2,9 +2,9 @@
 
 namespace Router.Helpers
 {
-    class JSONArray : JSON
+    class old_JSONArray : old_JSON
     {
-        public JSONArray(List<JSON> List = null)
+        public old_JSONArray(List<old_JSON> List = null)
         {
             if (List != null)
             {

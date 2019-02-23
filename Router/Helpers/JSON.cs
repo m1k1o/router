@@ -1,74 +1,47 @@
-﻿using System.Net.NetworkInformation;
-using System.Text.RegularExpressions;
+﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using Router.Helpers.JSONConversters;
 
 namespace Router.Helpers
 {
-    class JSON
+    static class JSON
     {
-        protected string Data = "";
-
-        public JSON()
+        private static JsonSerializerSettings Settings()
         {
+            var settings = new JsonSerializerSettings();
+            settings.Converters.Add(new IPAddressConverter());
+            settings.Converters.Add(new PhysicalAddressConverter());
+            settings.Converters.Add(new IPNetworkConverter());
+            settings.Converters.Add(new InterfaceConverter());
+            settings.Formatting = Formatting.Indented;
 
+            return settings;
+        }
+        public static JObject Error(string Message)
+        {
+            return new JObject
+            {
+                ["error"] = Message
+            };
         }
 
-        public JSON(object value)
+        public static JObject ParseObject(object Object)
         {
-            Data += Escape(value);
+            return JObject.FromObject(Object, JsonSerializer.Create(JSON.Settings()));
         }
 
-        public string Escape(string value)
+        public static string SerializeObject(object Object)
         {
-            value = value.Replace(System.Environment.NewLine, "\\n");
-            value = value.Replace("\\", "\\\\");
-            return "\"" + value + "\"";
+            return JsonConvert.SerializeObject(Object);
         }
 
-        public string Escape(object value)
+        public static T DeserializeObject<T>(string String)
         {
-            if (value == null)
-            {
-                return "null";
-            }
-
-            if (value is bool)
-            {
-                return ((bool)value) ? "true" : "false";
-            }
-
-            if (value is JSONObject)
-            {
-                return ((JSONObject)value).ToString();
-            }
-
-            if (value is JSONArray)
-            {
-                return ((JSONArray)value).ToString();
-            }
-
-            if (value is double || value is float || value is int || value is JSON)
-            {
-                return value.ToString();
-            }
-
-            if (value is PhysicalAddress)
-            {
-                var regex = "(.{2})(.{2})(.{2})(.{2})(.{2})(.{2})";
-                var replace = "$1:$2:$3:$4:$5:$6";
-                return "\"" + Regex.Replace(value.ToString(), regex, replace) + "\"";
-            }
-
-            return Escape(value.ToString());
+            return JsonConvert.DeserializeObject<T>(String, JSON.Settings());
         }
-
-        public void Empty()
+        public static T DeserializeObject<T>(string String, T AnonymousType)
         {
-            Data = "";
-        }
-
-        public override string ToString()
-        {
-            return Data;
+            return JsonConvert.DeserializeObject<T>(String, JSON.Settings());
         }
     }
 }

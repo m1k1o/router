@@ -2,7 +2,7 @@
 using System;
 using System.Net.NetworkInformation;
 
-namespace Router.Helpers.Json
+namespace Router.Helpers.JSONConversters
 {
     class PhysicalAddressConverter : Newtonsoft.Json.JsonConverter
     {
