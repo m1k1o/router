@@ -28,11 +28,12 @@ namespace Router.Protocols
             {
                 var offset = 4;
                 var newColection = new RIPRouteCollection();
-                do {
+                while (offset < Length)
+                {
                     var RTEBytes = Slice(offset, RIPRoute.Length);
                     newColection.Add(new RIPRoute(RTEBytes));
                     offset += RIPRoute.Length;
-                } while (offset < Length);
+                }
 
                 return newColection;
             }
