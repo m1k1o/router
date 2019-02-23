@@ -33,7 +33,7 @@ namespace Router.RIP
             foreach (var Route in RouteCollection)
             {
                 var FoundNetworks = RIPTable.Instance.FindAll(Route.IPNetwork);
-                if(FoundNetworks != null)
+                if (FoundNetworks.Count > 0)
                 {
                     var BestRoute = FoundNetworks.BestRoute();
 

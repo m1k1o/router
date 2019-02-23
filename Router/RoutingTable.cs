@@ -140,7 +140,7 @@ namespace Router
     {
         public static RoutingEntry BestRoute(this IEnumerable<RoutingEntry> Entries)
         {
-            return Entries.OrderBy(Entry => Entry.ADistance).First();
+            return Entries.OrderBy(Entry => Entry.ADistance).FirstOrDefault();
         }
     }
 }

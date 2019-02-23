@@ -52,7 +52,7 @@ namespace Router.RIP
         public void OnChanged(Interface Interface)
         {
             // Poison old
-            var OldRIPEntry = RIPTable.Instance.FindAll(Interface).Where(Entry => Entry.Metric == 1).First();
+            var OldRIPEntry = RIPTable.Instance.FindAll(Interface).Where(Entry => Entry.Metric == 1).FirstOrDefault();
             if (OldRIPEntry == null)
             {
                 throw new Exception("RIPEntry not found while Stopping");

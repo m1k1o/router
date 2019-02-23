@@ -120,7 +120,7 @@ namespace Router.RIP
     {
         public static RIPEntry BestRoute(this IEnumerable<RIPEntry> Entries)
         {
-            return Entries.OrderBy(Entry => Entry.Metric).First();
+            return Entries.OrderBy(Entry => Entry.Metric).FirstOrDefault();
         }
 
         public static bool Exists(this List<RIPEntry> Entries, IPNetwork IPNetwork)
