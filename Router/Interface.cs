@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using Router.Helpers;
-using PacketDotNet;
 using SharpPcap;
 
 namespace Router
@@ -38,27 +37,13 @@ namespace Router
 
                 if (RoutingTable.Instance.Find(IPNetwork, ADistance.DirectlyConnected) != null)
                 {
-                    throw new Exception("There is already C" + IPNetwork + " in routing table.");
+                    throw new Exception("There is already running interface with newwork " + IPNetwork);
                 }
             };
 
-            AfterStarted = () =>
-            {
-                RoutingTable.Instance.PushDirectlyConnected(this, IPNetwork);
-                OnStarted(this);
-            };
+            AfterStarted = () => OnStarted(this);
 
-            AfterStopped = () =>
-            {
-                try
-                {
-                    OnStopped(this);
-                }
-                finally
-                {
-                    RoutingTable.Instance.RemoveDirectlyConnected(this);
-                }
-            };
+            AfterStopped = () => OnStopped(this);
 
             ServicesInitialize();
         }
@@ -70,7 +55,6 @@ namespace Router
 
             if (Running)
             {
-                RoutingTable.Instance.PushDirectlyConnected(this, IPNetwork);
                 OnChanged(this);
             }
         }

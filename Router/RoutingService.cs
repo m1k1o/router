@@ -19,6 +19,8 @@ namespace Router
 
         public void OnStarted(Interface Interface)
         {
+            RoutingTable.Instance.PushDirectlyConnected(Interface, Interface.IPNetwork);
+
             if (TotalRunning == 0)
             {
                 Routing.Start();
@@ -35,9 +37,14 @@ namespace Router
             {
                 Routing.Stop();
             }
+
+            RoutingTable.Instance.RemoveDirectlyConnected(Interface);
         }
 
-        public void OnChanged(Interface Interface) { }
+        public void OnChanged(Interface Interface)
+        {
+            RoutingTable.Instance.PushDirectlyConnected(Interface, Interface.IPNetwork);
+        }
 
         public void OnPacketArrival(Handler Handler)
         {
