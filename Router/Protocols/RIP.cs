@@ -21,6 +21,7 @@ namespace Router.Protocols
 
             var ipPacket = new IPv4Packet(Interface.IPAddress, DstIP)
             {
+                TimeToLive = 1,
                 PayloadPacket = udpPacket
             };
             ipPacket.Checksum = ipPacket.CalculateIPChecksum();
