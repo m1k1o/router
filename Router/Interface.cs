@@ -99,7 +99,8 @@ namespace Router
             new RIP.RIPService(),
             new LLDP.LLDPService(),
             new Sniffing.SniffingService(),
-            new DHCP.DHCPService()
+            new DHCP.DHCPService(),
+            new ICMPEchoReplyService()
         };
 
         private List<InterfaceService> RunningServices = new List<InterfaceService>();

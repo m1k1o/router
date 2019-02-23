@@ -95,6 +95,7 @@
     <Compile Include="LLDP\LLDPService.cs" />
     <Compile Include="LLDP\LLDPTable.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ICMPEchoReplyService.cs" />
     <Compile Include="Protocols\ARP.cs" />
     <Compile Include="Protocols\DHCP.cs" />
     <Compile Include="Protocols\DHCPFlags.cs" />
