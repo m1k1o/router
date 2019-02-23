@@ -38,6 +38,9 @@
     <Reference Include="SharpPcap">
       <HintPath>Libraries\SharpPcap.dll</HintPath>
     </Reference>
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>Libraries\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -78,6 +81,10 @@
     <Compile Include="Helpers\Device.cs" />
     <Compile Include="Helpers\IPSubnetMask.cs" />
     <Compile Include="Helpers\JSON.cs" />
+    <Compile Include="Helpers\Json\IPNetworkConverter.cs" />
+    <Compile Include="Helpers\Json\PhysicalAddressConverter.cs" />
+    <Compile Include="Helpers\Json\IPAddressConverter.cs" />
+    <Compile Include="Helpers\Json\JSONObject.cs" />
     <Compile Include="Helpers\JSONError.cs" />
     <Compile Include="Helpers\IPNetwork.cs" />
     <Compile Include="Helpers\LOG.cs" />
