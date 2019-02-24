@@ -35,7 +35,6 @@ namespace Router.Controllers.Routing
             RoutingTable.Instance.Push(Entry);
         }
 
-
         public object Export() => new Dictionary<string, object>()
         {
             { Entry.ID.ToString(), Table.Entry(Entry) }
