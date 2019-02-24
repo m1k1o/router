@@ -1,7 +1,7 @@
 ﻿using Newtonsoft.Json;
 using System;
 
-namespace Router.Helpers.JSONConversters
+namespace Router.Helpers.JSONConverters
 {
     class InterfaceConverter : JsonConverter
     {

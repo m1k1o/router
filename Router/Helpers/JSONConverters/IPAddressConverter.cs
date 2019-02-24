@@ -2,7 +2,7 @@
 using System;
 using System.Net;
 
-namespace Router.Helpers.JSONConversters
+namespace Router.Helpers.JSONConverters
 {
     class IPAddressConverter : JsonConverter
     {

@@ -1,7 +1,7 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json.Serialization;
-using Router.Helpers.JSONConversters;
+using Router.Helpers.JSONConverters;
 
 namespace Router.Helpers
 {
@@ -24,6 +24,7 @@ namespace Router.Helpers
             };
             return settings;
         }
+
         public static JObject Error(string Message)
         {
             return new JObject

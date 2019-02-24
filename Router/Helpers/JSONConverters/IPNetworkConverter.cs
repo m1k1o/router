@@ -2,7 +2,7 @@
 using Newtonsoft.Json.Linq;
 using System;
 
-namespace Router.Helpers.JSONConversters
+namespace Router.Helpers.JSONConverters
 {
     class IPNetworkConverter : JsonConverter
     {
