@@ -69,6 +69,11 @@
     <Compile Include="Controllers\Interfaces\ToggleService.cs" />
     <Compile Include="Controllers\Interfaces\Services.cs" />
     <Compile Include="Controllers\Interfaces\Table.cs" />
+    <Compile Include="Controllers\Routing\AddStatic.cs" />
+    <Compile Include="Controllers\Routing\Initialize.cs" />
+    <Compile Include="Controllers\Routing\Lookup.cs" />
+    <Compile Include="Controllers\Routing\RemoveStatic.cs" />
+    <Compile Include="Controllers\Routing\Table.cs" />
     <Compile Include="DHCP\DHCPLease.cs" />
     <Compile Include="DHCP\DHCPPool.cs" />
     <Compile Include="DHCP\DHCPServer.cs" />
