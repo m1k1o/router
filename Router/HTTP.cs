@@ -1,9 +1,13 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Net;
+using System.Net.NetworkInformation;
 using System.Reflection;
 using System.Text;
+using PacketDotNet;
 using Router.Helpers;
+using Router.Packets;
 
 namespace Router
 {
@@ -109,8 +113,88 @@ namespace Router
             Interface.SetIP(IPAddress.Parse("192.168.1.5"), IPSubnetMask.Parse("255.255.0.0"));
             Interface.Start();
 
-            var HTTP = new HTTP("http://localhost:5000/");
-            HTTP.Listen();
+            //var HTTP = new HTTP("http://localhost:5000/");
+            //HTTP.Listen();
+
+            var eth = new Packets.Ethernet
+            {
+                SourceHwAddress = PhysicalAddress.Parse("FF-FF-FF-FF-FF-FF"),
+                DestinationHwAddress = PhysicalAddress.Parse("FF-FF-FF-FF-FF-FF"),
+                EthernetPacketType = EthernetPacketType.IpV4
+            };
+            var ip = new Packets.IP
+            {
+                SourceAddress = IPAddress.Parse("192.168.1.1"),
+                DestinationAddress = IPAddress.Parse("192.168.1.1"),
+                IPProtocolType = IPProtocolType.UDP
+            };
+            var udp = new Packets.UDP
+            {
+                SourcePort = 50,
+                DestinationPort = 50
+            };
+
+            ip.PayloadData(udp.Export());
+            eth.PayloadData(ip.Export());
+            var Response = eth.Export();
+
+            /*
+            var Packets = new List<PacketsImportExport>()
+            {
+                new Packets.Ethernet
+                {
+                    SourceHwAddress = PhysicalAddress.Parse("FF-FF-FF-FF-FF-FF"),
+                    DestinationHwAddress = PhysicalAddress.Parse("FF-FF-FF-FF-FF-FF"),
+                    EthernetPacketType = EthernetPacketType.IpV4
+                },
+                new Packets.IP
+                {
+                    SourceAddress = IPAddress.Parse("192.168.1.1"),
+                    DestinationAddress = IPAddress.Parse("192.168.1.1"),
+                    IPProtocolType = IPProtocolType.UDP
+                },
+                new Packets.UDP
+                {
+                    SourcePort = 50,
+                    DestinationPort = 50
+                },
+                new Packets.ARP
+                {
+                    Operation = ARPOperation.Request,
+                    SenderHardwareAddress = PhysicalAddress.Parse("00-00-00-00-00-00"),
+                    SenderProtocolAddress = IPAddress.Parse("0"),
+                    TargetHardwareAddress = PhysicalAddress.Parse("AA-BB-CC-DD-EE-FF"),
+                    TargetProtocolAddress = IPAddress.Parse("0")
+                }
+            };
+
+            var Response = Generator.Parse(Packets);
+            */
+            Interface.SendPacket(Response);
+
+            /*
+            var arp = new Packets.ARP
+            {
+                SourceHwAddress = PhysicalAddress.Parse("FF-FF-FF-FF-FF-FF"),
+                DestinationHwAddress = PhysicalAddress.Parse("FF-FF-FF-FF-FF-FF"),
+
+                Operation = ARPOperation.Request,
+                SenderHardwareAddress = PhysicalAddress.Parse("00-00-00-00-00-00"),
+                SenderProtocolAddress = IPAddress.Parse("0"),
+                TargetHardwareAddress = PhysicalAddress.Parse("AA-BB-CC-DD-EE-FF"),
+                TargetProtocolAddress = IPAddress.Parse("0")
+            };
+
+            var ByteArray = arp.Export();
+
+            var arp2 = new Packets.ARP();
+            arp2.ImportAll(ByteArray);
+
+
+            Console.WriteLine(arp.TargetHardwareAddress);
+
+            Console.ReadKey();
+            */
         }
     }
 }

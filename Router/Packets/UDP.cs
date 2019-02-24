@@ -3,33 +3,32 @@ using PacketDotNet.Utils;
 
 namespace Router.Packets
 {
-    class UDP : IP, Generator
+    sealed class UDP : PacketsImportExport, PacketsPayloadData
     {
+        public static IPProtocolType IPProtocolType = IPProtocolType.UDP;
+
         public ushort SourcePort { get; set; }
         public ushort DestinationPort { get; set; }
 
-        public virtual new byte[] Payload { get; set; }
+        public byte[] Payload { get; set; }
+
+        public void PayloadData(byte[] Data) => Payload = Data;
 
         public UDP() { }
 
-        public new byte[] Export()
+        public byte[] Export()
         {
-            var UdpPacket = new UdpPacket(SourcePort, DestinationPort)
+            var UdpPacket = new UdpPacket(SourcePort, DestinationPort);
+
+            if (Payload != null)
             {
-                PayloadData = Payload
-            };
+                UdpPacket.PayloadData = Payload;
+            }
 
             return UdpPacket.Bytes;
         }
 
-        public new byte[] ExportAll()
-        {
-            base.IPProtocolType = IPProtocolType.UDP;
-            base.Payload = Export();
-            return base.ExportAll();
-        }
-
-        public new void Import(byte[] Bytes)
+        public void Import(byte[] Bytes)
         {
             var UdpPacket = new UdpPacket(new ByteArraySegment(Bytes));
 
@@ -37,34 +36,5 @@ namespace Router.Packets
             DestinationPort = UdpPacket.DestinationPort;
             Payload = UdpPacket.PayloadData;
         }
-
-        public new void ImportAll(byte[] Bytes)
-        {
-            base.ImportAll(Bytes);
-            Import(Payload);
-        }
-
-        /*
-        public new void Parse(string[] Rows, ref int i)
-        {
-            // Parse IP
-            base.Parse(Rows, ref i);
-
-            if (Rows.Length - i < 3)
-            {
-                throw new Exception("Expected SourcePort, DestinationPort, [Payload].");
-            }
-
-            SourcePort = UInt16.Parse(Rows[i++]);
-            DestinationPort = UInt16.Parse(Rows[i++]);
-
-            // String Payload
-            if (Rows.Length > i && Payload == null)
-            {
-                var String = string.Join("\n", Rows.Skip(i).ToArray());
-                Payload = System.Text.Encoding.UTF8.GetBytes(String);
-            }
-        }
-        */
     }
 }

@@ -96,7 +96,7 @@
     <Compile Include="Packets\ARP.cs" />
     <Compile Include="Packets\DHCP.cs" />
     <Compile Include="Packets\Ethernet.cs" />
-    <Compile Include="Packets\Generator.cs" />
+    <Compile Include="Packets\Interfaces.cs" />
     <Compile Include="Packets\ICMP.cs" />
     <Compile Include="Packets\IP.cs" />
     <Compile Include="Packets\RIP.cs" />

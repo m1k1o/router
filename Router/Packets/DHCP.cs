@@ -4,7 +4,7 @@ using System.Net.NetworkInformation;
 
 namespace Router.Packets
 {
-    class DHCP : UDP, Generator
+    class DHCP : PacketsImportExport
     {
         public DHCPOperatonCode OperationCode { get; set; }
         public uint TransactionID { get; set; }
@@ -16,7 +16,7 @@ namespace Router.Packets
 
         public DHCP() { }
 
-        public new byte[] Export()
+        public byte[] Export()
         {
             var DHCPPacket = new DHCPPacket(OperationCode, TransactionID, Options);
 
@@ -30,12 +30,7 @@ namespace Router.Packets
             return DHCPPacket.Bytes;
         }
 
-        public new byte[] ExportAll()
-        {
-            base.Payload = Export();
-            return base.ExportAll();
-        }
-        public new void Import(byte[] Bytes)
+        public void Import(byte[] Bytes)
         {
             var DHCPPacket = new DHCPPacket(Bytes);
 
@@ -46,13 +41,7 @@ namespace Router.Packets
             ClientMACAddress = DHCPPacket.ClientMACAddress;
             Options = DHCPPacket.Options;
         }
-
-        public new void ImportAll(byte[] Bytes)
-        {
-            base.ImportAll(Bytes);
-            Import(Payload);
-        }
-
+        
         /*
         public new void Parse(string[] Rows, ref int i)
         {
