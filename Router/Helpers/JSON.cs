@@ -13,6 +13,7 @@ namespace Router.Helpers
                     new IPAddressConverter(),
                     new PhysicalAddressConverter(),
                     new IPNetworkConverter(),
+                    new IPSubnetMaskConverter(),
                     new InterfaceConverter()
                 },
             Formatting = Formatting.Indented,

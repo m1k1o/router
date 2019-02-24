@@ -16,8 +16,9 @@ namespace Router.Helpers.JSONConverters
             IPNetwork IPNetwork = (IPNetwork)value;
             JObject JObject = new JObject
             {
-                { "NetworkAddress", IPNetwork.NetworkAddress.ToString() },
-                { "SubnetMask", IPNetwork.SubnetMask.ToString() }
+                { "short", IPNetwork.ToString() },
+                { "ip", IPNetwork.NetworkAddress.ToString() },
+                { "mask", IPNetwork.SubnetMask.ToString() }
             };
             JObject.WriteTo(writer);
         }
@@ -27,7 +28,7 @@ namespace Router.Helpers.JSONConverters
             try
             {
                 JObject JObject = JObject.Load(reader);
-                return IPNetwork.Parse(JObject["NetworkAddress"].ToString(), JObject["SubnetMask"].ToString());
+                return IPNetwork.Parse(JObject["ip"].ToString(), JObject["mask"].ToString());
             }
             catch (Exception)
             {
