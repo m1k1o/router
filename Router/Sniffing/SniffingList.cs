@@ -1,32 +1,32 @@
-﻿using Router.Helpers;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace Router.Sniffing
 {
     static class SniffingList
     {
+        /*
         public static int MaxEntries { get; set; } = 50;
         private static int TotalEntries = 0;
 
-        private static List<old_JSON> Entries = new List<old_JSON>();
+        private static List<object> Entries = new List<object>();
 
         public static Interface Interface { get; set; }
 
-        public static old_JSONArray Pop()
+        public static List<object> Pop()
         {
-            List<old_JSON> OProcessingEntries;
+            List<object> OProcessingEntries;
 
             lock (Entries)
             {
                 OProcessingEntries = Entries;
-                Entries = new List<old_JSON>();
+                Entries = new List<object>();
                 TotalEntries = 0;
             }
 
-            return new old_JSONArray(OProcessingEntries);
+            return OProcessingEntries;
         }
 
-        public static void Push(old_JSON Input)
+        public static void Push(object Input)
         {
             if (TotalEntries > MaxEntries || Input == null)
             {
@@ -39,5 +39,6 @@ namespace Router.Sniffing
                 Entries.Add(Input);
             }
         }
+        */
     }
 }

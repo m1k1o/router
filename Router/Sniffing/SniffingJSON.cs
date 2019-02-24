@@ -7,7 +7,8 @@ namespace Router.Sniffing
 {
     class SniffingJSON
     {
-        public old_JSONObject Result { get; private set; } = new old_JSONObject();
+        /*
+        public Old_JSONObject Result { get; private set; } = new Old_JSONObject();
 
         private Handler Handler;
 
@@ -72,7 +73,7 @@ namespace Router.Sniffing
 
         private void EthernetPacket(EthernetPacket Packet)
         {
-            var obj = new old_JSONObject();
+            var obj = new Old_JSONObject();
             obj.Add("src_mac", Packet.SourceHwAddress);
             obj.Add("dst_mac", Packet.DestinationHwAddress);
             obj.Add("type", Packet.Type.ToString());
@@ -82,7 +83,7 @@ namespace Router.Sniffing
 
         private void ARPPacket(ARPPacket Packet)
         {
-            var obj = new old_JSONObject();
+            var obj = new Old_JSONObject();
             obj.Add("op", Packet.Operation.ToString());
             obj.Add("sender_mac", Packet.SenderHardwareAddress);
             obj.Add("sender_ip", Packet.SenderProtocolAddress);
@@ -94,7 +95,7 @@ namespace Router.Sniffing
 
         private void LLDPPacket(LLDPPacket Packet)
         {
-            var obj = new old_JSONObject();
+            var obj = new Old_JSONObject();
 
             // TODO: Bad practces
             var LLDPEntry = new LLDPEntry(Packet.TlvCollection, null);
@@ -109,7 +110,7 @@ namespace Router.Sniffing
 
         private void IPv4Packet(IPv4Packet Packet)
         {
-            var obj = new old_JSONObject();
+            var obj = new Old_JSONObject();
             obj.Add("src_ip", Packet.SourceAddress);
             obj.Add("dst_ip", Packet.DestinationAddress);
             obj.Add("ttl", Packet.TimeToLive);
@@ -120,7 +121,7 @@ namespace Router.Sniffing
 
         private void TCPPacket(TcpPacket Packet)
         {
-            var obj = new old_JSONObject();
+            var obj = new Old_JSONObject();
             obj.Add("src_port", Packet.SourcePort);
             obj.Add("dst_port", Packet.DestinationPort);
 
@@ -129,7 +130,7 @@ namespace Router.Sniffing
 
         private void UDPPacket(UdpPacket Packet)
         {
-            var obj = new old_JSONObject();
+            var obj = new Old_JSONObject();
             obj.Add("src_port", Packet.SourcePort);
             obj.Add("dst_port", Packet.DestinationPort);
 
@@ -138,11 +139,11 @@ namespace Router.Sniffing
 
         private void RIPPacket(RIPPacket Packet)
         {
-            var obj = new old_JSONObject();
+            var obj = new Old_JSONObject();
             obj.Add("cmd_type", Packet.CommandType.ToString());
 
-            var arr = new old_JSONArray();
-            var route = new old_JSONObject();
+            var arr = new Old_JSONArray();
+            var route = new Old_JSONObject();
             foreach (var Route in Packet.RouteCollection)
             {
                 route.Empty();
@@ -165,7 +166,7 @@ namespace Router.Sniffing
 
         private void DHCPPacket(DHCPPacket DHCPPacket)
         {
-            var obj = new old_JSONObject();
+            var obj = new Old_JSONObject();
             obj.Add("operation_code", DHCPPacket.OperationCode);
             obj.Add("transaction_id", DHCPPacket.TransactionID);
 
@@ -178,5 +179,6 @@ namespace Router.Sniffing
 
             Result.Add("dhcp", obj);
         }
+        */
     }
 }

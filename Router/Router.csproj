@@ -55,15 +55,6 @@
     <Compile Include="ARP\ARPEntry.cs" />
     <Compile Include="ARP\ARPService.cs" />
     <Compile Include="ARP\ARPTable.cs" />
-    <Compile Include="Controllers\ARP.cs" />
-    <Compile Include="Controllers\DHCP.cs" />
-    <Compile Include="Controllers\Generator.cs" />
-    <Compile Include="Controllers\Global.cs" />
-    <Compile Include="Controllers\Interfaces.cs" />
-    <Compile Include="Controllers\LLDP.cs" />
-    <Compile Include="Controllers\RIP.cs" />
-    <Compile Include="Controllers\Routing.cs" />
-    <Compile Include="Controllers\Sniffing.cs" />
     <Compile Include="DHCP\DHCPLease.cs" />
     <Compile Include="DHCP\DHCPPool.cs" />
     <Compile Include="DHCP\DHCPServer.cs" />
@@ -82,20 +73,15 @@
     <Compile Include="Helpers\IPSubnetMask.cs" />
     <Compile Include="Helpers\JSON.cs" />
     <Compile Include="Helpers\JSONConversters\InterfaceConverter.cs" />
-    <Compile Include="Helpers\old_JSON.cs" />
     <Compile Include="Helpers\JSONConversters\IPNetworkConverter.cs" />
     <Compile Include="Helpers\JSONConversters\PhysicalAddressConverter.cs" />
     <Compile Include="Helpers\JSONConversters\IPAddressConverter.cs" />
-    <Compile Include="Helpers\old_JSONError.cs" />
     <Compile Include="Helpers\IPNetwork.cs" />
-    <Compile Include="Helpers\LOG.cs" />
     <Compile Include="Helpers\Packet.cs" />
     <Compile Include="Helpers\Utilities.cs" />
     <Compile Include="HTTP.cs" />
     <Compile Include="Interface.cs" />
     <Compile Include="Interfaces.cs" />
-    <Compile Include="Helpers\old_JSONObject.cs" />
-    <Compile Include="Helpers\old_JSONArray.cs" />
     <Compile Include="LLDP\LLDPAdvertisements.cs" />
     <Compile Include="LLDP\LLDPResponse.cs" />
     <Compile Include="LLDP\LLDPEntry.cs" />
@@ -156,6 +142,8 @@
       <SubType>Designer</SubType>
     </None>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Controllers\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

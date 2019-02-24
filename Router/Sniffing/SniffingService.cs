@@ -20,12 +20,14 @@
 
         public void OnPacketArrival(Handler Handler)
         {
+            /*
             if (Equals(Handler.Interface, SniffingList.Interface))
             {
                 var SniffingJSON = new SniffingJSON(Handler);
                 SniffingJSON.Extract();
                 SniffingList.Push(SniffingJSON.Result);
             }
+            */
         }
     }
 }
