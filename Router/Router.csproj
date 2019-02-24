@@ -69,6 +69,9 @@
     <Compile Include="Controllers\Interfaces\ToggleService.cs" />
     <Compile Include="Controllers\Interfaces\Services.cs" />
     <Compile Include="Controllers\Interfaces\Table.cs" />
+    <Compile Include="Controllers\RIP\Initialize.cs" />
+    <Compile Include="Controllers\RIP\Table.cs" />
+    <Compile Include="Controllers\RIP\Timers.cs" />
     <Compile Include="Controllers\Routing\AddStatic.cs" />
     <Compile Include="Controllers\Routing\Initialize.cs" />
     <Compile Include="Controllers\Routing\Lookup.cs" />
