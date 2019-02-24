@@ -18,7 +18,15 @@ namespace Router.Helpers.JSONConverters
 
         public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
         {
-            return IPAddress.Parse((string)reader.Value);
+            try
+            {
+                return IPAddress.Parse((string)reader.Value);
+            }
+            catch (Exception)
+            {
+                return null;
+                //throw new JsonSerializationException("Invalid IPAddress.");
+            }
         }
     }
 }

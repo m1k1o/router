@@ -24,8 +24,16 @@ namespace Router.Helpers.JSONConverters
 
         public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
         {
-            JObject JObject = JObject.Load(reader);
-            return IPNetwork.Parse(JObject["NetworkAddress"].ToString(), JObject["SubnetMask"].ToString());
+            try
+            {
+                JObject JObject = JObject.Load(reader);
+                return IPNetwork.Parse(JObject["NetworkAddress"].ToString(), JObject["SubnetMask"].ToString());
+            }
+            catch (Exception)
+            {
+                return null;
+                //throw new JsonSerializationException("Invalid IPNetwork.");
+            }
         }
     }
 }

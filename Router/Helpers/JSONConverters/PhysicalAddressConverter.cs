@@ -14,16 +14,22 @@ namespace Router.Helpers.JSONConverters
         public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
         {
             var PhysicalAddress = (PhysicalAddress)value;
-
             var FormattedMAC = BitConverter.ToString(PhysicalAddress.GetAddressBytes()).Replace("-", ":");
             writer.WriteValue(FormattedMAC);
         }
 
         public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
         {
-            var FormattedMAC = (string)reader.Value;
-
-            return PhysicalAddress.Parse(FormattedMAC.ToUpper().Replace(":", "-"));
+            try
+            {
+                var FormattedMAC = (string)reader.Value;
+                return PhysicalAddress.Parse(FormattedMAC.ToUpper().Replace(":", "-"));
+            }
+            catch (Exception)
+            {
+                return null;
+                //throw new JsonSerializationException("Invalid PhysicalAddress.");
+            }
         }
     }
 }

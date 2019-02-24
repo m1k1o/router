@@ -17,7 +17,15 @@ namespace Router.Helpers.JSONConverters
 
         public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
         {
-            return Interfaces.Instance.GetInterfaceById((string)reader.Value);
+            try
+            {
+                return Interfaces.Instance.GetInterfaceById(reader.Value.ToString());
+            }
+            catch (Exception)
+            {
+                return null;
+                //throw new JsonSerializationException("Invalid Interface.");
+            }
         }
     }
 }
