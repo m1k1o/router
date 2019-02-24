@@ -31,19 +31,23 @@ namespace Router.Generator
             RouteCollection.Add(new RIPRoute(IPNetwork, NextHop, Metric));
         }
 
-        public override PacketDotNet.Packet Export()
+        public new byte[] Export()
         {
-            // Create RIP Packet
             var RIPPacket = new RIPPacket(CommandType, RouteCollection)
             {
                 Version = Version
             };
 
-            // Create UDP Packet
-            base.Payload = RIPPacket.Bytes;
-            return base.Export();
+            return RIPPacket.Bytes;
         }
 
+        public new byte[] ExportAll()
+        {
+            base.Payload = Export();
+            return base.ExportAll();
+        }
+
+        /*
         public new void Parse(string[] Rows, ref int i)
         {
             // Parse UDP
@@ -69,5 +73,6 @@ namespace Router.Generator
                 );
             }
         }
+        */
     }
 }

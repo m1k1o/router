@@ -11,27 +11,29 @@ namespace Router.Generator
 
         public byte Flags { get; set; }
 
-        public virtual byte[] Payload { get; set; }
+        public virtual new byte[] Payload { get; set; }
 
         public TCP() { }
 
-        public virtual Packet Export()
+        public new byte[] Export()
         {
-            // Export TCP
-            var UdpPacket = new TcpPacket(SourcePort, DestinationPort)
+            var TcpPacket = new TcpPacket(SourcePort, DestinationPort)
             {
-                AllFlags = Flags
+                AllFlags = Flags,
+                PayloadData = Payload
             };
 
-            if (Payload != null)
-            {
-                UdpPacket.PayloadData = Payload;
-            }
-
-            // Export IP
-            return base.Export(IPProtocolType.TCP, UdpPacket);
+            return TcpPacket.Bytes;
         }
 
+        public new byte[] ExportAll()
+        {
+            base.IPProtocolType = IPProtocolType.TCP;
+            base.Payload = Export();
+            return base.ExportAll();
+        }
+
+        /*
         public new void Parse(string[] Rows, ref int i)
         {
             // Parse IP
@@ -53,5 +55,6 @@ namespace Router.Generator
                 Payload = System.Text.Encoding.UTF8.GetBytes(String);
             }
         }
+        */
     }
 }

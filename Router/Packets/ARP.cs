@@ -16,15 +16,19 @@ namespace Router.Generator
 
         public ARP() { }
 
-        public PacketDotNet.Packet Export()
+        public new byte[] Export()
         {
-            // Create ARP
-            var ARPPacket = new ARPPacket(Operation, TargetHardwareAddress, TargetProtocolAddress, SenderHardwareAddress, SenderProtocolAddress);
-
-            // Create Ethernet
-            return Export(EthernetPacketType.Arp, ARPPacket);
+            return new ARPPacket(Operation, TargetHardwareAddress, TargetProtocolAddress, SenderHardwareAddress, SenderProtocolAddress).Bytes;
         }
 
+        public new byte[] ExportAll()
+        {
+            base.EthernetPacketType = EthernetPacketType.Arp;
+            base.Payload = Export();
+            return base.ExportAll();
+        }
+
+        /*
         public new void Parse(string[] Rows, ref int i)
         {
             // Parse Ethernet
@@ -42,5 +46,6 @@ namespace Router.Generator
             TargetHardwareAddress = Utilities.ParseMAC(Rows[i++].Or("00:00:00:00:00:00"));
             TargetProtocolAddress = IPAddress.Parse(Rows[i++].Or("0.0.0.0"));
         }
+        */
     }
 }

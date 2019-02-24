@@ -5,24 +5,30 @@ using System.Net.NetworkInformation;
 
 namespace Router.Generator
 {
-    abstract class Ethernet
+    abstract class Ethernet : Generator
     {
         public PhysicalAddress SourceHwAddress { get; set; }
         public PhysicalAddress DestinationHwAddress { get; set; }
 
+        public virtual EthernetPacketType EthernetPacketType { get; set; }
+        public virtual byte[] Payload { get; set; }
+
         protected Ethernet() { }
 
-        protected PacketDotNet.Packet Export(EthernetPacketType EthernetPacketType, PacketDotNet.Packet PayloadPacket)
+        public virtual byte[] Export()
         {
             var EthernetPacket = new EthernetPacket(SourceHwAddress, DestinationHwAddress, EthernetPacketType)
             {
-                PayloadPacket = PayloadPacket
+                PayloadData = Payload
             };
 
-            return EthernetPacket;
+            return EthernetPacket.Bytes;
         }
 
-        protected void Parse(string[] Rows, ref int i)
+        public virtual byte[] ExportAll() => Export();
+
+        /*
+        public void Parse(string[] Rows, ref int i)
         {
             if (Rows.Length - i < 3)
             {
@@ -32,5 +38,6 @@ namespace Router.Generator
             SourceHwAddress = Utilities.ParseMAC(Rows[i++]);
             DestinationHwAddress = Utilities.ParseMAC(Rows[i++]);
         }
+        */
     }
 }

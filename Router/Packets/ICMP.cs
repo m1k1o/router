@@ -20,9 +20,8 @@ namespace Router.Generator
 
         public ICMP() { }
 
-        public PacketDotNet.Packet Export()
+        public new byte[] Export()
         {
-            // Create ICMP
             var ICMPPacket = new ICMPv4Packet(new ByteArraySegment(new byte[ICMPv4Fields.HeaderLength]))
             {
                 TypeCode = TypeCode,
@@ -36,13 +35,18 @@ namespace Router.Generator
                 ICMPPacket.Data = Data;
             }
 
-            // Calculate Checksum
             ICMPPacket.Checksum = (ushort)ChecksumUtils.OnesComplementSum(ICMPPacket.Bytes);
-
-            // Create Ethernet
-            return Export(IPProtocolType.ICMP, ICMPPacket);
+            return ICMPPacket.Bytes;
         }
 
+        public new byte[] ExportAll()
+        {
+            base.IPProtocolType = IPProtocolType.ICMP;
+            base.Payload = Export();
+            return base.ExportAll();
+        }
+
+        /*
         public new void Parse(string[] Rows, ref int i)
         {
             // Parse Ethernet
@@ -65,5 +69,6 @@ namespace Router.Generator
                 Data = System.Text.Encoding.UTF8.GetBytes(String);
             }
         }
+        */
     }
 }

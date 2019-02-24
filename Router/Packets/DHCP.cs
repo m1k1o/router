@@ -19,9 +19,8 @@ namespace Router.Generator
 
         public DHCP() { }
 
-        public override PacketDotNet.Packet Export()
+        public new byte[] Export()
         {
-            // Create DHCP Packet
             var DHCPPacket = new DHCPPacket(OperationCode, TransactionID, Options);
 
             if (YourClientIPAddress != null)
@@ -31,11 +30,15 @@ namespace Router.Generator
             if (ClientMACAddress != null)
                 DHCPPacket.ClientMACAddress = ClientMACAddress;
 
-            // Create UDP Packet
-            base.Payload = DHCPPacket.Bytes;
-            return base.Export();
+            return DHCPPacket.Bytes;
         }
 
+        public new byte[] ExportAll()
+        {
+            base.Payload = Export();
+            return base.ExportAll();
+        }
+        /*
         public new void Parse(string[] Rows, ref int i)
         {
             // Parse UDP
@@ -65,5 +68,6 @@ namespace Router.Generator
 
             Options.Add(new DHCPEndOption());
         }
+        */
     }
 }

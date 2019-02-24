@@ -9,24 +9,28 @@ namespace Router.Generator
         public ushort SourcePort { get; set; }
         public ushort DestinationPort { get; set; }
 
-        public virtual byte[] Payload { get; set; }
+        public virtual new byte[] Payload { get; set; }
 
         public UDP() { }
 
-        public virtual Packet Export()
+        public new byte[] Export()
         {
-            // Export UDP
-            var UdpPacket = new UdpPacket(SourcePort, DestinationPort);
-
-            if(Payload != null)
+            var UdpPacket = new UdpPacket(SourcePort, DestinationPort)
             {
-                UdpPacket.PayloadData = Payload;
-            }
+                PayloadData = Payload
+            };
 
-            // Export IP
-            return base.Export(IPProtocolType.UDP, UdpPacket);
+            return UdpPacket.Bytes;
         }
 
+        public new byte[] ExportAll()
+        {
+            base.IPProtocolType = IPProtocolType.UDP;
+            base.Payload = Export();
+            return base.ExportAll();
+        }
+
+        /*
         public new void Parse(string[] Rows, ref int i)
         {
             // Parse IP
@@ -47,5 +51,6 @@ namespace Router.Generator
                 Payload = System.Text.Encoding.UTF8.GetBytes(String);
             }
         }
+        */
     }
 }

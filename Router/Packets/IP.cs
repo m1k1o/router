@@ -10,23 +10,31 @@ namespace Router.Generator
         public IPAddress DestinationAddress { get; set; }
         public int TimeToLive { get; set; }
 
+        public virtual IPProtocolType IPProtocolType { get; set; }
+        public virtual new byte[] Payload { get; set; }
+
         protected IP() { }
 
-        protected Packet Export(IPProtocolType IPProtocolType, Packet PayloadPacket)
+        public new byte[] Export()
         {
-            // Create IP
             var IPv4Packet = new IPv4Packet(SourceAddress, DestinationAddress)
             {
                 TimeToLive = TimeToLive,
                 Protocol = IPProtocolType,
-                PayloadPacket = PayloadPacket
+                PayloadData = Payload
             };
-            IPv4Packet.Checksum = IPv4Packet.CalculateIPChecksum();
 
-            // Create Ethernet
-            return base.Export(EthernetPacketType.IpV4, IPv4Packet);
+            IPv4Packet.Checksum = IPv4Packet.CalculateIPChecksum();
+            return IPv4Packet.Bytes;
         }
 
+        public new byte[] ExportAll()
+        {
+            base.EthernetPacketType = EthernetPacketType.IpV4;
+            base.Payload = Export();
+            return base.ExportAll();
+        }
+        /*
         protected new void Parse(string[] Rows, ref int i)
         {
             // Parse Ethernet
@@ -42,5 +50,6 @@ namespace Router.Generator
             DestinationAddress = IPAddress.Parse(Rows[i++]);
             TimeToLive = Int32.Parse(Rows[i++]);
         }
+        */
     }
 }
