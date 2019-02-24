@@ -31,7 +31,7 @@ namespace Router.Controllers
                 }
             }
 
-            return new JSONObject("interface", Router.Sniffing.SniffingList.Interface == null ? null : Router.Sniffing.SniffingList.Interface.ID.ToString());
+            return new JSONObject("interface", Router.Sniffing.SniffingList.Interface?.ID.ToString());
         }
 
 
@@ -43,7 +43,7 @@ namespace Router.Controllers
         public static JSON Initialize(string Data = null)
         {
             var obj = new JSONObject();
-            obj.Push("interface", Router.Sniffing.SniffingList.Interface == null ? null : Router.Sniffing.SniffingList.Interface.ID.ToString());
+            obj.Push("interface", Router.Sniffing.SniffingList.Interface?.ID.ToString());
             obj.Push("data", Pop());
             return obj;
         }

@@ -13,8 +13,8 @@ namespace Router.Controllers
             obj.Push("chassis_id", LLDPEntry.ChassisID.SubTypeValue);
             obj.Push("port_id", LLDPEntry.PortID.SubTypeValue);
             obj.Push("time_to_live", LLDPEntry.ExpiresIn);
-            obj.Push("port_description", LLDPEntry.PortDescription == null ? null : LLDPEntry.PortDescription.StringValue);
-            obj.Push("system_name", LLDPEntry.SystemName == null ? null : LLDPEntry.SystemName.StringValue);
+            obj.Push("port_description", LLDPEntry.PortDescription?.StringValue);
+            obj.Push("system_name", LLDPEntry.SystemName?.StringValue);
             //obj.Push("system_description", LLDPEntry.SystemDescription.StringValue);
             //obj.Push("system_capabilities", LLDPEntry.SystemCapabilities.ToString());
             //obj.Push("management_address", LLDPEntry.ManagementAddress.ToString());
