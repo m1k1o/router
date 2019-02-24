@@ -6,24 +6,24 @@ namespace Router.Controllers
 {
     class LLDP
     {
-        private static JSON LLDPEntry(LLDPEntry LLDPEntry)
+        private static old_JSON LLDPEntry(LLDPEntry LLDPEntry)
         {
-            var obj = new JSONObject();
+            var obj = new old_JSONObject();
             //obj.Push("id", LLDPEntry.ID);
-            obj.Push("chassis_id", LLDPEntry.ChassisID.SubTypeValue);
-            obj.Push("port_id", LLDPEntry.PortID.SubTypeValue);
-            obj.Push("time_to_live", LLDPEntry.ExpiresIn);
-            obj.Push("port_description", LLDPEntry.PortDescription == null ? null : LLDPEntry.PortDescription.StringValue);
-            obj.Push("system_name", LLDPEntry.SystemName == null ? null : LLDPEntry.SystemName.StringValue);
+            obj.Add("chassis_id", LLDPEntry.ChassisID.SubTypeValue);
+            obj.Add("port_id", LLDPEntry.PortID.SubTypeValue);
+            obj.Add("time_to_live", LLDPEntry.ExpiresIn);
+            obj.Add("port_description", LLDPEntry.PortDescription == null ? null : LLDPEntry.PortDescription.StringValue);
+            obj.Add("system_name", LLDPEntry.SystemName == null ? null : LLDPEntry.SystemName.StringValue);
             //obj.Push("system_description", LLDPEntry.SystemDescription.StringValue);
             //obj.Push("system_capabilities", LLDPEntry.SystemCapabilities.ToString());
             //obj.Push("management_address", LLDPEntry.ManagementAddress.ToString());
             //obj.Push("organization_specific", LLDPEntry.OrganizationSpecific.ToString());
-            obj.Push("interface", LLDPEntry.Interface.ID);
+            obj.Add("interface", LLDPEntry.Interface.ID);
             return obj;
         }
 
-        public static JSON Settings(string Data = null)
+        public static old_JSON Settings(string Data = null)
         {
             if (!string.IsNullOrEmpty(Data))
             {
@@ -32,7 +32,7 @@ namespace Router.Controllers
                 // Validate
                 if (Rows.Length != 4)
                 {
-                    return new JSONError("Expected AdvertisementsInterval, TimeToLive, SystemName, SystemDescription.");
+                    return new old_JSONError("Expected AdvertisementsInterval, TimeToLive, SystemName, SystemDescription.");
                 }
 
                 try
@@ -47,22 +47,22 @@ namespace Router.Controllers
                 }
                 catch (Exception e)
                 {
-                    return new JSONError(e.Message);
+                    return new old_JSONError(e.Message);
                 }
             }
 
-            var obj = new JSONObject();
-            obj.Push("adv_interval", LLDPAdvertisements.Timer.TotalSeconds);
-            obj.Push("time_to_live", LLDPResponse.TimeToLive);
-            obj.Push("system_name", LLDPResponse.SystemName);
-            obj.Push("system_description", LLDPResponse.SystemDescription);
+            var obj = new old_JSONObject();
+            obj.Add("adv_interval", LLDPAdvertisements.Timer.TotalSeconds);
+            obj.Add("time_to_live", LLDPResponse.TimeToLive);
+            obj.Add("system_name", LLDPResponse.SystemName);
+            obj.Add("system_description", LLDPResponse.SystemDescription);
             return obj;
         }
 
-        public static JSON Table(string Data = null)
+        public static old_JSON Table(string Data = null)
         {
             //var obj = new JSONObject();
-            var arr = new JSONArray();
+            var arr = new old_JSONArray();
 
             var Rows = LLDPTable.GetEntries();
             foreach (var Row in Rows)
@@ -80,11 +80,11 @@ namespace Router.Controllers
             return arr;
         }
 
-        public static JSON Initialize(string Data = null)
+        public static old_JSON Initialize(string Data = null)
         {
-            var obj = new JSONObject();
-            obj.Push("table", Table());
-            obj.Push("settings", Settings());
+            var obj = new old_JSONObject();
+            obj.Add("table", Table());
+            obj.Add("settings", Settings());
             return obj;
         }
     }

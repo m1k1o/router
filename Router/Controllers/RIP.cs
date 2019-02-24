@@ -8,29 +8,29 @@ namespace Router.Controllers
     {
         private static readonly RIPTable RIPTable = RIPTable.Instance;
 
-        private static JSON RIPEntry(RIPEntry RIPEntry)
+        private static old_JSON RIPEntry(RIPEntry RIPEntry)
         {
-            var obj = new JSONObject();
+            var obj = new old_JSONObject();
             //obj.Push("id", RIPEntry.ID.ToString());
-            obj.Push("ip", RIPEntry.IPNetwork.NetworkAddress);
-            obj.Push("mask", RIPEntry.IPNetwork.SubnetMask);
-            obj.Push("network", RIPEntry.IPNetwork);
-            obj.Push("next_hop", RIPEntry.NextHopIP);
-            obj.Push("interface", RIPEntry.Interface.ID.ToString());
-            obj.Push("metric", RIPEntry.Metric);
+            obj.Add("ip", RIPEntry.IPNetwork.NetworkAddress);
+            obj.Add("mask", RIPEntry.IPNetwork.SubnetMask);
+            obj.Add("network", RIPEntry.IPNetwork);
+            obj.Add("next_hop", RIPEntry.NextHopIP);
+            obj.Add("interface", RIPEntry.Interface.ID.ToString());
+            obj.Add("metric", RIPEntry.Metric);
 
-            obj.Push("never_updated", RIPEntry.NeverUpdated);
-            obj.Push("possibly_down", RIPEntry.PossibblyDown);
-            obj.Push("in_hold", RIPEntry.InHold);
+            obj.Add("never_updated", RIPEntry.NeverUpdated);
+            obj.Add("possibly_down", RIPEntry.PossibblyDown);
+            obj.Add("in_hold", RIPEntry.InHold);
 
-            obj.Push("sync_with_rt", RIPEntry.SyncWithRT);
-            obj.Push("can_be_updated", RIPEntry.CanBeUpdated);
-            obj.Push("timers_enabled", RIPEntry.TimersEnabled);
-            obj.Push("since_last_update", RIPEntry.SinceLastUpdate);
+            obj.Add("sync_with_rt", RIPEntry.SyncWithRT);
+            obj.Add("can_be_updated", RIPEntry.CanBeUpdated);
+            obj.Add("timers_enabled", RIPEntry.TimersEnabled);
+            obj.Add("since_last_update", RIPEntry.SinceLastUpdate);
             return obj;
         }
 
-        public static JSON Timers(string Data = null)
+        public static old_JSON Timers(string Data = null)
         {
             if (!string.IsNullOrEmpty(Data))
             {
@@ -39,7 +39,7 @@ namespace Router.Controllers
                 // Validate
                 if (Rows.Length != 4)
                 {
-                    return new JSONError("Expected UpdateTimer, InvalidTimer, HoldTimer, FlushTimer.");
+                    return new old_JSONError("Expected UpdateTimer, InvalidTimer, HoldTimer, FlushTimer.");
                 }
 
                 try
@@ -56,39 +56,39 @@ namespace Router.Controllers
                 }
                 catch (Exception e)
                 {
-                    return new JSONError(e.Message);
+                    return new old_JSONError(e.Message);
                 }
             }
 
-            var obj = new JSONObject();
-            obj.Push("update_timer", RIPUpdates.Timer.TotalSeconds);
-            obj.Push("invalid_timer", RIPEntryTimers.InvalidTimer.TotalSeconds);
-            obj.Push("hold_timer", RIPEntryTimers.HoldTimer.TotalSeconds);
-            obj.Push("flush_timer", RIPEntryTimers.FlushTimer.TotalSeconds);
+            var obj = new old_JSONObject();
+            obj.Add("update_timer", RIPUpdates.Timer.TotalSeconds);
+            obj.Add("invalid_timer", RIPEntryTimers.InvalidTimer.TotalSeconds);
+            obj.Add("hold_timer", RIPEntryTimers.HoldTimer.TotalSeconds);
+            obj.Add("flush_timer", RIPEntryTimers.FlushTimer.TotalSeconds);
             return obj;
         }
         
-        public static JSON Table(string Data = null)
+        public static old_JSON Table(string Data = null)
         {
             // TODO: Bad Practices.
             RIPTable.Instance.SyncWithRT();
 
-            var obj = new JSONObject();
+            var obj = new old_JSONObject();
 
             var Rows = RIPTable.GetEntries();
             foreach (var Row in Rows)
             {
-                obj.Push(Row.ID.ToString(), RIPEntry(Row));
+                obj.Add(Row.ID.ToString(), RIPEntry(Row));
             }
 
             return obj;
         }
 
-        public static JSON Initialize(string Data = null)
+        public static old_JSON Initialize(string Data = null)
         {
-            var obj = new JSONObject();
-            obj.Push("table", Table());
-            obj.Push("timers", Timers());
+            var obj = new old_JSONObject();
+            obj.Add("table", Table());
+            obj.Add("timers", Timers());
             return obj;
         }
     }

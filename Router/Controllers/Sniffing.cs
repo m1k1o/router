@@ -9,7 +9,7 @@ namespace Router.Controllers
 {
     class Sniffing
     {
-        public static JSON Interface(string Data = null)
+        public static old_JSON Interface(string Data = null)
         {
             if (!string.IsNullOrEmpty(Data))
             {
@@ -27,24 +27,24 @@ namespace Router.Controllers
                 }
                 catch (Exception e)
                 {
-                    return new JSONError(e.Message);
+                    return new old_JSONError(e.Message);
                 }
             }
 
-            return new JSONObject("interface", Router.Sniffing.SniffingList.Interface == null ? null : Router.Sniffing.SniffingList.Interface.ID.ToString());
+            return new old_JSONObject("interface", Router.Sniffing.SniffingList.Interface == null ? null : Router.Sniffing.SniffingList.Interface.ID.ToString());
         }
 
 
-        public static JSON Pop(string Data = null)
+        public static old_JSON Pop(string Data = null)
         {
             return Router.Sniffing.SniffingList.Pop();
         }
 
-        public static JSON Initialize(string Data = null)
+        public static old_JSON Initialize(string Data = null)
         {
-            var obj = new JSONObject();
-            obj.Push("interface", Router.Sniffing.SniffingList.Interface == null ? null : Router.Sniffing.SniffingList.Interface.ID.ToString());
-            obj.Push("data", Pop());
+            var obj = new old_JSONObject();
+            obj.Add("interface", Router.Sniffing.SniffingList.Interface == null ? null : Router.Sniffing.SniffingList.Interface.ID.ToString());
+            obj.Add("data", Pop());
             return obj;
         }
     }

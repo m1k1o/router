@@ -1,33 +1,61 @@
-﻿using Router.Helpers;
-
-namespace Router.Controllers
+﻿namespace Router.Controllers
 {
     static class Global
     {
-        public static JSON Initialize(string Data = null)
+        /*
+        public static old_JSON Initialize(string Data = null)
         {
-            var obj = new JSONObject();
-            obj.Push("interfaces", Interfaces.Initialize());
-            obj.Push("arp", ARP.Initialize());
-            obj.Push("routing", Routing.Initialize());
-            obj.Push("rip", RIP.Initialize());
-            obj.Push("lldp", LLDP.Initialize());
-            obj.Push("sniffing", Sniffing.Initialize());
-            obj.Push("dhcp", DHCP.Initialize());
+            var obj = new old_JSONObject();
+            obj.Add("interfaces", Interfaces.Initialize());
+            obj.Add("arp", ARP.Initialize());
+            obj.Add("routing", Routing.Initialize());
+            obj.Add("rip", RIP.Initialize());
+            obj.Add("lldp", LLDP.Initialize());
+            obj.Add("sniffing", Sniffing.Initialize());
+            obj.Add("dhcp", DHCP.Initialize());
             return obj;
         }
 
-        public static JSON UpdateTables(string Data = null)
+        public static old_JSON UpdateTables(string Data = null)
         {
-            var obj = new JSONObject();
+            var obj = new old_JSONObject();
             //obj.Push("interfaces", Interfaces.Table());
-            obj.Push("arp", ARP.Table());
-            obj.Push("routing", Routing.Table());
-            obj.Push("rip", RIP.Table());
-            obj.Push("lldp", LLDP.Table());
-            obj.Push("sniffing", Sniffing.Pop());
-            obj.Push("dhcp", DHCP.Table());
+            obj.Add("arp", ARP.Table());
+            obj.Add("routing", Routing.Table());
+            obj.Add("rip", RIP.Table());
+            obj.Add("lldp", LLDP.Table());
+            obj.Add("sniffing", Sniffing.Pop());
+            obj.Add("dhcp", DHCP.Table());
             return obj;
+        }
+        */
+
+        public static object Initialize(string Data = null)
+        {
+            return new
+            {
+                interfaces = Interfaces.Initialize(),
+                arp = ARP.Initialize(),
+                //routing = Routing.Initialize(),
+                //rip = RIP.Initialize(),
+                //lldp = LLDP.Initialize(),
+                //sniffing = Sniffing.Initialize(),
+                //dhcp = DHCP.Initialize()
+            };
+        }
+
+        public static object UpdateTables(string Data = null)
+        {
+            return new
+            {
+                //interfaces = Interfaces.Table(),
+                arp = ARP.Table(),
+                //routing = Routing.Table(),
+                //rip = RIP.Table(),
+                //lldp = LLDP.Table(),
+                //sniffing = Sniffing.Pop(),
+                //dhcp = DHCP.Table(),
+            };
         }
     }
 }

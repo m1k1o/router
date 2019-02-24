@@ -58,7 +58,8 @@ namespace Router.Helpers
                 return "\"" + Regex.Replace(value.ToString(), regex, replace) + "\"";
             }
 
-            return Escape(value.ToString());
+            return JSON.SerializeObject(value);
+            //return Escape(value.ToString());
         }
 
         public void Empty()

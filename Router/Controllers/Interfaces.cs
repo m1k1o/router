@@ -10,57 +10,38 @@ namespace Router.Controllers
         private static readonly Router.Interfaces Instance = Router.Interfaces.Instance;
         private static readonly List<InterfaceService> Services = Router.Interface.GetAvailableServices();
 
-        private static JSON InterfaceServices(Interface Interface)
+        private static object InterfaceServices(Interface Interface)
         {
-            var obj = new JSONObject();
-            foreach (var Service in Services)
-            {
-                obj.Push(Service.Name, Interface.ServiceRunning(Service.Name));
-            }
-            return obj;
+            return Services;
         }
 
-        private static JSON Interface(Interface Interface)
+        private static object Interface(Interface Interface)
         {
-            var obj = new JSONObject();
-            //obj.Push("id", Interface.ID);
-            obj.Push("name", Interface.Name);
-            obj.Push("friendly_name", Interface.FriendlyName);
-            obj.Push("description", Interface.Description);
-            obj.Push("running", Interface.Running);
-            obj.Push("ip", Interface.IPAddress);
-            obj.Push("mask", Interface.IPNetwork is IPNetwork ? Interface.IPNetwork.SubnetMask : null);
-            obj.Push("mac", Interface.PhysicalAddress);
-            obj.Push("services", InterfaceServices(Interface));
-            return obj;
+            return Interface;
         }
 
-        public static JSON AvailableServices(string Data = null)
+        public static object AvailableServices(string Data = null)
         {
-            var services = new JSONObject();
-            var obj = new JSONObject();
-
+            dynamic services = new { };
             foreach (var Service in Services)
             {
-                obj.Empty();
-                
-                obj.Push("description", Service.Description);
-                obj.Push("only_running_interface", Service.OnlyRunningInterface);
-                obj.Push("default_running", Service.DefaultRunning);
-                obj.Push("anonymous", Service.Anonymous);
-
-                services.Push(Service.Name, obj);
+                services[Service.Name] = new
+                {
+                    description = Service.Description,
+                    only_running_interface = Service.OnlyRunningInterface,
+                    default_running = Service.DefaultRunning,
+                    anonymous = Service.Anonymous
+                };
             }
-
             return services;
         }
-
-        public static JSON ToggleService(string Data = null)
+        /*
+        public static old_JSON ToggleService(string Data = null)
         {
             var Rows = Data.Split('\n');
             if (Rows.Length != 2)
             {
-                return new JSONError("Expected InterfaceID, ServiceName.");
+                return new old_JSONError("Expected InterfaceID, ServiceName.");
             }
 
             Interface Interface;
@@ -72,17 +53,17 @@ namespace Router.Controllers
             }
             catch (Exception e)
             {
-                return new JSONError(e.Message);
+                return new old_JSONError(e.Message);
             }
 
-            var obj = new JSONObject();
-            obj.Push("interface", Interface.ID.ToString());
-            obj.Push("service", ServiceName);
-            obj.Push("status", Interface.ServiceRunning(ServiceName));
+            var obj = new old_JSONObject();
+            obj.Add("interface", Interface.ID.ToString());
+            obj.Add("service", ServiceName);
+            obj.Add("status", Interface.ServiceRunning(ServiceName));
             return obj;
         }
 
-        public static JSON Toggle(string Data)
+        public static old_JSON Toggle(string Data)
         {
             try
             {
@@ -96,20 +77,20 @@ namespace Router.Controllers
                     Interface.Stop();
                 }
 
-                return new JSONObject("running", Interface.Running);
+                return new old_JSONObject("running", Interface.Running);
             }
             catch (Exception e)
             {
-                return new JSONError(e.Message);
+                return new old_JSONError(e.Message);
             }
         }
 
-        public static JSON Edit(string Data)
+        public static old_JSON Edit(string Data)
         {
             var Rows = Data.Split('\n');
             if (Rows.Length != 3)
             {
-                return new JSONError("Expected InterfaceID, IPAddress, IPSubnetMask.");
+                return new old_JSONError("Expected InterfaceID, IPAddress, IPSubnetMask.");
             }
 
             Interface Interface;
@@ -123,31 +104,32 @@ namespace Router.Controllers
             }
             catch (Exception e)
             {
-                return new JSONError(e.Message);
+                return new old_JSONError(e.Message);
             }
 
             return Interfaces.Interface(Interface);
         }
-        
-        public static JSON Table(string Data = null)
+        */
+        public static object Table(string Data = null)
         {
-            var obj = new JSONObject();
+            dynamic obj = new { };
 
             var Interfaces = Instance.GetInteraces();
             foreach(var Iface in Interfaces)
             {
-                obj.Push(Iface.ID.ToString(), Interface(Iface));
+                obj[Iface.ID.ToString()] = Interface(Iface);
             }
 
             return obj;
         }
 
-        public static JSON Initialize(string Data = null)
+        public static object Initialize(string Data = null)
         {
-            var obj = new JSONObject();
-            obj.Push("table", Table());
-            obj.Push("services", AvailableServices());
-            return obj;
+            return new
+            {
+                table = Table(),
+                services = AvailableServices()
+            };
         }
     }
 }

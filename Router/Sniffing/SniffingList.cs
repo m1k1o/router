@@ -8,25 +8,25 @@ namespace Router.Sniffing
         public static int MaxEntries { get; set; } = 50;
         private static int TotalEntries = 0;
 
-        private static List<JSON> Entries = new List<JSON>();
+        private static List<old_JSON> Entries = new List<old_JSON>();
 
         public static Interface Interface { get; set; }
 
-        public static JSONArray Pop()
+        public static old_JSONArray Pop()
         {
-            List<JSON> OProcessingEntries;
+            List<old_JSON> OProcessingEntries;
 
             lock (Entries)
             {
                 OProcessingEntries = Entries;
-                Entries = new List<JSON>();
+                Entries = new List<old_JSON>();
                 TotalEntries = 0;
             }
 
-            return new JSONArray(OProcessingEntries);
+            return new old_JSONArray(OProcessingEntries);
         }
 
-        public static void Push(JSON Input)
+        public static void Push(old_JSON Input)
         {
             if (TotalEntries > MaxEntries || Input == null)
             {

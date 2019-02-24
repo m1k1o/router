@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using Newtonsoft.Json.Serialization;
 using Router.Helpers.JSONConversters;
 
 namespace Router.Helpers
@@ -14,7 +15,13 @@ namespace Router.Helpers
             settings.Converters.Add(new IPNetworkConverter());
             settings.Converters.Add(new InterfaceConverter());
             settings.Formatting = Formatting.Indented;
-
+            settings.ContractResolver = new DefaultContractResolver
+            {
+                NamingStrategy = new SnakeCaseNamingStrategy
+                {
+                    ProcessDictionaryKeys = false
+                }
+            };
             return settings;
         }
         public static JObject Error(string Message)
@@ -32,7 +39,7 @@ namespace Router.Helpers
 
         public static string SerializeObject(object Object)
         {
-            return JsonConvert.SerializeObject(Object);
+            return JsonConvert.SerializeObject(Object, JSON.Settings());
         }
 
         public static T DeserializeObject<T>(string String)

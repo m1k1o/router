@@ -8,30 +8,30 @@ namespace Router.Controllers
     {
         private static readonly RoutingTable RoutingTable = RoutingTable.Instance;
 
-        private static JSON RoutingEntry(RoutingEntry RoutingEntry)
+        private static old_JSON RoutingEntry(RoutingEntry RoutingEntry)
         {
-            var obj = new JSONObject();
+            var obj = new old_JSONObject();
             //obj.Push("id", RoutingEntry.ID);
-            obj.Push("ip", RoutingEntry.IPNetwork.NetworkAddress);
-            obj.Push("mask", RoutingEntry.IPNetwork.SubnetMask);
-            obj.Push("network", RoutingEntry.IPNetwork);
-            obj.Push("next_hop", RoutingEntry.HasNextHopIP ? RoutingEntry.NextHopIP.ToString() : null);
-            obj.Push("interface", RoutingEntry.HasInterface ? RoutingEntry.Interface.ID.ToString() : null);
-            obj.Push("type", RoutingEntry.ADistance);
+            obj.Add("ip", RoutingEntry.IPNetwork.NetworkAddress);
+            obj.Add("mask", RoutingEntry.IPNetwork.SubnetMask);
+            obj.Add("network", RoutingEntry.IPNetwork);
+            obj.Add("next_hop", RoutingEntry.HasNextHopIP ? RoutingEntry.NextHopIP.ToString() : null);
+            obj.Add("interface", RoutingEntry.HasInterface ? RoutingEntry.Interface.ID.ToString() : null);
+            obj.Add("type", RoutingEntry.ADistance);
             return obj;
         }
 
-        public static JSON AddStatic(string Data)
+        public static old_JSON AddStatic(string Data)
         {
             var Rows = Data.Split('\n');
             if (Rows.Length != 4)
             {
-                return new JSONError("Expected IPAddress, SubnetMask, NextHopIP, InterfaceID.");
+                return new old_JSONError("Expected IPAddress, SubnetMask, NextHopIP, InterfaceID.");
             }
 
             if (string.IsNullOrEmpty(Rows[2]) && string.IsNullOrEmpty(Rows[3]))
             {
-                return new JSONError("You must set NextHopIP and/or InterfaceID.");
+                return new old_JSONError("You must set NextHopIP and/or InterfaceID.");
             }
 
             try
@@ -47,20 +47,20 @@ namespace Router.Controllers
 
                 var Entry = new RoutingEntry(Network, NextHopIP, Interface, ADistance.Static);
                 RoutingTable.Push(Entry);
-                return new JSONObject(Entry.ID.ToString(), RoutingEntry(Entry));
+                return new old_JSONObject(Entry.ID.ToString(), RoutingEntry(Entry));
             }
             catch (Exception e)
             {
-                return new JSONError(e.Message);
+                return new old_JSONError(e.Message);
             }
         }
 
-        public static JSON RemoveStatic(string Data)
+        public static old_JSON RemoveStatic(string Data)
         {
             var Rows = Data.Split('\n');
             if (Rows.Length != 2)
             {
-                return new JSONError("Expected IPAddress, SubnetMask.");
+                return new old_JSONError("Expected IPAddress, SubnetMask.");
             }
 
             IPNetwork IPNetwork;
@@ -70,20 +70,20 @@ namespace Router.Controllers
             }
             catch (Exception e)
             {
-                return new JSONError(e.Message);
+                return new old_JSONError(e.Message);
             }
 
-            return new JSONObject("removed", RoutingTable.Remove(IPNetwork, ADistance.Static));
+            return new old_JSONObject("removed", RoutingTable.Remove(IPNetwork, ADistance.Static));
         }
 
-        public static JSON Lookup(string Data)
+        public static old_JSON Lookup(string Data)
         {
             var Rows = Data.Split('\n');
 
             // Validate
             if (Rows.Length != 1)
             {
-                return new JSONError("Expected IPAddress.");
+                return new old_JSONError("Expected IPAddress.");
             }
             
             IPAddress IPAddress;
@@ -93,33 +93,33 @@ namespace Router.Controllers
             }
             catch (Exception e)
             {
-                return new JSONError(e.Message);
+                return new old_JSONError(e.Message);
             }
 
             RoutingEntry BestMatch = Router.RoutingTable.Instance.Lookup(IPAddress);
 
             // Answer
-            return BestMatch != null ? RoutingEntry(BestMatch) : (new JSONObject("found", false));
+            return BestMatch != null ? RoutingEntry(BestMatch) : (new old_JSONObject("found", false));
         }
 
 
-        public static JSON Table(string Data = null)
+        public static old_JSON Table(string Data = null)
         {
-            var obj = new JSONObject();
+            var obj = new old_JSONObject();
 
             var Rows = RoutingTable.BestEntries();
             foreach (var Row in Rows)
             {
-                obj.Push(Row.ID.ToString(), RoutingEntry(Row));
+                obj.Add(Row.ID.ToString(), RoutingEntry(Row));
             }
 
             return obj;
         }
 
-        public static JSON Initialize(string Data = null)
+        public static old_JSON Initialize(string Data = null)
         {
-            var obj = new JSONObject();
-            obj.Push("table", Table());
+            var obj = new old_JSONObject();
+            obj.Add("table", Table());
             return obj;
         }
     }

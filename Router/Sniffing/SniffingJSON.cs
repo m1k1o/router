@@ -7,7 +7,7 @@ namespace Router.Sniffing
 {
     class SniffingJSON
     {
-        public JSONObject Result { get; private set; } = new JSONObject();
+        public old_JSONObject Result { get; private set; } = new old_JSONObject();
 
         private Handler Handler;
 
@@ -18,7 +18,7 @@ namespace Router.Sniffing
 
         public void Extract()
         {
-            Result.Push("layer", Handler.Layer);
+            Result.Add("layer", Handler.Layer);
 
             EthernetPacket(Handler.EthernetPacket);
 
@@ -72,111 +72,111 @@ namespace Router.Sniffing
 
         private void EthernetPacket(EthernetPacket Packet)
         {
-            var obj = new JSONObject();
-            obj.Push("src_mac", Packet.SourceHwAddress);
-            obj.Push("dst_mac", Packet.DestinationHwAddress);
-            obj.Push("type", Packet.Type.ToString());
+            var obj = new old_JSONObject();
+            obj.Add("src_mac", Packet.SourceHwAddress);
+            obj.Add("dst_mac", Packet.DestinationHwAddress);
+            obj.Add("type", Packet.Type.ToString());
 
-            Result.Push("eth", obj);
+            Result.Add("eth", obj);
         }
 
         private void ARPPacket(ARPPacket Packet)
         {
-            var obj = new JSONObject();
-            obj.Push("op", Packet.Operation.ToString());
-            obj.Push("sender_mac", Packet.SenderHardwareAddress);
-            obj.Push("sender_ip", Packet.SenderProtocolAddress);
-            obj.Push("target_mac", Packet.TargetHardwareAddress);
-            obj.Push("target_ip", Packet.TargetProtocolAddress);
+            var obj = new old_JSONObject();
+            obj.Add("op", Packet.Operation.ToString());
+            obj.Add("sender_mac", Packet.SenderHardwareAddress);
+            obj.Add("sender_ip", Packet.SenderProtocolAddress);
+            obj.Add("target_mac", Packet.TargetHardwareAddress);
+            obj.Add("target_ip", Packet.TargetProtocolAddress);
 
-            Result.Push("arp", obj);
+            Result.Add("arp", obj);
         }
 
         private void LLDPPacket(LLDPPacket Packet)
         {
-            var obj = new JSONObject();
+            var obj = new old_JSONObject();
 
             // TODO: Bad practces
             var LLDPEntry = new LLDPEntry(Packet.TlvCollection, null);
-            obj.Push("chassis_id", LLDPEntry.ChassisID.SubTypeValue);
-            obj.Push("port_id", LLDPEntry.PortID.SubTypeValue);
-            obj.Push("time_to_live", LLDPEntry.ExpiresIn);
-            obj.Push("port_description", LLDPEntry.PortDescription == null ? null : LLDPEntry.PortDescription.StringValue);
-            obj.Push("system_name", LLDPEntry.SystemName == null ? null : LLDPEntry.SystemName.StringValue);
+            obj.Add("chassis_id", LLDPEntry.ChassisID.SubTypeValue);
+            obj.Add("port_id", LLDPEntry.PortID.SubTypeValue);
+            obj.Add("time_to_live", LLDPEntry.ExpiresIn);
+            obj.Add("port_description", LLDPEntry.PortDescription == null ? null : LLDPEntry.PortDescription.StringValue);
+            obj.Add("system_name", LLDPEntry.SystemName == null ? null : LLDPEntry.SystemName.StringValue);
 
-            Result.Push("lldp", obj);
+            Result.Add("lldp", obj);
         }
 
         private void IPv4Packet(IPv4Packet Packet)
         {
-            var obj = new JSONObject();
-            obj.Push("src_ip", Packet.SourceAddress);
-            obj.Push("dst_ip", Packet.DestinationAddress);
-            obj.Push("ttl", Packet.TimeToLive);
-            obj.Push("protocol", Packet.Protocol);
+            var obj = new old_JSONObject();
+            obj.Add("src_ip", Packet.SourceAddress);
+            obj.Add("dst_ip", Packet.DestinationAddress);
+            obj.Add("ttl", Packet.TimeToLive);
+            obj.Add("protocol", Packet.Protocol);
 
-            Result.Push("ip", obj);
+            Result.Add("ip", obj);
         }
 
         private void TCPPacket(TcpPacket Packet)
         {
-            var obj = new JSONObject();
-            obj.Push("src_port", Packet.SourcePort);
-            obj.Push("dst_port", Packet.DestinationPort);
+            var obj = new old_JSONObject();
+            obj.Add("src_port", Packet.SourcePort);
+            obj.Add("dst_port", Packet.DestinationPort);
 
-            Result.Push("udp", obj);
+            Result.Add("udp", obj);
         }
 
         private void UDPPacket(UdpPacket Packet)
         {
-            var obj = new JSONObject();
-            obj.Push("src_port", Packet.SourcePort);
-            obj.Push("dst_port", Packet.DestinationPort);
+            var obj = new old_JSONObject();
+            obj.Add("src_port", Packet.SourcePort);
+            obj.Add("dst_port", Packet.DestinationPort);
 
-            Result.Push("udp", obj);
+            Result.Add("udp", obj);
         }
 
         private void RIPPacket(RIPPacket Packet)
         {
-            var obj = new JSONObject();
-            obj.Push("cmd_type", Packet.CommandType.ToString());
+            var obj = new old_JSONObject();
+            obj.Add("cmd_type", Packet.CommandType.ToString());
 
-            var arr = new JSONArray();
-            var route = new JSONObject();
+            var arr = new old_JSONArray();
+            var route = new old_JSONObject();
             foreach (var Route in Packet.RouteCollection)
             {
                 route.Empty();
 
-                route.Push("afi", Route.AddressFamilyIdentifier);
-                route.Push("route_tag", Route.RouteTag);
-                route.Push("ip", Route.IPAddress);
-                route.Push("mask", Route.IPSubnetMask);
-                route.Push("network", Route.IPNetwork);
-                route.Push("next_hop", Route.NextHop);
-                route.Push("metric", Route.Metric);
+                route.Add("afi", Route.AddressFamilyIdentifier);
+                route.Add("route_tag", Route.RouteTag);
+                route.Add("ip", Route.IPAddress);
+                route.Add("mask", Route.IPSubnetMask);
+                route.Add("network", Route.IPNetwork);
+                route.Add("next_hop", Route.NextHop);
+                route.Add("metric", Route.Metric);
 
                 arr.Push(route);
             }
 
-            obj.Push("routes", arr);
+            obj.Add("routes", arr);
 
-            Result.Push("rip", obj);
+            Result.Add("rip", obj);
         }
 
         private void DHCPPacket(DHCPPacket DHCPPacket)
         {
-            var obj = new JSONObject();
-            obj.Push("operation_code", DHCPPacket.OperationCode);
-            obj.Push("transaction_id", DHCPPacket.TransactionID);
+            var obj = new old_JSONObject();
+            obj.Add("operation_code", DHCPPacket.OperationCode);
+            obj.Add("transaction_id", DHCPPacket.TransactionID);
 
-            obj.Push("client_ip", DHCPPacket.YourClientIPAddress);
-            obj.Push("server_ip", DHCPPacket.NextServerIPAddress);
-            obj.Push("client_mac", DHCPPacket.ClientMACAddress);
+            obj.Add("client_ip", DHCPPacket.YourClientIPAddress);
+            obj.Add("server_ip", DHCPPacket.NextServerIPAddress);
+            obj.Add("client_mac", DHCPPacket.ClientMACAddress);
 
             var Options = DHCPPacket.Options;
-            obj.Push("message_type", Options.MessageType);
+            obj.Add("message_type", Options.MessageType);
 
-            Result.Push("dhcp", obj);
+            Result.Add("dhcp", obj);
         }
     }
 }

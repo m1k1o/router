@@ -74,16 +74,16 @@ namespace Router
                     throw new Exception("Method '" + MethodName + "' not found.");
                 }
 
-                object response = MethodInfo.Invoke(null, new object[] { Data });
-                return new JSON(response).ToString();
+                object Object = MethodInfo.Invoke(null, new object[] { Data });
+                return JSON.SerializeObject(Object);
             }
             catch (TargetInvocationException e)
             {
-                return new JSONError(e.InnerException.Message).ToString();
+                return JSON.SerializeObject(JSON.Error(e.InnerException.Message));
             }
             catch (Exception e)
             {
-                return new JSONError(e.Message).ToString();
+                return JSON.SerializeObject(JSON.Error(e.InnerException.Message));
             }
         }
 

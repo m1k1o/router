@@ -4,20 +4,20 @@ namespace Router.Helpers
 {
     class LOG
     {
-        private JSONArray Array = new JSONArray();
+        private old_JSONArray Array = new old_JSONArray();
 
         public void Write(LOGType LOGType, params object[] Objects)
         {
-            var obj = new JSONObject();
-            obj.Push("type", LOGType);
-            obj.Push("datetime", DateTime.Now);
+            var obj = new old_JSONObject();
+            obj.Add("type", LOGType);
+            obj.Add("datetime", DateTime.Now);
 
-            var arr = new JSONArray();
+            var arr = new old_JSONArray();
             foreach (var Object in Objects)
             {
                 arr.Push(Object);
             }
-            obj.Push("data", arr);
+            obj.Add("data", arr);
 
             Array.Push(obj);
         }
@@ -39,7 +39,7 @@ namespace Router.Helpers
             Array.Empty();
         }
 
-        public JSON Export()
+        public old_JSON Export()
         {
             return Array;
         } 

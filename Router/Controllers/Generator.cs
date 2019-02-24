@@ -8,14 +8,14 @@ namespace Router.Controllers
 {
     static class Generator
     {
-        public static JSON Send(string Data)
+        public static old_JSON Send(string Data)
         {
            var Rows = Data.Split('\n');
 
            // Validate
            if (Rows.Length < 3)
            {
-               return new JSONError("Expected InterfaceID, GeneratorType, [Packet].");
+               return new old_JSONError("Expected InterfaceID, GeneratorType, [Packet].");
            }
 
            try
@@ -49,14 +49,14 @@ namespace Router.Controllers
                // Send
                Interface.SendPacket(Packet.Bytes);
 
-               var obj = new JSONObject();
-                obj.Push("interface", Interface);
-                obj.Push("packet", Packet);
+               var obj = new old_JSONObject();
+                obj.Add("interface", Interface);
+                obj.Add("packet", Packet);
                 return obj;
            }
            catch (Exception e)
            {
-               return new JSONError(e.Message);
+               return new old_JSONError(e.Message);
            }
         }
     }
