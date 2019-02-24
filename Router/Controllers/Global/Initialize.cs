@@ -6,6 +6,7 @@
         public object ARP => new ARP.Initialize().Export();
         public object Routing => new Routing.Initialize().Export();
         public object RIP => new RIP.Initialize().Export();
+        public object LLDP => new LLDP.Initialize().Export();
 
         public object Export() => this;
     }
