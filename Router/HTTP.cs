@@ -57,33 +57,38 @@ namespace Router
                        "</html>";
             }
 
-            String ClassName = Args[1];
-            String MethodName = Args[2];
+            String NamespaceName = Args[1];
+            String ClassName = Args[2];
 
             try
             {
-                Type Type = Type.GetType("Router.Controllers." + ClassName);
+                Type Type = Type.GetType("Router.Controllers." + NamespaceName + "." + ClassName);
                 if (Type == null)
                 {
-                    throw new Exception("Class '" + ClassName + "' not found.");
+                    throw new Exception("Endpoint'" + NamespaceName + "." + ClassName + "' not found.");
                 }
 
-                MethodInfo MethodInfo = Type.GetMethod(MethodName);
-                if (MethodInfo == null)
+                ConstructorInfo Constructor = Type.GetConstructor(Type.EmptyTypes);
+                var Controller = (Controllers.Controller)Constructor.Invoke(Type.EmptyTypes);
+
+                // Populate
+                if (!string.IsNullOrEmpty(Data))
                 {
-                    throw new Exception("Method '" + MethodName + "' not found.");
+                    JSON.PopulateObject(Data, Controller);
                 }
 
-                object Object = MethodInfo.Invoke(null, new object[] { Data });
-                return JSON.SerializeObject(Object);
-            }
-            catch (TargetInvocationException e)
-            {
-                return JSON.SerializeObject(JSON.Error(e.InnerException.Message));
+                // Execute
+                if (Controller is Controllers.Executable)
+                {
+                    ((Controllers.Executable)Controller).Execute();
+                }
+
+                // Export
+                return JSON.SerializeObject(Controller.Export());
             }
             catch (Exception e)
             {
-                return JSON.SerializeObject(JSON.Error(e.InnerException.Message));
+                return JSON.SerializeObject(JSON.Error(e.Message));
             }
         }
 
@@ -99,6 +104,10 @@ namespace Router
         private static void Main(string[] args)
         {
             var Preload = Interfaces.Instance;
+
+            var Interface = Interfaces.Instance.GetInterfaceById("1");
+            Interface.SetIP(IPAddress.Parse("192.168.1.5"), IPSubnetMask.Parse("255.255.0.0"));
+            Interface.Start();
 
             var HTTP = new HTTP("http://localhost:5000/");
             HTTP.Listen();

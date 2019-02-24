@@ -7,23 +7,23 @@ namespace Router.Helpers
 {
     static class JSON
     {
-        private static JsonSerializerSettings Settings()
+        private static readonly JsonSerializerSettings Settings = new JsonSerializerSettings
         {
-            var settings = new JsonSerializerSettings();
-            settings.Converters.Add(new IPAddressConverter());
-            settings.Converters.Add(new PhysicalAddressConverter());
-            settings.Converters.Add(new IPNetworkConverter());
-            settings.Converters.Add(new InterfaceConverter());
-            settings.Formatting = Formatting.Indented;
-            settings.ContractResolver = new DefaultContractResolver
+            Converters = {
+                    new IPAddressConverter(),
+                    new PhysicalAddressConverter(),
+                    new IPNetworkConverter(),
+                    new InterfaceConverter()
+                },
+            Formatting = Formatting.Indented,
+            ContractResolver = new DefaultContractResolver
             {
                 NamingStrategy = new SnakeCaseNamingStrategy
                 {
                     ProcessDictionaryKeys = false
                 }
-            };
-            return settings;
-        }
+            }
+        };
 
         public static JObject Error(string Message)
         {
@@ -33,23 +33,14 @@ namespace Router.Helpers
             };
         }
 
-        public static JObject ParseObject(object Object)
+        public static void PopulateObject(string String, object Object)
         {
-            return JObject.FromObject(Object, JsonSerializer.Create(JSON.Settings()));
+            JsonConvert.PopulateObject(String, Object, Settings);
         }
 
         public static string SerializeObject(object Object)
         {
-            return JsonConvert.SerializeObject(Object, JSON.Settings());
-        }
-
-        public static T DeserializeObject<T>(string String)
-        {
-            return JsonConvert.DeserializeObject<T>(String, JSON.Settings());
-        }
-        public static T DeserializeObject<T>(string String, T AnonymousType)
-        {
-            return JsonConvert.DeserializeObject<T>(String, JSON.Settings());
+            return JsonConvert.SerializeObject(Object, Settings);
         }
     }
 }
