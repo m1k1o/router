@@ -5,9 +5,9 @@ namespace Router.Controllers.ARP
 {
     class Timers : Controller
     {
-        public ushort CacheTimeout
+        public double CacheTimeout
         {
-            get => (ushort)ARPEntry.CacheTimeout.TotalSeconds;
+            get => ARPEntry.CacheTimeout.TotalSeconds;
             set => ARPEntry.CacheTimeout = TimeSpan.FromSeconds(value);
         }
 
