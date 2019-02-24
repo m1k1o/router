@@ -55,6 +55,14 @@
     <Compile Include="ARP\ARPEntry.cs" />
     <Compile Include="ARP\ARPService.cs" />
     <Compile Include="ARP\ARPTable.cs" />
+    <Compile Include="Controllers\ARP\Initialize.cs" />
+    <Compile Include="Controllers\ARP\Lookup.cs" />
+    <Compile Include="Controllers\ARP\Proxy.cs" />
+    <Compile Include="Controllers\ARP\Table.cs" />
+    <Compile Include="Controllers\ARP\Timers.cs" />
+    <Compile Include="Controllers\Executable.cs" />
+    <Compile Include="Controllers\Controller.cs" />
+    <Compile Include="Controllers\Global\Initialize.cs" />
     <Compile Include="DHCP\DHCPLease.cs" />
     <Compile Include="DHCP\DHCPPool.cs" />
     <Compile Include="DHCP\DHCPServer.cs" />
@@ -141,9 +149,8 @@
     <None Include="App.config">
       <SubType>Designer</SubType>
     </None>
+    <Compile Include="Controllers\Global\UpdateTables.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Controllers\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
