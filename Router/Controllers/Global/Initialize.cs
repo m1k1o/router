@@ -2,7 +2,8 @@
 {
     class Initialize : Controller
     {
-        public object ARP => new ARP.Initialize();
+        public object Interfaces => new Interfaces.Initialize().Export();
+        public object ARP => new ARP.Initialize().Export();
 
         public object Export() => this;
     }

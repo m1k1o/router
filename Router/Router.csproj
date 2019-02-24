@@ -63,6 +63,12 @@
     <Compile Include="Controllers\Executable.cs" />
     <Compile Include="Controllers\Controller.cs" />
     <Compile Include="Controllers\Global\Initialize.cs" />
+    <Compile Include="Controllers\Interfaces\Edit.cs" />
+    <Compile Include="Controllers\Interfaces\Initialize.cs" />
+    <Compile Include="Controllers\Interfaces\Toggle.cs" />
+    <Compile Include="Controllers\Interfaces\ToggleService.cs" />
+    <Compile Include="Controllers\Interfaces\Services.cs" />
+    <Compile Include="Controllers\Interfaces\Table.cs" />
     <Compile Include="DHCP\DHCPLease.cs" />
     <Compile Include="DHCP\DHCPPool.cs" />
     <Compile Include="DHCP\DHCPServer.cs" />
@@ -81,6 +87,7 @@
     <Compile Include="Helpers\IPSubnetMask.cs" />
     <Compile Include="Helpers\JSON.cs" />
     <Compile Include="Helpers\JSONConverters\InterfaceConverter.cs" />
+    <Compile Include="Helpers\JSONConverters\IPSubnetMaskConverter.cs" />
     <Compile Include="Helpers\JSONConverters\IPNetworkConverter.cs" />
     <Compile Include="Helpers\JSONConverters\PhysicalAddressConverter.cs" />
     <Compile Include="Helpers\JSONConverters\IPAddressConverter.cs" />
