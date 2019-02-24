@@ -6,10 +6,8 @@ namespace Router.Controllers.Routing
 {
     class RemoveStatic : Controller, Executable
     {
-        public string ID { get; private set; }
-
-        public IPAddress IP;
-        public IPSubnetMask Mask;
+        public IPAddress IP { get; set; }
+        public IPSubnetMask Mask { get; set; }
 
         public void Execute()
         {
