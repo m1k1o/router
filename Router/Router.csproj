@@ -60,6 +60,15 @@
     <Compile Include="Controllers\ARP\Proxy.cs" />
     <Compile Include="Controllers\ARP\Table.cs" />
     <Compile Include="Controllers\ARP\Timers.cs" />
+    <Compile Include="Controllers\DHCP\PoolToggle.cs" />
+    <Compile Include="Controllers\DHCP\PoolAdd.cs" />
+    <Compile Include="Controllers\DHCP\AddStatic.cs" />
+    <Compile Include="Controllers\DHCP\Initialize.cs" />
+    <Compile Include="Controllers\DHCP\PoolRemove.cs" />
+    <Compile Include="Controllers\DHCP\RemoveStatic.cs" />
+    <Compile Include="Controllers\DHCP\Pools.cs" />
+    <Compile Include="Controllers\DHCP\Table.cs" />
+    <Compile Include="Controllers\DHCP\Timers.cs" />
     <Compile Include="Controllers\Executable.cs" />
     <Compile Include="Controllers\Controller.cs" />
     <Compile Include="Controllers\Global\Initialize.cs" />

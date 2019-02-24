@@ -7,6 +7,7 @@
         public object Routing => new Routing.Initialize().Export();
         public object RIP => new RIP.Initialize().Export();
         public object LLDP => new LLDP.Initialize().Export();
+        public object DHCP => new DHCP.Initialize().Export();
 
         public object Export() => this;
     }
