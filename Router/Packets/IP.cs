@@ -1,8 +1,8 @@
 ﻿using PacketDotNet;
-using System;
+using PacketDotNet.Utils;
 using System.Net;
 
-namespace Router.Generator
+namespace Router.Packets
 {
     abstract class IP : Ethernet
     {
@@ -34,6 +34,24 @@ namespace Router.Generator
             base.Payload = Export();
             return base.ExportAll();
         }
+
+        public new void Import(byte[] Bytes)
+        {
+            var IPv4Packet = new IPv4Packet(new ByteArraySegment(Bytes));
+
+            SourceAddress = IPv4Packet.SourceAddress;
+            DestinationAddress = IPv4Packet.DestinationAddress;
+            TimeToLive = IPv4Packet.TimeToLive;
+            IPProtocolType = IPv4Packet.Protocol;
+            Payload = IPv4Packet.PayloadData;
+        }
+
+        public new void ImportAll(byte[] Bytes)
+        {
+            base.ImportAll(Bytes);
+            Import(Payload);
+        }
+
         /*
         protected new void Parse(string[] Rows, ref int i)
         {

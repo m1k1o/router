@@ -1,9 +1,8 @@
 ﻿using Router.Helpers;
 using Router.Protocols;
-using System;
 using System.Net;
 
-namespace Router.Generator
+namespace Router.Packets
 {
     class RIP : UDP, Generator
     {
@@ -45,6 +44,21 @@ namespace Router.Generator
         {
             base.Payload = Export();
             return base.ExportAll();
+        }
+
+        public new void Import(byte[] Bytes)
+        {
+            var RIPPacket = new RIPPacket(Bytes);
+
+            CommandType = RIPPacket.CommandType;
+            Version = RIPPacket.Version;
+            RouteCollection = RIPPacket.RouteCollection;
+        }
+
+        public new void ImportAll(byte[] Bytes)
+        {
+            base.ImportAll(Bytes);
+            Import(Payload);
         }
 
         /*

@@ -1,8 +1,7 @@
 ﻿using PacketDotNet;
-using System;
-using System.Linq;
+using PacketDotNet.Utils;
 
-namespace Router.Generator
+namespace Router.Packets
 {
     class UDP : IP, Generator
     {
@@ -28,6 +27,21 @@ namespace Router.Generator
             base.IPProtocolType = IPProtocolType.UDP;
             base.Payload = Export();
             return base.ExportAll();
+        }
+
+        public new void Import(byte[] Bytes)
+        {
+            var UdpPacket = new UdpPacket(new ByteArraySegment(Bytes));
+
+            SourcePort = UdpPacket.SourcePort;
+            DestinationPort = UdpPacket.DestinationPort;
+            Payload = UdpPacket.PayloadData;
+        }
+
+        public new void ImportAll(byte[] Bytes)
+        {
+            base.ImportAll(Bytes);
+            Import(Payload);
         }
 
         /*

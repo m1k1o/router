@@ -1,9 +1,8 @@
 ﻿using PacketDotNet;
-using Router.Helpers;
-using System;
+using PacketDotNet.Utils;
 using System.Net.NetworkInformation;
 
-namespace Router.Generator
+namespace Router.Packets
 {
     abstract class Ethernet : Generator
     {
@@ -26,6 +25,17 @@ namespace Router.Generator
         }
 
         public virtual byte[] ExportAll() => Export();
+
+        public virtual void Import(byte[] Bytes) {
+            var EthernetPacket = new EthernetPacket(new ByteArraySegment(Bytes));
+
+            SourceHwAddress = EthernetPacket.SourceHwAddress;
+            DestinationHwAddress = EthernetPacket.DestinationHwAddress;
+            EthernetPacketType = EthernetPacket.Type;
+            Payload = EthernetPacket.PayloadData;
+        }
+
+        public virtual void ImportAll(byte[] Bytes) => Import(Bytes);
 
         /*
         public void Parse(string[] Rows, ref int i)

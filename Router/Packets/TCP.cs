@@ -1,8 +1,7 @@
 ﻿using PacketDotNet;
-using System;
-using System.Linq;
+using PacketDotNet.Utils;
 
-namespace Router.Generator
+namespace Router.Packets
 {
     class TCP : IP, Generator
     {
@@ -31,6 +30,22 @@ namespace Router.Generator
             base.IPProtocolType = IPProtocolType.TCP;
             base.Payload = Export();
             return base.ExportAll();
+        }
+
+        public new void Import(byte[] Bytes)
+        {
+            var TcpPacket = new TcpPacket(new ByteArraySegment(Bytes));
+
+            SourcePort = TcpPacket.SourcePort;
+            DestinationPort = TcpPacket.DestinationPort;
+            Flags = TcpPacket.AllFlags;
+            Payload = TcpPacket.PayloadData;
+        }
+
+        public new void ImportAll(byte[] Bytes)
+        {
+            base.ImportAll(Bytes);
+            Import(Payload);
         }
 
         /*

@@ -1,13 +1,7 @@
 ﻿using PacketDotNet;
 using PacketDotNet.Utils;
-using Router.Helpers;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace Router.Generator
+namespace Router.Packets
 {
     class ICMP : IP, Generator
     {
@@ -44,6 +38,21 @@ namespace Router.Generator
             base.IPProtocolType = IPProtocolType.ICMP;
             base.Payload = Export();
             return base.ExportAll();
+        }
+
+        public new void Import(byte[] Bytes)
+        {
+            var ICMPv4Packet = new ICMPv4Packet(new ByteArraySegment(Bytes));
+
+            TypeCode = ICMPv4Packet.TypeCode;
+            ID = ICMPv4Packet.ID;
+            Data = ICMPv4Packet.Data;
+        }
+
+        public new void ImportAll(byte[] Bytes)
+        {
+            base.ImportAll(Bytes);
+            Import(Payload);
         }
 
         /*

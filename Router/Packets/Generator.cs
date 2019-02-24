@@ -1,4 +1,4 @@
-﻿namespace Router.Generator
+﻿namespace Router.Packets
 {
     interface Generator
     {

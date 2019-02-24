@@ -1,10 +1,9 @@
 ﻿using PacketDotNet;
-using System;
+using PacketDotNet.Utils;
 using System.Net;
 using System.Net.NetworkInformation;
-using Router.Helpers;
 
-namespace Router.Generator
+namespace Router.Packets
 {
     sealed class ARP : Ethernet, Generator
     {
@@ -26,6 +25,23 @@ namespace Router.Generator
             base.EthernetPacketType = EthernetPacketType.Arp;
             base.Payload = Export();
             return base.ExportAll();
+        }
+
+        public new void Import(byte[] Bytes)
+        {
+            var ARPPacket = new ARPPacket(new ByteArraySegment(Bytes));
+
+            Operation = ARPPacket.Operation;
+            TargetHardwareAddress = ARPPacket.TargetHardwareAddress;
+            TargetProtocolAddress = ARPPacket.TargetProtocolAddress;
+            SenderHardwareAddress = ARPPacket.SenderHardwareAddress;
+            SenderProtocolAddress = ARPPacket.SenderProtocolAddress;
+        }
+
+        public new void ImportAll(byte[] Bytes)
+        {
+            base.ImportAll(Bytes);
+            Import(Payload);
         }
 
         /*

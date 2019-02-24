@@ -1,11 +1,8 @@
-﻿using Router.Helpers;
-using Router.Protocols;
-using Router.Protocols.DHCPOptions;
-using System;
+﻿using Router.Protocols;
 using System.Net;
 using System.Net.NetworkInformation;
 
-namespace Router.Generator
+namespace Router.Packets
 {
     class DHCP : UDP, Generator
     {
@@ -38,6 +35,24 @@ namespace Router.Generator
             base.Payload = Export();
             return base.ExportAll();
         }
+        public new void Import(byte[] Bytes)
+        {
+            var DHCPPacket = new DHCPPacket(Bytes);
+
+            OperationCode = DHCPPacket.OperationCode;
+            TransactionID = DHCPPacket.TransactionID;
+            YourClientIPAddress = DHCPPacket.YourClientIPAddress;
+            NextServerIPAddress = DHCPPacket.NextServerIPAddress;
+            ClientMACAddress = DHCPPacket.ClientMACAddress;
+            Options = DHCPPacket.Options;
+        }
+
+        public new void ImportAll(byte[] Bytes)
+        {
+            base.ImportAll(Bytes);
+            Import(Payload);
+        }
+
         /*
         public new void Parse(string[] Rows, ref int i)
         {
