@@ -189,12 +189,12 @@ namespace Router.Protocols
                 // Only If options
                 if (value != null)
                 {
-                    Inject(240, value.Bytes, value.Length);
+                    Inject(240, value.Bytes, value.Bytes.Length);
                 }
             }
         }
 
-        public DHCPPacket(DHCPOperatonCode OperationCode, uint TransactionID, DHCPOptionCollection Options) : base(240 + (Options == null ? 0 : Options.Length))
+        public DHCPPacket(DHCPOperatonCode OperationCode, uint TransactionID, DHCPOptionCollection Options) : base(240 + (Options == null ? 0 : Options.Bytes.Length))
         {
             this.OperationCode = OperationCode;
             HardwareType = PacketDotNet.LinkLayers.Ethernet;

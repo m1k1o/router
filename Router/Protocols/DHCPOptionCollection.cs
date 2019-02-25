@@ -5,7 +5,7 @@ using System.IO;
 
 namespace Router.Protocols
 {
-    class DHCPOptionCollection : Dictionary<DHCPOptionCode, DHCPOption>
+    class DHCPOptionCollection : List<DHCPOption>
     {
         public DHCPOptionCollection() { }
 
@@ -14,12 +14,12 @@ namespace Router.Protocols
             Parse(RawData);
         }
 
-        public DHCPMessageType MessageType { get; private set; } = 0;
-
-        public void Add(DHCPOption DHCPOption)
+        public DHCPOption GetOption(DHCPOptionCode OptionCode)
         {
-            Add(DHCPOption.Type, DHCPOption);
+            return Find(Option => Option.Type == OptionCode);
         }
+
+        public DHCPMessageType MessageType { get; private set; } = 0;
 
         private void Parse(byte[] Bytes)
         {
@@ -53,7 +53,7 @@ namespace Router.Protocols
                     MessageType = (DHCPMessageType)Value[0];
                 }
 
-                Add((DHCPOptionCode)Type, DHCPOption.Factory(Type, Value));
+                Add(DHCPOption.Factory(Type, Value));
             } while (offset < Bytes.Length);
         }
 
@@ -64,18 +64,16 @@ namespace Router.Protocols
                 var ms = new MemoryStream();
                 foreach (var Option in this)
                 {
-                    if (Option.Key != DHCPOptionCode.End && Option.Key != DHCPOptionCode.Pad)
+                    if (Option.Type != DHCPOptionCode.End && Option.Type != DHCPOptionCode.Pad)
                     {
-                        ms.Write(new byte[] { (byte)Option.Key, (byte)Option.Value.Bytes.Length }, 0, 2);
+                        ms.Write(new byte[] { (byte)Option.Type, (byte)Option.Bytes.Length }, 0, 2);
                     }
 
-                    ms.Write(Option.Value.Bytes, 0, Option.Value.Bytes.Length);
+                    ms.Write(Option.Bytes, 0, Option.Bytes.Length);
                 }
 
                 return ms.ToArray();
             }
         }
-
-        public int Length => Bytes.Length;
     }
 }
