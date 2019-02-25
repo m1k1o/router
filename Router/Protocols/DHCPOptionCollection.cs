@@ -66,7 +66,7 @@ namespace Router.Protocols
                 {
                     if (Option.Key != DHCPOptionCode.End && Option.Key != DHCPOptionCode.Pad)
                     {
-                        ms.Write(new byte[] { (byte)Option.Key, Option.Value.Bytes.Length }, 0, 2);
+                        ms.Write(new byte[] { (byte)Option.Key, (byte)Option.Value.Bytes.Length }, 0, 2);
                     }
 
                     ms.Write(Option.Value.Bytes, 0, Option.Value.Bytes.Length);

@@ -1,11 +1,17 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
+using System;
 
 namespace Router.Protocols.DHCPOptions
 {
     abstract class DHCPOption
     {
+        public static Type GetType(DHCPOptionCode OptionType) => Factory((byte)OptionType).GetType();
+
+        [JsonConverter(typeof(StringEnumConverter))] // Serialize enums by name rather than numerical value
         public DHCPOptionCode Type { get; private set; }
 
+        [JsonIgnore]
         public abstract byte[] Bytes { get; }
 
         public abstract void Parse(string String);

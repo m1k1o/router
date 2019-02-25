@@ -93,6 +93,7 @@
     <Compile Include="DHCP\DHCPPool.cs" />
     <Compile Include="DHCP\DHCPServer.cs" />
     <Compile Include="DHCP\DHCPTable.cs" />
+    <Compile Include="Helpers\JSONConverters\DHCPOptionConverter.cs" />
     <Compile Include="Helpers\JSONConverters\GeneratorPacketConverter.cs" />
     <Compile Include="Packets\ARP.cs" />
     <Compile Include="Packets\DHCP.cs" />
