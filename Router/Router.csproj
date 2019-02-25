@@ -172,7 +172,6 @@
     <Compile Include="RoutingEntry.cs" />
     <Compile Include="RIP\RIPService.cs" />
     <Compile Include="InterfaceService.cs" />
-    <Compile Include="Sniffing\SniffingJSON.cs" />
     <Compile Include="Sniffing\SniffingList.cs" />
     <Compile Include="Sniffing\SniffingService.cs" />
   </ItemGroup>
