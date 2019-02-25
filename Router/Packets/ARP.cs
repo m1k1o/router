@@ -5,7 +5,7 @@ using System.Net.NetworkInformation;
 
 namespace Router.Packets
 {
-    sealed class ARP : IGeneratorPacket
+    sealed class ARP : GeneratorPacket
     {
         public static EthernetPacketType EthernetPacketType = EthernetPacketType.Arp;
 
@@ -17,12 +17,12 @@ namespace Router.Packets
 
         public ARP() { }
 
-        public byte[] Export()
+        public override byte[] Export()
         {
             return new ARPPacket(Operation, TargetHardwareAddress, TargetProtocolAddress, SenderHardwareAddress, SenderProtocolAddress).Bytes;
         }
 
-        public void Import(byte[] Bytes)
+        public override void Import(byte[] Bytes)
         {
             var ARPPacket = new ARPPacket(new ByteArraySegment(Bytes));
 

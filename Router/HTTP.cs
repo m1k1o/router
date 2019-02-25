@@ -116,47 +116,51 @@ namespace Router
             //var HTTP = new HTTP("http://localhost:5000/");
             //HTTP.Listen();
 
-            var Packets = new List<IGeneratorPacket>()
+            var Ethernet_Packet = new Packets.Ethernet
             {
-                new Packets.Ethernet
-                {
-                    SourceHwAddress = PhysicalAddress.Parse("FF-FF-FF-FF-FF-FF"),
-                    DestinationHwAddress = PhysicalAddress.Parse("FF-FF-FF-FF-FF-FF")
-                },
-                new Packets.IP
-                {
-                    SourceAddress = IPAddress.Parse("192.168.1.1"),
-                    DestinationAddress = IPAddress.Parse("192.168.1.1")
-                },
-                new Packets.ICMP
-                {
-                    TypeCode = ICMPv4TypeCodes.Unreachable_DestinationNetworkUnknown
-                },
-                new Packets.IP
-                {
-                    SourceAddress = IPAddress.Parse("192.168.1.1"),
-                    DestinationAddress = IPAddress.Parse("192.168.1.1")
-                },
-                new Packets.UDP
-                {
-                    SourcePort = 50,
-                    DestinationPort = 50
-                },
+                SourceHwAddress = PhysicalAddress.Parse("FF-FF-FF-FF-FF-FF"),
+                DestinationHwAddress = PhysicalAddress.Parse("FF-FF-FF-FF-FF-FF")
+            };
+            var IP_Packet1 = new Packets.IP
+            {
+                SourceAddress = IPAddress.Parse("192.168.1.1"),
+                DestinationAddress = IPAddress.Parse("192.168.1.1")
+            };
+            var ICMP_Packet = new Packets.ICMP
+            {
+                TypeCode = ICMPv4TypeCodes.Unreachable_DestinationNetworkUnknown
+            };
+            var IP_Packet2 = new Packets.IP
+            {
+                SourceAddress = IPAddress.Parse("192.168.1.1"),
+                DestinationAddress = IPAddress.Parse("192.168.1.1")
+            };
+            var UDP_Packet = new Packets.UDP
+            {
+                SourcePort = 50,
+                DestinationPort = 50
             };
 
+            // Hierarchy
+            Ethernet_Packet.PayloadPacket = IP_Packet1;
+            IP_Packet1.PayloadPacket = ICMP_Packet;
+            ICMP_Packet.PayloadPacket = IP_Packet2;
+            IP_Packet2.PayloadPacket = UDP_Packet;
+
             // Serialize
-            var json = Generator.ExportJSON(Packets);
+            var json = Ethernet_Packet.ExportJSON();
             Console.WriteLine(json);
 
             // Deserialize
-            var Packets2 = Generator.ImportJSON(json);
+            var Packets2 = new Ethernet();
+            Packets2.ImportJSON(json);
 
             // Serialize
-            var json2 = Generator.ExportJSON(Packets2);
+            var json2 = Packets2.ExportJSON();
             Console.WriteLine(json2);
 
-            var Response = Generator.Export(Packets);
-            Interface.SendPacket(Response);
+            //var Response = GeneratorPacket.Export(Packets);
+            //Interface.SendPacket(Response);
         }
     }
 }

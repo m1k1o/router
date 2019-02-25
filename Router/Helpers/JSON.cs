@@ -16,7 +16,7 @@ namespace Router.Helpers
                 new IPNetworkConverter(),
                 new IPSubnetMaskConverter(),
                 new InterfaceConverter(),
-                new IGeneratorPacketConverter()
+                new GeneratorPacketConverter()
             },
             Formatting = Formatting.Indented,
             ContractResolver = new DefaultContractResolver

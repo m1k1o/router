@@ -3,7 +3,7 @@ using PacketDotNet.Utils;
 
 namespace Router.Packets
 {
-    sealed class TCP : IGeneratorPacket, IGeneratorPayload
+    sealed class TCP : GeneratorPayload
     {
         public static IPProtocolType IPProtocolType = IPProtocolType.TCP;
 
@@ -12,14 +12,9 @@ namespace Router.Packets
 
         public byte Flags { get; set; } = 0;
 
-        [Newtonsoft.Json.JsonProperty(NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public byte[] Payload { get; set; }
-
-        public void PayloadData(byte[] Data) => Payload = Data;
-
         public TCP() { }
 
-        public byte[] Export()
+        public override byte[] Export()
         {
             var TcpPacket = new TcpPacket(SourcePort, DestinationPort)
             {
@@ -34,7 +29,7 @@ namespace Router.Packets
             return TcpPacket.Bytes;
         }
 
-        public void Import(byte[] Bytes)
+        public override void Import(byte[] Bytes)
         {
             var TcpPacket = new TcpPacket(new ByteArraySegment(Bytes));
 

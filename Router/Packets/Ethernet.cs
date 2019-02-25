@@ -4,21 +4,29 @@ using System.Net.NetworkInformation;
 
 namespace Router.Packets
 {
-    sealed class Ethernet : IGeneratorPacket, IGeneratorPayload
+    sealed class Ethernet : GeneratorPayload
     {
         public PhysicalAddress SourceHwAddress { get; set; }
         public PhysicalAddress DestinationHwAddress { get; set; }
 
         public EthernetPacketType EthernetPacketType { get; set; }
 
-        [Newtonsoft.Json.JsonProperty(NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public byte[] Payload { get; set; }
-
-        public void PayloadData(byte[] Data) => Payload = Data;
-
-        public byte[] Export()
+        public override byte[] Export()
         {
             var EthernetPacket = new EthernetPacket(SourceHwAddress, DestinationHwAddress, EthernetPacketType);
+
+            // Auto Types
+            if (PayloadPacket != null && EthernetPacketType == EthernetPacketType.None)
+            {
+                if (PayloadPacket is IP)
+                {
+                    EthernetPacketType = EthernetPacketType.IpV4;
+                }
+                else if (PayloadPacket is ARP)
+                {
+                    EthernetPacketType = EthernetPacketType.Arp;
+                }
+            }
 
             if (Payload != null)
             {
@@ -28,13 +36,28 @@ namespace Router.Packets
             return EthernetPacket.Bytes;
         }
 
-        public void Import(byte[] Bytes) {
+        public override void Import(byte[] Bytes) {
             var EthernetPacket = new EthernetPacket(new ByteArraySegment(Bytes));
 
             SourceHwAddress = EthernetPacket.SourceHwAddress;
             DestinationHwAddress = EthernetPacket.DestinationHwAddress;
             EthernetPacketType = EthernetPacket.Type;
-            Payload = EthernetPacket.PayloadData;
+
+            // Auto Types
+            if (EthernetPacketType == EthernetPacketType.IpV4)
+            {
+                PayloadPacket = new IP();
+                PayloadPacket.Import(EthernetPacket.PayloadData);
+            }
+            else if (EthernetPacketType == EthernetPacketType.Arp)
+            {
+                PayloadPacket = new ARP();
+                PayloadPacket.Import(EthernetPacket.PayloadData);
+            }
+            else
+            {
+                Payload = EthernetPacket.PayloadData;
+            }
         }
     }
 }

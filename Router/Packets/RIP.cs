@@ -4,7 +4,7 @@ using System.Net;
 
 namespace Router.Packets
 {
-    sealed class RIP : IGeneratorPacket
+    sealed class RIP : GeneratorPacket
     {
         public RIPCommandType CommandType { get; set; }
 
@@ -30,7 +30,7 @@ namespace Router.Packets
             RouteCollection.Add(new RIPRoute(IPNetwork, NextHop, Metric));
         }
 
-        public byte[] Export()
+        public override byte[] Export()
         {
             var RIPPacket = new RIPPacket(CommandType, RouteCollection)
             {
@@ -40,7 +40,7 @@ namespace Router.Packets
             return RIPPacket.Bytes;
         }
 
-        public void Import(byte[] Bytes)
+        public override void Import(byte[] Bytes)
         {
             var RIPPacket = new RIPPacket(Bytes);
 
