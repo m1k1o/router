@@ -1,19 +1,23 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
+using System;
 using System.Collections.Generic;
 
 namespace Router.Protocols.DHCPOptions
 {
     class DHCPParameterRequestListOption : DHCPOption
     {
-        public List<DHCPOptionCode> Codes { get; private set; }
+        [JsonProperty(ItemConverterType = typeof(StringEnumConverter))]
+        public List<DHCPOptionCode> Codes { get; set; }
 
         public DHCPParameterRequestListOption(byte[] Bytes) : base(DHCPOptionCode.ParameterRequestList)
         {
             Codes = new List<DHCPOptionCode>();
+
             var Length = Bytes.Length;
             for (var i = 0; i < Length; i += 4)
             {
-                Add((DHCPOptionCode)Bytes[i]);
+                Codes.Add((DHCPOptionCode)Bytes[i]);
             }
         }
 
@@ -25,27 +29,6 @@ namespace Router.Protocols.DHCPOptions
         public DHCPParameterRequestListOption() : base(DHCPOptionCode.ParameterRequestList)
         {
             Codes = new List<DHCPOptionCode>();
-        }
-
-        public void Add(DHCPOptionCode Code)
-        {
-            Codes.Add(Code);
-        }
-
-        public void Remove(DHCPOptionCode Code)
-        {
-            Codes.Remove(Code);
-        }
-
-        public override void Parse(string String)
-        {
-            Codes = new List<DHCPOptionCode>();
-
-            var Entries = String.Split(',');
-            foreach (var Entry in Entries)
-            {
-                Add((DHCPOptionCode)Convert.ToByte(Entry));
-            }
         }
 
         public override byte[] Bytes

@@ -4,9 +4,7 @@ namespace Router.Protocols.DHCPOptions
 {
     abstract class DHCPIPAddressOption : DHCPOption
     {
-        public IPAddress IPAddress { get; private set; }
-
-        public DHCPIPAddressOption(DHCPOptionCode DHCPOptionCode) : base(DHCPOptionCode) { }
+        public IPAddress IPAddress { get; set; }
 
         public DHCPIPAddressOption(DHCPOptionCode DHCPOptionCode, byte[] Bytes) : base(DHCPOptionCode)
         {
@@ -18,14 +16,6 @@ namespace Router.Protocols.DHCPOptions
             this.IPAddress = IPAddress;
         }
 
-        public override byte[] Bytes
-        {
-            get => IPAddress.GetAddressBytes();
-        }
-
-        public override void Parse(string String)
-        {
-            IPAddress = IPAddress.Parse(String);
-        }
+        public override byte[] Bytes => IPAddress.GetAddressBytes();
     }
 }

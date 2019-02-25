@@ -10,7 +10,5 @@
         }
 
         public override byte[] Bytes => RawData;
-
-        public override void Parse(string String) { }
     }
 }

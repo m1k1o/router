@@ -5,8 +5,6 @@ namespace Router.Protocols.DHCPOptions
 {
     class DHCPRouterOption : DHCPIPAddressesOption
     {
-        public DHCPRouterOption() : base(DHCPOptionCode.Router) { }
-
         public DHCPRouterOption(byte[] Bytes) : base(DHCPOptionCode.Router, Bytes) { }
 
         public DHCPRouterOption(List<IPAddress> IPAddresses) : base(DHCPOptionCode.Router, IPAddresses) { }
