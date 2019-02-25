@@ -35,7 +35,10 @@ namespace Router.Packets
             return EthernetPacket.Bytes;
         }
 
-        public override void Import(byte[] Bytes) {
+        public override void Import(byte[] Bytes)
+        {
+            if (Bytes == null) return;
+
             var EthernetPacket = new EthernetPacket(new ByteArraySegment(Bytes));
 
             SourceHwAddress = EthernetPacket.SourceHwAddress;
@@ -46,15 +49,16 @@ namespace Router.Packets
             if (EthernetPacketType == EthernetPacketType.IpV4)
             {
                 PayloadPacket = new IP();
-                PayloadPacket.Import(EthernetPacket.PayloadData);
+                PayloadPacket.Import(EthernetPacket.PayloadPacket.Bytes);
             }
             else if (EthernetPacketType == EthernetPacketType.Arp)
             {
                 PayloadPacket = new ARP();
-                PayloadPacket.Import(EthernetPacket.PayloadData);
+                PayloadPacket.Import(EthernetPacket.PayloadPacket.Bytes);
             }
             else
             {
+                // TODO: is PayloadData valid?
                 Payload = EthernetPacket.PayloadData;
             }
         }

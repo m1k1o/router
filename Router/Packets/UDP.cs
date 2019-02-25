@@ -24,6 +24,8 @@ namespace Router.Packets
 
         public override void Import(byte[] Bytes)
         {
+            if (Bytes == null) return;
+
             var UdpPacket = new UdpPacket(new ByteArraySegment(Bytes));
 
             SourcePort = UdpPacket.SourcePort;

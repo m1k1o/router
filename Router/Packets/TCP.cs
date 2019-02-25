@@ -31,6 +31,8 @@ namespace Router.Packets
 
         public override void Import(byte[] Bytes)
         {
+            if (Bytes == null) return;
+
             var TcpPacket = new TcpPacket(new ByteArraySegment(Bytes));
 
             SourcePort = TcpPacket.SourcePort;

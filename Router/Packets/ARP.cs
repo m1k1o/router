@@ -24,6 +24,8 @@ namespace Router.Packets
 
         public override void Import(byte[] Bytes)
         {
+            if (Bytes == null) return;
+
             var ARPPacket = new ARPPacket(new ByteArraySegment(Bytes));
 
             Operation = ARPPacket.Operation;

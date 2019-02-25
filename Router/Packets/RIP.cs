@@ -44,6 +44,8 @@ namespace Router.Packets
 
         public override void Import(byte[] Bytes)
         {
+            if (Bytes == null) return;
+
             var RIPPacket = new RIPPacket(Bytes);
 
             CommandType = RIPPacket.CommandType;

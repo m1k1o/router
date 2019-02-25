@@ -51,6 +51,8 @@ namespace Router.Packets
 
         public override void Import(byte[] Bytes)
         {
+            if (Bytes == null) return;
+
             var IPv4Packet = new IPv4Packet(new ByteArraySegment(Bytes));
 
             SourceAddress = IPv4Packet.SourceAddress;
@@ -67,15 +69,16 @@ namespace Router.Packets
             else if (IPProtocolType == IPProtocolType.UDP)
             {
                 PayloadPacket = new UDP();
-                PayloadPacket.Import(IPv4Packet.PayloadData);
+                PayloadPacket.Import(IPv4Packet.PayloadPacket.Bytes);
             }
             else if (IPProtocolType == IPProtocolType.TCP)
             {
                 PayloadPacket = new TCP();
-                PayloadPacket.Import(IPv4Packet.PayloadData);
+                PayloadPacket.Import(IPv4Packet.PayloadPacket.Bytes);
             }
             else
             {
+                // TODO: is PayloadData valid?
                 Payload = IPv4Packet.PayloadData;
             }
         }

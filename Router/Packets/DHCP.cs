@@ -32,6 +32,8 @@ namespace Router.Packets
 
         public override void Import(byte[] Bytes)
         {
+            if (Bytes == null) return;
+
             var DHCPPacket = new DHCPPacket(Bytes);
 
             OperationCode = DHCPPacket.OperationCode;
