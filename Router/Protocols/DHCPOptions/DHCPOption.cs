@@ -1,16 +1,18 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
+using System;
 
 namespace Router.Protocols.DHCPOptions
 {
     abstract class DHCPOption
     {
+        public static Type GetType(DHCPOptionCode OptionType) => Factory((byte)OptionType);
+
+        [JsonConverter(typeof(StringEnumConverter))] // Serialize enums by name rather than numerical value
         public DHCPOptionCode Type { get; private set; }
 
-        public virtual byte Length => (byte)Bytes.Length;
-
+        [JsonIgnore]
         public abstract byte[] Bytes { get; }
-
-        public abstract void Parse(string String);
 
         public DHCPOption(DHCPOptionCode DHCPOptionCode)
         {
@@ -35,7 +37,7 @@ namespace Router.Protocols.DHCPOptions
             return (DHCPOption)Activator.CreateInstance(Type, new object[] { OptionValue });
         }
 
-        public static DHCPOption Factory(byte OptionType)
+        public static Type Factory(byte OptionType)
         {
             var OptionName = ((DHCPOptionCode)OptionType).ToString();
             var OptionFound = OptionName != OptionType.ToString();
@@ -50,7 +52,7 @@ namespace Router.Protocols.DHCPOptions
                 throw new Exception("Option class not found.");
             }
 
-            return (DHCPOption)Activator.CreateInstance(Type, Type.EmptyTypes);
+            return Type;
         }
     }
 }

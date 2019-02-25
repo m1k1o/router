@@ -11,12 +11,16 @@ namespace Router.Helpers
         {
             Converters =
             {
+                // Primitive objects
                 new IPAddressConverter(),
                 new PhysicalAddressConverter(),
                 new IPNetworkConverter(),
                 new IPSubnetMaskConverter(),
+
+                // Custom objects
                 new InterfaceConverter(),
-                new IGeneratorPacketConverter()
+                new GeneratorPacketConverter(),
+                new DHCPOptionConverter()
             },
             Formatting = Formatting.Indented,
             ContractResolver = new DefaultContractResolver

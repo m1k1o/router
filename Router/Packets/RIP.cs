@@ -1,10 +1,11 @@
 ﻿using Router.Helpers;
 using Router.Protocols;
+using System.Collections.Generic;
 using System.Net;
 
 namespace Router.Packets
 {
-    sealed class RIP : IGeneratorPacket
+    sealed class RIP : GeneratorPacket
     {
         public RIPCommandType CommandType { get; set; }
 
@@ -12,26 +13,27 @@ namespace Router.Packets
 
         public RIP() { }
 
-        private RIPRouteCollection RouteCollection = new RIPRouteCollection();
-
-        public void AddRoute(ushort AddressFamilyIdentifier, ushort RouteTag, IPNetwork IPNetwork, IPAddress NextHop, uint Metric)
-        {
-            var Route = new RIPRoute(IPNetwork, NextHop, Metric)
-            {
-                AddressFamilyIdentifier = AddressFamilyIdentifier,
-                RouteTag = RouteTag
-            };
-
-            RouteCollection.Add(Route);
-        }
+        public List<RIPRoute> Routes { get; set; } = new List<RIPRoute>();
 
         public void AddRoute(IPNetwork IPNetwork, IPAddress NextHop, uint Metric)
         {
-            RouteCollection.Add(new RIPRoute(IPNetwork, NextHop, Metric));
+            Routes.Add(new RIPRoute()
+            {
+                IPNetwork = IPNetwork,
+                NextHop = NextHop,
+                Metric = Metric
+            });
         }
 
-        public byte[] Export()
+        public override byte[] Export()
         {
+            // Export Routes
+            var RouteCollection = new RIPRouteCollection();
+            foreach (var Route in Routes)
+            {
+                RouteCollection.Add(Route.Export());
+            }
+
             var RIPPacket = new RIPPacket(CommandType, RouteCollection)
             {
                 Version = Version
@@ -40,41 +42,61 @@ namespace Router.Packets
             return RIPPacket.Bytes;
         }
 
-        public void Import(byte[] Bytes)
+        public override void Import(byte[] Bytes)
         {
             var RIPPacket = new RIPPacket(Bytes);
 
             CommandType = RIPPacket.CommandType;
             Version = RIPPacket.Version;
-            RouteCollection = RIPPacket.RouteCollection;
-        }
 
-        /*
-        public new void Parse(string[] Rows, ref int i)
+            // Import Routes
+            var RouteCollection = new RIPRouteCollection();
+            foreach (var RIPRoute in RIPPacket.RouteCollection)
+            {
+                var NewRoute = new RIPRoute();
+                NewRoute.Import(RIPRoute);
+                Routes.Add(NewRoute);
+            }
+        }
+    }
+
+    class RIPRoute
+    {
+        public ushort AFI { get; set; } = 2;
+
+        public ushort RouteTag { get; set; } = 0;
+
+        public IPAddress IP { get; set; }
+
+        public IPSubnetMask Mask { get; set; }
+
+        public IPAddress NextHop { get; set; }
+
+        public uint Metric { get; set; }
+
+        public IPNetwork IPNetwork
         {
-            // Parse UDP
-            base.Parse(Rows, ref i);
-
-            // Parse RIP
-            if (Rows.Length - i < 3 && (Rows.Length - i - 2) % 6 != 0)
+            private get => IPNetwork.Parse(IP, Mask);
+            set
             {
-                throw new Exception("Expected CommandType, Version, [AddressFamilyIdentifier, RouteTag, Network, SubnetMask, NextHop, Metric]+.");
-            }
-
-            CommandType = (RIPCommandType)Convert.ToByte(Rows[i++]);
-            Version = Convert.ToByte(Rows[i++]);
-
-            while (i < Rows.Length - 1)
-            {
-                AddRoute(
-                    UInt16.Parse(Rows[i++].Or("0")), // AddressFamilyIdentifier
-                    UInt16.Parse(Rows[i++].Or("0")), // RouteTag
-                    IPNetwork.Parse(Rows[i++].Or("0.0.0.0"), Rows[i++].Or("0.0.0.0")), // Network
-                    IPAddress.Parse(Rows[i++].Or("0.0.0.0")), // NextHop
-                    UInt32.Parse(Rows[i++].Or("0")) // Metric
-                );
+                IP = value.NetworkAddress;
+                Mask = value.SubnetMask;
             }
         }
-        */
+
+        public Protocols.RIPRoute Export() => new Protocols.RIPRoute(IPNetwork, NextHop, Metric)
+        {
+            AddressFamilyIdentifier = AFI,
+            RouteTag = RouteTag
+        };
+
+        public void Import(Protocols.RIPRoute RIPRoute)
+        {
+            AFI = RIPRoute.AddressFamilyIdentifier;
+            RouteTag = RIPRoute.RouteTag;
+            IPNetwork = RIPRoute.IPNetwork;
+            NextHop = RIPRoute.NextHop;
+            Metric = RIPRoute.Metric;
+        }
     }
 }

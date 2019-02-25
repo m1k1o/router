@@ -1,13 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Net;
-using System.Net.NetworkInformation;
 using System.Reflection;
 using System.Text;
-using PacketDotNet;
 using Router.Helpers;
-using Router.Packets;
 
 namespace Router
 {
@@ -107,56 +103,8 @@ namespace Router
 
         private static void Main(string[] args)
         {
-            var Preload = Interfaces.Instance;
-
-            var Interface = Interfaces.Instance.GetInterfaceById("1");
-            Interface.SetIP(IPAddress.Parse("192.168.1.5"), IPSubnetMask.Parse("255.255.0.0"));
-            Interface.Start();
-
-            //var HTTP = new HTTP("http://localhost:5000/");
-            //HTTP.Listen();
-
-            var Packets = new List<IGeneratorPacket>()
-            {
-                new Packets.Ethernet
-                {
-                    SourceHwAddress = PhysicalAddress.Parse("FF-FF-FF-FF-FF-FF"),
-                    DestinationHwAddress = PhysicalAddress.Parse("FF-FF-FF-FF-FF-FF")
-                },
-                new Packets.IP
-                {
-                    SourceAddress = IPAddress.Parse("192.168.1.1"),
-                    DestinationAddress = IPAddress.Parse("192.168.1.1")
-                },
-                new Packets.ICMP
-                {
-                    TypeCode = ICMPv4TypeCodes.Unreachable_DestinationNetworkUnknown
-                },
-                new Packets.IP
-                {
-                    SourceAddress = IPAddress.Parse("192.168.1.1"),
-                    DestinationAddress = IPAddress.Parse("192.168.1.1")
-                },
-                new Packets.UDP
-                {
-                    SourcePort = 50,
-                    DestinationPort = 50
-                },
-            };
-
-            // Serialize
-            var json = Generator.ExportJSON(Packets);
-            Console.WriteLine(json);
-
-            // Deserialize
-            var Packets2 = Generator.ImportJSON(json);
-
-            // Serialize
-            var json2 = Generator.ExportJSON(Packets2);
-            Console.WriteLine(json2);
-
-            var Response = Generator.Export(Packets);
-            Interface.SendPacket(Response);
+            var HTTP = new HTTP("http://localhost:5000/");
+            HTTP.Listen();
         }
     }
 }

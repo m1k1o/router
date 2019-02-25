@@ -4,25 +4,35 @@ using System.Net;
 
 namespace Router.Packets
 {
-    sealed class IP : IGeneratorPacket, IGeneratorPayload
+    sealed class IP : GeneratorPayload
     {
-        public static EthernetPacketType EthernetPacketType = EthernetPacketType.IpV4;
-
         public IPAddress SourceAddress { get; set; }
         public IPAddress DestinationAddress { get; set; }
         public int TimeToLive { get; set; } = 128;
 
         public IPProtocolType IPProtocolType { get; set; }
 
-        [Newtonsoft.Json.JsonProperty(NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public byte[] Payload { get; set; }
-
-        public void PayloadData(byte[] Data) => Payload = Data;
-
         public IP() { }
 
-        public byte[] Export()
+        public override byte[] Export()
         {
+            // Auto Types
+            if (PayloadPacket != null)
+            {
+                if (PayloadPacket is ICMP)
+                {
+                    IPProtocolType = IPProtocolType.ICMP;
+                }
+                else if (PayloadPacket is UDP)
+                {
+                    IPProtocolType = IPProtocolType.UDP;
+                }
+                else if (PayloadPacket is TCP)
+                {
+                    IPProtocolType = IPProtocolType.TCP;
+                }
+            }
+
             var IPv4Packet = new IPv4Packet(SourceAddress, DestinationAddress)
             {
                 TimeToLive = TimeToLive,
@@ -39,7 +49,7 @@ namespace Router.Packets
             return IPv4Packet.Bytes;
         }
 
-        public void Import(byte[] Bytes)
+        public override void Import(byte[] Bytes)
         {
             var IPv4Packet = new IPv4Packet(new ByteArraySegment(Bytes));
 
@@ -47,7 +57,27 @@ namespace Router.Packets
             DestinationAddress = IPv4Packet.DestinationAddress;
             TimeToLive = IPv4Packet.TimeToLive;
             IPProtocolType = IPv4Packet.Protocol;
-            Payload = IPv4Packet.PayloadData;
+
+            // Auto Types
+            if (IPProtocolType == IPProtocolType.ICMP)
+            {
+                PayloadPacket = new ICMP();
+                PayloadPacket.Import(IPv4Packet.PayloadData);
+            }
+            else if (IPProtocolType == IPProtocolType.UDP)
+            {
+                PayloadPacket = new UDP();
+                PayloadPacket.Import(IPv4Packet.PayloadData);
+            }
+            else if (IPProtocolType == IPProtocolType.TCP)
+            {
+                PayloadPacket = new TCP();
+                PayloadPacket.Import(IPv4Packet.PayloadData);
+            }
+            else
+            {
+                Payload = IPv4Packet.PayloadData;
+            }
         }
     }
 }

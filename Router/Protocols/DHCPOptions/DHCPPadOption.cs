@@ -2,7 +2,12 @@
 {
     class DHCPPadOption : DHCPOption
     {
-        private int Size = 0;
+        public int Size { get; set; } = 0;
+
+        public DHCPPadOption() : base(DHCPOptionCode.Pad)
+        {
+            this.Size = Size;
+        }
 
         public DHCPPadOption(byte[] Bytes) : base(DHCPOptionCode.Pad)
         {
@@ -14,10 +19,6 @@
             this.Size = Size;
         }
 
-        public DHCPPadOption() : base(DHCPOptionCode.Pad) { }
-
         public override byte[] Bytes => new byte[Size];
-
-        public override void Parse(string String) { }
     }
 }

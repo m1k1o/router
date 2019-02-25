@@ -3,21 +3,14 @@ using PacketDotNet.Utils;
 
 namespace Router.Packets
 {
-    sealed class UDP : IGeneratorPacket, IGeneratorPayload
+    sealed class UDP : GeneratorPayload
     {
-        public static IPProtocolType IPProtocolType = IPProtocolType.UDP;
-
         public ushort SourcePort { get; set; }
         public ushort DestinationPort { get; set; }
 
-        [Newtonsoft.Json.JsonProperty(NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public byte[] Payload { get; set; }
-
-        public void PayloadData(byte[] Data) => Payload = Data;
-
         public UDP() { }
 
-        public byte[] Export()
+        public override byte[] Export()
         {
             var UdpPacket = new UdpPacket(SourcePort, DestinationPort);
 
@@ -29,13 +22,28 @@ namespace Router.Packets
             return UdpPacket.Bytes;
         }
 
-        public void Import(byte[] Bytes)
+        public override void Import(byte[] Bytes)
         {
             var UdpPacket = new UdpPacket(new ByteArraySegment(Bytes));
 
             SourcePort = UdpPacket.SourcePort;
             DestinationPort = UdpPacket.DestinationPort;
-            Payload = UdpPacket.PayloadData;
+
+            // Auto Types
+            if (DestinationPort == 520)
+            {
+                PayloadPacket = new RIP();
+                PayloadPacket.Import(UdpPacket.PayloadData);
+            }
+            else if (DestinationPort == 67 || DestinationPort == 68)
+            {
+                PayloadPacket = new DHCP();
+                PayloadPacket.Import(UdpPacket.PayloadData);
+            }
+            else
+            {
+                Payload = UdpPacket.PayloadData;
+            }
         }
     }
 }
