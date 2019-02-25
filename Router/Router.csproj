@@ -131,6 +131,7 @@
     <Compile Include="Protocols\ARP.cs" />
     <Compile Include="Protocols\DHCP.cs" />
     <Compile Include="Protocols\DHCPFlags.cs" />
+    <Compile Include="Protocols\DHCPHardwareType.cs" />
     <Compile Include="Protocols\DHCPOperatonCode.cs" />
     <Compile Include="Protocols\DHCPOptionCollection.cs" />
     <Compile Include="Protocols\DHCPOptions\DHCPRebindingTimeValueOption.cs" />
