@@ -4,6 +4,11 @@
     {
         public int Size { get; set; } = 0;
 
+        public DHCPPadOption() : base(DHCPOptionCode.Pad)
+        {
+            this.Size = Size;
+        }
+
         public DHCPPadOption(byte[] Bytes) : base(DHCPOptionCode.Pad)
         {
             Size = Bytes.Length;

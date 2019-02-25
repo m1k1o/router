@@ -6,6 +6,11 @@ namespace Router.Protocols.DHCPOptions
     {
         public IPAddress IPAddress { get; set; }
 
+        public DHCPIPAddressOption(DHCPOptionCode DHCPOptionCode) : base(DHCPOptionCode)
+        {
+            IPAddress = new IPAddress(0);
+        }
+
         public DHCPIPAddressOption(DHCPOptionCode DHCPOptionCode, byte[] Bytes) : base(DHCPOptionCode)
         {
             IPAddress = new IPAddress(Bytes);

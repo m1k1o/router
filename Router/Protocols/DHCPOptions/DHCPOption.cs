@@ -1,7 +1,7 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using System;
-//uter.Protocols.DHCPOptions.DHCPClientIdentifierOption
+
 namespace Router.Protocols.DHCPOptions
 {
     abstract class DHCPOption

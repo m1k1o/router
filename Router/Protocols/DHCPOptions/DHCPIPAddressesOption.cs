@@ -9,6 +9,11 @@ namespace Router.Protocols.DHCPOptions
     {
         public List<IPAddress> IPAddresses { get; set; }
 
+        public DHCPIPAddressesOption(DHCPOptionCode DHCPOptionCode) : base(DHCPOptionCode)
+        {
+            IPAddresses = new List<IPAddress>();
+        }
+
         public DHCPIPAddressesOption(DHCPOptionCode DHCPOptionCode, byte[] Bytes) : base(DHCPOptionCode)
         {
             IPAddresses = new List<IPAddress>();

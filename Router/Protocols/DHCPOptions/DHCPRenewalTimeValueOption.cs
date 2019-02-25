@@ -13,6 +13,8 @@ namespace Router.Protocols.DHCPOptions
             }
         }
 
+        public DHCPRenewalTimeValueOption() : base(DHCPOptionCode.RenewalTimeValue) { }
+
         public DHCPRenewalTimeValueOption(byte[] Bytes) : base(DHCPOptionCode.RenewalTimeValue, Bytes) { }
 
         public DHCPRenewalTimeValueOption(uint RenewalTime) : base(DHCPOptionCode.RenewalTimeValue, RenewalTime) { }

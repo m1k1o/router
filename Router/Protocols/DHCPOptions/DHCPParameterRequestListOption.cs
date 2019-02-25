@@ -10,6 +10,11 @@ namespace Router.Protocols.DHCPOptions
         [JsonProperty(ItemConverterType = typeof(StringEnumConverter))]
         public List<DHCPOptionCode> Codes { get; set; }
 
+        public DHCPParameterRequestListOption() : base(DHCPOptionCode.ParameterRequestList)
+        {
+            Codes = new List<DHCPOptionCode>();
+        }
+
         public DHCPParameterRequestListOption(byte[] Bytes) : base(DHCPOptionCode.ParameterRequestList)
         {
             Codes = new List<DHCPOptionCode>();
@@ -24,11 +29,6 @@ namespace Router.Protocols.DHCPOptions
         public DHCPParameterRequestListOption(List<DHCPOptionCode> Codes) : base(DHCPOptionCode.ParameterRequestList)
         {
             this.Codes = Codes;
-        }
-
-        public DHCPParameterRequestListOption() : base(DHCPOptionCode.ParameterRequestList)
-        {
-            Codes = new List<DHCPOptionCode>();
         }
 
         public override byte[] Bytes

@@ -13,6 +13,8 @@ namespace Router.Protocols.DHCPOptions
             }
         }
 
+        public DHCPIPAddressLeaseTimeOption() : base(DHCPOptionCode.IPAddressLeaseTime) { }
+
         public DHCPIPAddressLeaseTimeOption(byte[] Bytes) : base(DHCPOptionCode.IPAddressLeaseTime, Bytes) { }
 
         public DHCPIPAddressLeaseTimeOption(uint LeaseTime) : base(DHCPOptionCode.IPAddressLeaseTime, LeaseTime) { }

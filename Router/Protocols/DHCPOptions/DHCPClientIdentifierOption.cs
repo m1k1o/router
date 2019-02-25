@@ -24,8 +24,14 @@ namespace Router.Protocols.DHCPOptions
             }
         }
 
-        public byte IDType {get; set; }
+        public byte IDType { get; set; }
         public byte[] IDValue { get; set; }
+
+        public DHCPClientIdentifierOption() : base(DHCPOptionCode.ClientIdentifier)
+        {
+            IDType = 1;
+            IDValue = new byte[0];
+        }
 
         public DHCPClientIdentifierOption(byte[] Bytes) : base(DHCPOptionCode.ClientIdentifier)
         {

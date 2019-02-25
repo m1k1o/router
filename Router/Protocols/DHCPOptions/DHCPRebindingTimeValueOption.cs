@@ -13,6 +13,8 @@ namespace Router.Protocols.DHCPOptions
             }
         }
 
+        public DHCPRebindingTimeValueOption() : base(DHCPOptionCode.RebindingTimeValue) { }
+
         public DHCPRebindingTimeValueOption(byte[] Bytes) : base(DHCPOptionCode.RebindingTimeValue, Bytes) { }
 
         public DHCPRebindingTimeValueOption(uint RebindingTime) : base(DHCPOptionCode.RebindingTimeValue, RebindingTime) { }

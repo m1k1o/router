@@ -8,6 +8,11 @@ namespace Router.Protocols.DHCPOptions
         [JsonConverter(typeof(StringEnumConverter))] // Serialize enums by name rather than numerical value
         public DHCPMessageType MessageType { get; set; }
 
+        public DHCPMessageTypeOption() : base(DHCPOptionCode.MessageType)
+        {
+            MessageType = DHCPMessageType.None;
+        }
+
         public DHCPMessageTypeOption(byte[] Bytes) : base(DHCPOptionCode.MessageType)
         {
             MessageType = (DHCPMessageType)Bytes[0];
@@ -23,6 +28,9 @@ namespace Router.Protocols.DHCPOptions
 
     enum DHCPMessageType : byte
     {
+        // None
+        None = 0,
+
         // DHCP Discover message
         Discover = 1,
         
