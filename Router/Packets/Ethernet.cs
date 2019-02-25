@@ -4,7 +4,7 @@ using System.Net.NetworkInformation;
 
 namespace Router.Packets
 {
-    sealed class Ethernet : PacketsImportExport, PacketsPayloadData
+    sealed class Ethernet : IGeneratorPacket, IGeneratorPayload
     {
         public PhysicalAddress SourceHwAddress { get; set; }
         public PhysicalAddress DestinationHwAddress { get; set; }

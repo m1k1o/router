@@ -4,7 +4,7 @@ using System.Net.NetworkInformation;
 
 namespace Router.Packets
 {
-    class DHCP : PacketsImportExport
+    class DHCP : IGeneratorPacket
     {
         public DHCPOperatonCode OperationCode { get; set; }
         public uint TransactionID { get; set; }

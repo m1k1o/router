@@ -3,7 +3,7 @@ using PacketDotNet.Utils;
 
 namespace Router.Packets
 {
-    sealed class TCP : PacketsImportExport, PacketsPayloadData
+    sealed class TCP : IGeneratorPacket, IGeneratorPayload
     {
         public static IPProtocolType IPProtocolType = IPProtocolType.TCP;
 

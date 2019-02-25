@@ -4,7 +4,7 @@ using System.Net;
 
 namespace Router.Packets
 {
-    sealed class RIP : PacketsImportExport
+    sealed class RIP : IGeneratorPacket
     {
         public RIPCommandType CommandType { get; set; }
 

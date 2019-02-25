@@ -4,13 +4,13 @@ using System.Net;
 
 namespace Router.Packets
 {
-    sealed class IP : PacketsImportExport, PacketsPayloadData
+    sealed class IP : IGeneratorPacket, IGeneratorPayload
     {
         public static EthernetPacketType EthernetPacketType = EthernetPacketType.IpV4;
 
         public IPAddress SourceAddress { get; set; }
         public IPAddress DestinationAddress { get; set; }
-        public int TimeToLive { get; set; }
+        public int TimeToLive { get; set; } = 128;
 
         public IPProtocolType IPProtocolType { get; set; }
         public byte[] Payload { get; set; }
@@ -30,6 +30,7 @@ namespace Router.Packets
             if (Payload != null)
             {
                 IPv4Packet.PayloadData = Payload;
+                IPv4Packet.PayloadLength = (ushort)Payload.Length;
             }
 
             IPv4Packet.Checksum = IPv4Packet.CalculateIPChecksum();

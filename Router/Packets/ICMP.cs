@@ -3,7 +3,7 @@ using PacketDotNet.Utils;
 
 namespace Router.Packets
 {
-    sealed class ICMP : PacketsImportExport, PacketsPayloadData
+    sealed class ICMP : IGeneratorPacket, IGeneratorPayload
     {
         public static IPProtocolType IPProtocolType = IPProtocolType.ICMP;
 

@@ -5,7 +5,7 @@ using System.Net.NetworkInformation;
 
 namespace Router.Packets
 {
-    sealed class ARP : PacketsImportExport
+    sealed class ARP : IGeneratorPacket
     {
         public static EthernetPacketType EthernetPacketType = EthernetPacketType.Arp;
 
