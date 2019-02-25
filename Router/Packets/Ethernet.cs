@@ -10,6 +10,8 @@ namespace Router.Packets
         public PhysicalAddress DestinationHwAddress { get; set; }
 
         public EthernetPacketType EthernetPacketType { get; set; }
+
+        [Newtonsoft.Json.JsonProperty(NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public byte[] Payload { get; set; }
 
         public void PayloadData(byte[] Data) => Payload = Data;

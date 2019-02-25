@@ -13,6 +13,8 @@ namespace Router.Packets
         public int TimeToLive { get; set; } = 128;
 
         public IPProtocolType IPProtocolType { get; set; }
+
+        [Newtonsoft.Json.JsonProperty(NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public byte[] Payload { get; set; }
 
         public void PayloadData(byte[] Data) => Payload = Data;

@@ -10,6 +10,7 @@ namespace Router.Packets
         public ushort SourcePort { get; set; }
         public ushort DestinationPort { get; set; }
 
+        [Newtonsoft.Json.JsonProperty(NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public byte[] Payload { get; set; }
 
         public void PayloadData(byte[] Data) => Payload = Data;

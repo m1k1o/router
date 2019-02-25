@@ -9,13 +9,15 @@ namespace Router.Helpers
     {
         private static readonly JsonSerializerSettings Settings = new JsonSerializerSettings
         {
-            Converters = {
-                    new IPAddressConverter(),
-                    new PhysicalAddressConverter(),
-                    new IPNetworkConverter(),
-                    new IPSubnetMaskConverter(),
-                    new InterfaceConverter()
-                },
+            Converters =
+            {
+                new IPAddressConverter(),
+                new PhysicalAddressConverter(),
+                new IPNetworkConverter(),
+                new IPSubnetMaskConverter(),
+                new InterfaceConverter(),
+                new IGeneratorPacketConverter()
+            },
             Formatting = Formatting.Indented,
             ContractResolver = new DefaultContractResolver
             {

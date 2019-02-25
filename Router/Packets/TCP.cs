@@ -12,6 +12,7 @@ namespace Router.Packets
 
         public byte Flags { get; set; } = 0;
 
+        [Newtonsoft.Json.JsonProperty(NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public byte[] Payload { get; set; }
 
         public void PayloadData(byte[] Data) => Payload = Data;

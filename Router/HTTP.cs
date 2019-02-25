@@ -116,85 +116,47 @@ namespace Router
             //var HTTP = new HTTP("http://localhost:5000/");
             //HTTP.Listen();
 
-            var eth = new Packets.Ethernet
-            {
-                SourceHwAddress = PhysicalAddress.Parse("FF-FF-FF-FF-FF-FF"),
-                DestinationHwAddress = PhysicalAddress.Parse("FF-FF-FF-FF-FF-FF"),
-                EthernetPacketType = EthernetPacketType.IpV4
-            };
-            var ip = new Packets.IP
-            {
-                SourceAddress = IPAddress.Parse("192.168.1.1"),
-                DestinationAddress = IPAddress.Parse("192.168.1.1"),
-                IPProtocolType = IPProtocolType.UDP
-            };
-            var udp = new Packets.UDP
-            {
-                SourcePort = 50,
-                DestinationPort = 50
-            };
-
-            ip.PayloadData(udp.Export());
-            eth.PayloadData(ip.Export());
-            var Response = eth.Export();
-
-            /*
-            var Packets = new List<PacketsImportExport>()
+            var Packets = new List<IGeneratorPacket>()
             {
                 new Packets.Ethernet
                 {
                     SourceHwAddress = PhysicalAddress.Parse("FF-FF-FF-FF-FF-FF"),
-                    DestinationHwAddress = PhysicalAddress.Parse("FF-FF-FF-FF-FF-FF"),
-                    EthernetPacketType = EthernetPacketType.IpV4
+                    DestinationHwAddress = PhysicalAddress.Parse("FF-FF-FF-FF-FF-FF")
                 },
                 new Packets.IP
                 {
                     SourceAddress = IPAddress.Parse("192.168.1.1"),
-                    DestinationAddress = IPAddress.Parse("192.168.1.1"),
-                    IPProtocolType = IPProtocolType.UDP
+                    DestinationAddress = IPAddress.Parse("192.168.1.1")
+                },
+                new Packets.ICMP
+                {
+                    TypeCode = ICMPv4TypeCodes.Unreachable_DestinationNetworkUnknown
+                },
+                new Packets.IP
+                {
+                    SourceAddress = IPAddress.Parse("192.168.1.1"),
+                    DestinationAddress = IPAddress.Parse("192.168.1.1")
                 },
                 new Packets.UDP
                 {
                     SourcePort = 50,
                     DestinationPort = 50
                 },
-                new Packets.ARP
-                {
-                    Operation = ARPOperation.Request,
-                    SenderHardwareAddress = PhysicalAddress.Parse("00-00-00-00-00-00"),
-                    SenderProtocolAddress = IPAddress.Parse("0"),
-                    TargetHardwareAddress = PhysicalAddress.Parse("AA-BB-CC-DD-EE-FF"),
-                    TargetProtocolAddress = IPAddress.Parse("0")
-                }
             };
 
-            var Response = Generator.Parse(Packets);
-            */
+            // Serialize
+            var json = Generator.ExportJSON(Packets);
+            Console.WriteLine(json);
+
+            // Deserialize
+            var Packets2 = Generator.ImportJSON(json);
+
+            // Serialize
+            var json2 = Generator.ExportJSON(Packets2);
+            Console.WriteLine(json2);
+
+            var Response = Generator.Export(Packets);
             Interface.SendPacket(Response);
-
-            /*
-            var arp = new Packets.ARP
-            {
-                SourceHwAddress = PhysicalAddress.Parse("FF-FF-FF-FF-FF-FF"),
-                DestinationHwAddress = PhysicalAddress.Parse("FF-FF-FF-FF-FF-FF"),
-
-                Operation = ARPOperation.Request,
-                SenderHardwareAddress = PhysicalAddress.Parse("00-00-00-00-00-00"),
-                SenderProtocolAddress = IPAddress.Parse("0"),
-                TargetHardwareAddress = PhysicalAddress.Parse("AA-BB-CC-DD-EE-FF"),
-                TargetProtocolAddress = IPAddress.Parse("0")
-            };
-
-            var ByteArray = arp.Export();
-
-            var arp2 = new Packets.ARP();
-            arp2.ImportAll(ByteArray);
-
-
-            Console.WriteLine(arp.TargetHardwareAddress);
-
-            Console.ReadKey();
-            */
         }
     }
 }
