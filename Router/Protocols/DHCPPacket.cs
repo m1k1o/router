@@ -17,9 +17,9 @@ namespace Router.Protocols
         }
 
         // Hardware address type.
-        public PacketDotNet.LinkLayers HardwareType
+        public DHCPHardwareType HardwareType
         {
-            get => (PacketDotNet.LinkLayers)Slice(1, typeof(byte));
+            get => (DHCPHardwareType)Slice(1, typeof(byte));
             set => Inject(1, (byte)value);
         }
 
@@ -197,7 +197,7 @@ namespace Router.Protocols
         public DHCPPacket(DHCPOperatonCode OperationCode, uint TransactionID, DHCPOptionCollection Options) : base(240 + (Options == null ? 0 : Options.Bytes.Length))
         {
             this.OperationCode = OperationCode;
-            HardwareType = PacketDotNet.LinkLayers.Ethernet;
+            HardwareType = DHCPHardwareType.Ethernet;
             HardwareAddressLength = 6;
             this.TransactionID = TransactionID;
             IsDHCP = true;
