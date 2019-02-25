@@ -16,14 +16,8 @@ namespace Router.Packets
 
         public override byte[] Export()
         {
-            var IPv4Packet = new IPv4Packet(SourceAddress, DestinationAddress)
-            {
-                TimeToLive = TimeToLive,
-                Protocol = IPProtocolType
-            };
-
             // Auto Types
-            if (PayloadPacket != null && IPProtocolType == IPProtocolType.NONE)
+            if (PayloadPacket != null)
             {
                 if (PayloadPacket is ICMP)
                 {
@@ -38,6 +32,12 @@ namespace Router.Packets
                     IPProtocolType = IPProtocolType.TCP;
                 }
             }
+
+            var IPv4Packet = new IPv4Packet(SourceAddress, DestinationAddress)
+            {
+                TimeToLive = TimeToLive,
+                Protocol = IPProtocolType
+            };
 
             if (Payload != null)
             {

@@ -13,8 +13,6 @@ namespace Router.Packets
 
         public override byte[] Export()
         {
-            var EthernetPacket = new EthernetPacket(SourceHwAddress, DestinationHwAddress, EthernetPacketType);
-
             // Auto Types
             if (PayloadPacket != null && EthernetPacketType == EthernetPacketType.None)
             {
@@ -28,6 +26,7 @@ namespace Router.Packets
                 }
             }
 
+            var EthernetPacket = new EthernetPacket(SourceHwAddress, DestinationHwAddress, EthernetPacketType);
             if (Payload != null)
             {
                 EthernetPacket.PayloadData = Payload;
