@@ -172,11 +172,29 @@ namespace Router.Protocols
         // Optional parameters field.
         public DHCPOptionCollection Options
         {
-            get => new DHCPOptionCollection(Slice(240, Length - 240));
-            set => Inject(240, value.Bytes, value.Length);
+            get
+            {
+                // If no options
+                if(Length == 240)
+                {
+                    return null;
+                }
+                else
+                {
+                    return new DHCPOptionCollection(Slice(240, Length - 240));
+                }
+            }
+            set
+            {
+                // Only If options
+                if (value != null)
+                {
+                    Inject(240, value.Bytes, value.Length);
+                }
+            }
         }
 
-        public DHCPPacket(DHCPOperatonCode OperationCode, uint TransactionID, DHCPOptionCollection Options) : base(240 + Options.Length)
+        public DHCPPacket(DHCPOperatonCode OperationCode, uint TransactionID, DHCPOptionCollection Options) : base(240 + (Options == null ? 0 : Options.Length))
         {
             this.OperationCode = OperationCode;
             HardwareType = PacketDotNet.LinkLayers.Ethernet;

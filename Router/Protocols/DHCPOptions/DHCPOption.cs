@@ -6,8 +6,6 @@ namespace Router.Protocols.DHCPOptions
     {
         public DHCPOptionCode Type { get; private set; }
 
-        public virtual byte Length => (byte)Bytes.Length;
-
         public abstract byte[] Bytes { get; }
 
         public abstract void Parse(string String);

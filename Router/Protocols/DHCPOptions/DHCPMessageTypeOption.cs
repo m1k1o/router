@@ -18,8 +18,6 @@ namespace Router.Protocols.DHCPOptions
             this.MessageType = (byte)MessageType;
         }
 
-        public override byte Length => 1;
-
         public override byte[] Bytes => new byte[] { MessageType };
 
         public override void Parse(string String)
