@@ -2,18 +2,18 @@
 {
     class DHCPUnknownOption : DHCPOption
     {
-        private byte[] RawData;
+        public byte[] Value { get; set; }
 
         public DHCPUnknownOption(DHCPOptionCode DHCPOptionCode) : base(DHCPOptionCode)
         {
-            RawData = new byte[0];
+            Value = new byte[0];
         }
 
         public DHCPUnknownOption(DHCPOptionCode DHCPOptionCode, byte[] Bytes) : base(DHCPOptionCode)
         {
-            RawData = Bytes;
+            Value = Bytes;
         }
 
-        public override byte[] Bytes => RawData;
+        public override byte[] Bytes => Value;
     }
 }
