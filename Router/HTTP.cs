@@ -100,7 +100,7 @@ namespace Router
                 Request(context);
             }
         }
-
+        /*
         private static void Main(string[] args)
         {
             var Preload = Interfaces.Instance;
@@ -108,5 +108,6 @@ namespace Router
             var HTTP = new HTTP("http://localhost:5000/");
             HTTP.Listen();
         }
+        */
     }
 }

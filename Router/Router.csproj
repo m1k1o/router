@@ -183,6 +183,7 @@
     <Compile Include="InterfaceService.cs" />
     <Compile Include="Sniffing\SniffingList.cs" />
     <Compile Include="Sniffing\SniffingService.cs" />
+    <Compile Include="WebSocketHandler.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config">
