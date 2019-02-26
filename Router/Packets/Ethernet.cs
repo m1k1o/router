@@ -1,4 +1,6 @@
-﻿using PacketDotNet;
+﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
+using PacketDotNet;
 using PacketDotNet.Utils;
 using System.Net.NetworkInformation;
 
@@ -9,6 +11,7 @@ namespace Router.Packets
         public PhysicalAddress SourceHwAddress { get; set; }
         public PhysicalAddress DestinationHwAddress { get; set; }
 
+        [JsonConverter(typeof(StringEnumConverter))]
         public EthernetPacketType EthernetPacketType { get; set; }
 
         public override byte[] Export()

@@ -1,4 +1,7 @@
-﻿using Router.Protocols;
+﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
+using Router.Protocols;
+using Router.Protocols.DHCPOptions;
 using System.Net;
 using System.Net.NetworkInformation;
 
@@ -6,12 +9,15 @@ namespace Router.Packets
 {
     class DHCP : GeneratorPacket
     {
+        [JsonConverter(typeof(StringEnumConverter))]
         public DHCPOperatonCode OperationCode { get; set; }
         public uint TransactionID { get; set; }
         public IPAddress YourClientIPAddress { get; set; }
         public IPAddress NextServerIPAddress { get; set; }
         public PhysicalAddress ClientMACAddress { get; set; }
 
+        [JsonConverter(typeof(StringEnumConverter))]
+        public DHCPMessageType MessageType => Options.MessageType;
         public DHCPOptionCollection Options { get; set; } = new DHCPOptionCollection();
 
         public DHCP() { }
@@ -43,21 +49,5 @@ namespace Router.Packets
             ClientMACAddress = DHCPPacket.ClientMACAddress;
             Options = DHCPPacket.Options;
         }
-        
-        /*
-        public new void Parse(string[] Rows, ref int i)
-        {
-            // DHCP Options
-            Options = new DHCPOptionCollection();
-            while (i < Rows.Length - 1)
-            {
-                var Instance = DHCPOption.Factory(Convert.ToByte(Rows[i++]));
-                Instance.Parse(Rows[i++]);
-                Options.Add(Instance);
-            }
-
-            Options.Add(new DHCPEndOption());
-        }
-        */
     }
 }

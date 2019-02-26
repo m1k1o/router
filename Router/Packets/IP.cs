@@ -1,4 +1,6 @@
-﻿using PacketDotNet;
+﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
+using PacketDotNet;
 using PacketDotNet.Utils;
 using System.Net;
 
@@ -10,6 +12,7 @@ namespace Router.Packets
         public IPAddress DestinationAddress { get; set; }
         public int TimeToLive { get; set; } = 128;
 
+        [JsonConverter(typeof(StringEnumConverter))]
         public IPProtocolType IPProtocolType { get; set; }
 
         public IP() { }

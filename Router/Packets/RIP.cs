@@ -1,4 +1,6 @@
-﻿using Router.Helpers;
+﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
+using Router.Helpers;
 using Router.Protocols;
 using System.Collections.Generic;
 using System.Net;
@@ -7,6 +9,8 @@ namespace Router.Packets
 {
     sealed class RIP : GeneratorPacket
     {
+
+        [JsonConverter(typeof(StringEnumConverter))]
         public RIPCommandType CommandType { get; set; }
 
         public byte Version { get; set; }
