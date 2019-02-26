@@ -89,6 +89,7 @@
     <Compile Include="Controllers\Routing\Lookup.cs" />
     <Compile Include="Controllers\Routing\RemoveStatic.cs" />
     <Compile Include="Controllers\Routing\Table.cs" />
+    <Compile Include="Controllers\Sniffing\Inject.cs" />
     <Compile Include="Controllers\Sniffing\Pop.cs" />
     <Compile Include="Controllers\Sniffing\Initialize.cs" />
     <Compile Include="Controllers\Sniffing\Interface.cs" />
