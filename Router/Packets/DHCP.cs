@@ -17,7 +17,7 @@ namespace Router.Packets
         public PhysicalAddress ClientMACAddress { get; set; }
 
         [JsonConverter(typeof(StringEnumConverter))]
-        public DHCPMessageType MessageType => Options.MessageType;
+        public DHCPMessageType MessageType => Options == null ? 0 : Options.MessageType;
         public DHCPOptionCollection Options { get; set; } = new DHCPOptionCollection();
 
         public DHCP() { }
