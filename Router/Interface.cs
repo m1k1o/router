@@ -37,7 +37,7 @@ namespace Router
 
                 if (RoutingTable.Instance.Find(IPNetwork, ADistance.DirectlyConnected) != null)
                 {
-                    throw new Exception("There is already running interface with newwork " + IPNetwork);
+                    throw new Exception("There is already C" + IPNetwork + " in routing table.");
                 }
             };
 

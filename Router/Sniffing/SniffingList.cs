@@ -1,4 +1,4 @@
-﻿using Router.Helpers;
+﻿using Router.Packets;
 using System.Collections.Generic;
 
 namespace Router.Sniffing
@@ -8,25 +8,25 @@ namespace Router.Sniffing
         public static int MaxEntries { get; set; } = 50;
         private static int TotalEntries = 0;
 
-        private static List<JSON> Entries = new List<JSON>();
+        private static List<Ethernet> Entries = new List<Ethernet>();
 
         public static Interface Interface { get; set; }
 
-        public static JSONArray Pop()
+        public static List<Ethernet> Pop()
         {
-            List<JSON> OProcessingEntries;
+            List<Ethernet> OProcessingEntries;
 
             lock (Entries)
             {
                 OProcessingEntries = Entries;
-                Entries = new List<JSON>();
+                Entries = new List<Ethernet>();
                 TotalEntries = 0;
             }
 
-            return new JSONArray(OProcessingEntries);
+            return OProcessingEntries;
         }
 
-        public static void Push(JSON Input)
+        public static void Push(Ethernet Input)
         {
             if (TotalEntries > MaxEntries || Input == null)
             {

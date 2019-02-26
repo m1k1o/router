@@ -23,11 +23,13 @@ namespace Router.DHCP
                 return;
             }
 
-            // Check if is for me
             IPAddress DHCPServerID = DestinationIP;
-            if (Options.ContainsKey(DHCPOptionCode.ServerIdentifier))
+
+            // Check if is for me
+            var ServerIdentifier = (DHCPServerIdentifierOption)Options.GetOption(DHCPOptionCode.ServerIdentifier);
+            if (ServerIdentifier!= null) 
             {
-                DHCPServerID = ((DHCPServerIdentifierOption)Options[DHCPOptionCode.ServerIdentifier]).IPAddress;
+                DHCPServerID = ServerIdentifier.IPAddress;
             }
 
             if (!Equals(DHCPServerID, Interface.IPAddress))

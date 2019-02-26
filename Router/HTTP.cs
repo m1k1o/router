@@ -57,33 +57,38 @@ namespace Router
                        "</html>";
             }
 
-            String ClassName = Args[1];
-            String MethodName = Args[2];
+            String NamespaceName = Args[1];
+            String ClassName = Args[2];
 
             try
             {
-                Type Type = Type.GetType("Router.Controllers." + ClassName);
+                Type Type = Type.GetType("Router.Controllers." + NamespaceName + "." + ClassName);
                 if (Type == null)
                 {
-                    throw new Exception("Class '" + ClassName + "' not found.");
+                    throw new Exception("Endpoint'" + NamespaceName + "." + ClassName + "' not found.");
                 }
 
-                MethodInfo MethodInfo = Type.GetMethod(MethodName);
-                if (MethodInfo == null)
+                ConstructorInfo Constructor = Type.GetConstructor(Type.EmptyTypes);
+                var Controller = (Controllers.Controller)Constructor.Invoke(Type.EmptyTypes);
+
+                // Populate
+                if (!string.IsNullOrEmpty(Data))
                 {
-                    throw new Exception("Method '" + MethodName + "' not found.");
+                    JSON.PopulateObject(Data, Controller);
                 }
 
-                object response = MethodInfo.Invoke(null, new object[] { Data });
-                return new JSON(response).ToString();
-            }
-            catch (TargetInvocationException e)
-            {
-                return new JSONError(e.InnerException.Message).ToString();
+                // Execute
+                if (Controller is Controllers.Executable)
+                {
+                    ((Controllers.Executable)Controller).Execute();
+                }
+
+                // Export
+                return JSON.SerializeObject(Controller.Export());
             }
             catch (Exception e)
             {
-                return new JSONError(e.Message).ToString();
+                return JSON.SerializeObject(JSON.Error(e.Message));
             }
         }
 

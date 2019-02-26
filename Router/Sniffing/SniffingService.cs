@@ -1,4 +1,6 @@
-﻿namespace Router.Sniffing
+﻿using Router.Packets;
+
+namespace Router.Sniffing
 {
     class SniffingService : InterfaceService
     {
@@ -22,9 +24,9 @@
         {
             if (Equals(Handler.Interface, SniffingList.Interface))
             {
-                var SniffingJSON = new SniffingJSON(Handler);
-                SniffingJSON.Extract();
-                SniffingList.Push(SniffingJSON.Result);
+                var Ethernet = new Ethernet();
+                Ethernet.Import(Handler.EthernetPacket.Bytes);
+                SniffingList.Push(Ethernet);
             }
         }
     }

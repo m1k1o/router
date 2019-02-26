@@ -4,7 +4,14 @@ namespace Router.Protocols.DHCPOptions
 {
     class DHCPRenewalTimeValueOption : DHCPUIntOption
     {
-        public TimeSpan TimeSpan => TimeSpan.FromSeconds(Value);
+        public TimeSpan TimeSpan
+        {
+            get => TimeSpan.FromSeconds(Value);
+            set
+            {
+                Value = (uint)value.TotalSeconds;
+            }
+        }
 
         public DHCPRenewalTimeValueOption() : base(DHCPOptionCode.RenewalTimeValue) { }
 

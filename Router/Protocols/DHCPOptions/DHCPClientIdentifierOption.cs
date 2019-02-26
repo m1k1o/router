@@ -5,12 +5,33 @@ namespace Router.Protocols.DHCPOptions
 {
     class DHCPClientIdentifierOption : DHCPOption
     {
-        public PhysicalAddress PhysicalAddress => new PhysicalAddress(IDValue);
+        public PhysicalAddress PhysicalAddress
+        {
+            get
+            {
+                try
+                {
+                    return new PhysicalAddress(IDValue);
+                } catch
+                {
+                    return null;
+                }
+            }
+            set
+            {
+                IDType = 1;
+                IDValue = value.GetAddressBytes();
+            }
+        }
 
-        private byte IDType;
-        private byte[] IDValue;
+        public byte IDType { get; set; }
+        public byte[] IDValue { get; set; }
 
-        public DHCPClientIdentifierOption() : base(DHCPOptionCode.ClientIdentifier) { }
+        public DHCPClientIdentifierOption() : base(DHCPOptionCode.ClientIdentifier)
+        {
+            IDType = 1;
+            IDValue = new byte[0];
+        }
 
         public DHCPClientIdentifierOption(byte[] Bytes) : base(DHCPOptionCode.ClientIdentifier)
         {
@@ -31,8 +52,7 @@ namespace Router.Protocols.DHCPOptions
 
         public DHCPClientIdentifierOption(PhysicalAddress PhysicalAddress) : base(DHCPOptionCode.ClientIdentifier)
         {
-            IDType = 1;
-            IDValue = PhysicalAddress.GetAddressBytes();
+            this.PhysicalAddress = PhysicalAddress;
         }
 
         public override byte[] Bytes
@@ -48,12 +68,6 @@ namespace Router.Protocols.DHCPOptions
                 }
                 return RawData;
             }
-        }
-
-        public override void Parse(string String)
-        {
-            IDType = 1;
-            IDValue = Utilities.ParseMAC(String).GetAddressBytes();
         }
     }
 }

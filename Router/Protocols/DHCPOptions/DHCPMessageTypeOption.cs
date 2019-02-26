@@ -1,35 +1,36 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 
 namespace Router.Protocols.DHCPOptions
 {
     class DHCPMessageTypeOption : DHCPOption
     {
-        public byte MessageType { get; private set; }
+        [JsonConverter(typeof(StringEnumConverter))] // Serialize enums by name rather than numerical value
+        public DHCPMessageType MessageType { get; set; }
 
-        public DHCPMessageTypeOption() : base(DHCPOptionCode.MessageType) { }
+        public DHCPMessageTypeOption() : base(DHCPOptionCode.MessageType)
+        {
+            MessageType = DHCPMessageType.None;
+        }
 
         public DHCPMessageTypeOption(byte[] Bytes) : base(DHCPOptionCode.MessageType)
         {
-            MessageType = Bytes[0];
+            MessageType = (DHCPMessageType)Bytes[0];
         }
 
         public DHCPMessageTypeOption(DHCPMessageType MessageType) : base(DHCPOptionCode.MessageType)
         {
-            this.MessageType = (byte)MessageType;
+            this.MessageType = MessageType;
         }
 
-        public override byte Length => 1;
-
-        public override byte[] Bytes => new byte[] { MessageType };
-
-        public override void Parse(string String)
-        {
-            MessageType = Convert.ToByte(String);
-        }
+        public override byte[] Bytes => new byte[] { (byte)MessageType };
     }
 
     enum DHCPMessageType : byte
     {
+        // None
+        None = 0,
+
         // DHCP Discover message
         Discover = 1,
         
