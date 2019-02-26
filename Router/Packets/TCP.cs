@@ -10,7 +10,7 @@ namespace Router.Packets
         public ushort SourcePort { get; set; }
         public ushort DestinationPort { get; set; }
 
-        public byte Flags { get; set; } = 0;
+        public ushort Flags { get; set; } = 0;
 
         public TCP() { }
 
