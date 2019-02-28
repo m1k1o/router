@@ -4,6 +4,8 @@
     {
         public byte[] Value { get; set; }
 
+        public DHCPUnknownOption() : base(0) { }
+
         public DHCPUnknownOption(DHCPOptionCode DHCPOptionCode) : base(DHCPOptionCode)
         {
             Value = new byte[0];
