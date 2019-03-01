@@ -5,8 +5,6 @@ namespace Router.Packets
 {
     sealed class TCP : GeneratorPayload
     {
-        public static IPProtocolType IPProtocolType = IPProtocolType.TCP;
-
         public ushort SourcePort { get; set; }
         public ushort DestinationPort { get; set; }
 

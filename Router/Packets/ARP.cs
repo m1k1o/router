@@ -1,6 +1,4 @@
-﻿using Newtonsoft.Json;
-using Newtonsoft.Json.Converters;
-using PacketDotNet;
+﻿using PacketDotNet;
 using PacketDotNet.Utils;
 using System.Net;
 using System.Net.NetworkInformation;
@@ -9,9 +7,6 @@ namespace Router.Packets
 {
     sealed class ARP : GeneratorPacket
     {
-        public static EthernetPacketType EthernetPacketType = EthernetPacketType.Arp;
-
-        [JsonConverter(typeof(StringEnumConverter))]
         public ARPOperation Operation { get; set; }
         public PhysicalAddress SenderHardwareAddress { get; set; }
         public IPAddress SenderProtocolAddress { get; set; }
