@@ -144,7 +144,7 @@
     <Compile Include="Protocols\DHCPOptions\DHCPMessageTypeOption.cs" />
     <Compile Include="Protocols\DHCPOptions\DHCPClientIdentifierOption.cs" />
     <Compile Include="Protocols\DHCPOptions\DHCPUnknownOption.cs" />
-    <Compile Include="Protocols\DHCPOptions\DHCPUIntOption.cs" />
+    <Compile Include="Protocols\DHCPOptions\DHCPTimeValueOption.cs" />
     <Compile Include="Protocols\DHCPOptions\DHCPOption.cs" />
     <Compile Include="Protocols\DHCPOptions\DHCPOptionCode.cs" />
     <Compile Include="Protocols\DHCPOptions\DHCPEndOption.cs" />

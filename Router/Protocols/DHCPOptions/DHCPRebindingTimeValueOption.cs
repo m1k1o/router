@@ -2,17 +2,8 @@
 
 namespace Router.Protocols.DHCPOptions
 {
-    class DHCPRebindingTimeValueOption : DHCPUIntOption
+    class DHCPRebindingTimeValueOption : DHCPTimeValueOption
     {
-        public TimeSpan TimeSpan
-        {
-            get => TimeSpan.FromSeconds(Value);
-            set
-            {
-                Value = (uint)value.TotalSeconds;
-            }
-        }
-
         public DHCPRebindingTimeValueOption() : base(DHCPOptionCode.RebindingTimeValue) { }
 
         public DHCPRebindingTimeValueOption(byte[] Bytes) : base(DHCPOptionCode.RebindingTimeValue, Bytes) { }
