@@ -59,7 +59,8 @@ namespace Router.Packets
             else
             {
                 // TODO: is PayloadData valid?
-                Payload = EthernetPacket.PayloadData;
+                PayloadPacket = new Payload();
+                PayloadPacket.Import(EthernetPacket.PayloadData);
             }
         }
     }

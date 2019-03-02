@@ -79,7 +79,8 @@ namespace Router.Packets
             else
             {
                 // TODO: is PayloadData valid?
-                Payload = IPv4Packet.PayloadData;
+                PayloadPacket = new Payload();
+                PayloadPacket.Import(IPv4Packet.PayloadData);
             }
         }
     }

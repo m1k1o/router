@@ -52,7 +52,8 @@ namespace Router.Packets
                     PayloadPacket.Import(ICMPv4Packet.Data);
                     break;
                 default:
-                    Payload = ICMPv4Packet.Data;
+                    PayloadPacket = new Payload();
+                    PayloadPacket.Import(ICMPv4Packet.Data);
                     break;
             }
         }

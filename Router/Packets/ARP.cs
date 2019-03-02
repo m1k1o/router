@@ -5,6 +5,7 @@ using System.Net.NetworkInformation;
 
 namespace Router.Packets
 {
+    // TODO: Payload
     sealed class ARP : GeneratorPacket
     {
         public ARPOperation Operation { get; set; }

@@ -5,6 +5,7 @@ using System.Net;
 
 namespace Router.Packets
 {
+    // TODO: Payload
     sealed class RIP : GeneratorPacket
     {
         public RIPCommandType CommandType { get; set; }

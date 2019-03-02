@@ -18,8 +18,11 @@ namespace Router.Packets
         // Layer 4
         TCP, UDP,
 
-        // Layer 5
-        DHCP, RIP
+        // Layer 7
+        DHCP, RIP,
+
+        // Data
+        Payload
     }
 
     abstract class GeneratorPacket
@@ -42,14 +45,13 @@ namespace Router.Packets
 
                 { typeof(DHCP), GeneratorPackets.DHCP },
                 { typeof(RIP), GeneratorPackets.RIP },
+
+                { typeof(Payload), GeneratorPackets.Payload },
             };
             GeneratorPacketsToType = TypeToGeneratorPackets.ToDictionary(pair => pair.Value, pair => pair.Key);
         }
 
-        public static Type GetType(GeneratorPackets GeneratorPacket)
-        {
-            return GeneratorPacketsToType[GeneratorPacket];
-        }
+        public static Type GetType(GeneratorPackets GeneratorPacket) => GeneratorPacketsToType[GeneratorPacket];
 
         [JsonConverter(typeof(StringEnumConverter))] // Serialize enums by name rather than numerical value
         public GeneratorPackets type => TypeToGeneratorPackets[GetType()];
@@ -58,14 +60,8 @@ namespace Router.Packets
 
         public abstract void Import(byte[] Bytes);
         
-        public string ExportJSON()
-        {
-            return JSON.SerializeObject(this);
-        }
+        public string ExportJSON() => JSON.SerializeObject(this);
 
-        public void ImportJSON(string json)
-        {
-            JSON.PopulateObject(json, this);
-        }
+        public void ImportJSON(string json) => JSON.PopulateObject(json, this);
     }
 }

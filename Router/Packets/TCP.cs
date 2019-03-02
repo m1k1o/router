@@ -36,7 +36,9 @@ namespace Router.Packets
             SourcePort = TcpPacket.SourcePort;
             DestinationPort = TcpPacket.DestinationPort;
             Flags = TcpPacket.AllFlags;
-            Payload = TcpPacket.PayloadData;
+
+            PayloadPacket = new Payload();
+            PayloadPacket.Import(TcpPacket.PayloadData);
         }
     }
 }

@@ -14,24 +14,22 @@ namespace Router.Packets
                     return PayloadPacket.Export();
                 }
 
-                return PayloadData;
+                return null;
             }
             set
             {
-                PayloadData = value;
-                PayloadPacket = null;
+                PayloadPacket = new Payload();
+                PayloadPacket.Import(value);
             }
         }
-
-        [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
-        public byte[] PayloadData { get; set; }
 
         [JsonProperty(NullValueHandling = NullValueHandling.Ignore, ReferenceLoopHandling = ReferenceLoopHandling.Ignore)]
         public GeneratorPacket PayloadPacket { get; set; }
 
         public GeneratorPayload(byte[] Bytes)
         {
-            PayloadData = Bytes;
+            PayloadPacket = new Payload();
+            PayloadPacket.Import(Bytes);
         }
 
         public GeneratorPayload(GeneratorPacket Packet)

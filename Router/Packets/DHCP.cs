@@ -7,7 +7,8 @@ using System.Net.NetworkInformation;
 
 namespace Router.Packets
 {
-    class DHCP : GeneratorPacket
+    // TODO: Payload
+    sealed class DHCP : GeneratorPacket
     {
         [JsonConverter(typeof(StringEnumConverter))]
         public DHCPOperatonCode OperationCode { get; set; }

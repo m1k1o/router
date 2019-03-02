@@ -108,6 +108,7 @@
     <Compile Include="Packets\IP.cs" />
     <Compile Include="Packets\RIP.cs" />
     <Compile Include="Packets\TCP.cs" />
+    <Compile Include="Packets\Payload.cs" />
     <Compile Include="Packets\UDP.cs" />
     <Compile Include="Handler.cs" />
     <Compile Include="Helpers\Device.cs" />

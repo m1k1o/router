@@ -44,7 +44,8 @@ namespace Router.Packets
             }
             else
             {
-                Payload = UdpPacket.PayloadData;
+                PayloadPacket = new Payload();
+                PayloadPacket.Import(UdpPacket.PayloadData);
             }
         }
     }
