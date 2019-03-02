@@ -6,15 +6,15 @@ namespace Router.Packets
 {
     sealed class Ethernet : GeneratorPayload
     {
-        public PhysicalAddress SourceHwAddress { get; set; }
-        public PhysicalAddress DestinationHwAddress { get; set; }
+        public PhysicalAddress SourceHwAddress { get; set; } = PhysicalAddress.Parse("00-00-00-00-00-00");
+        public PhysicalAddress DestinationHwAddress { get; set; } = PhysicalAddress.Parse("00-00-00-00-00-00");
 
-        public EthernetPacketType EthernetPacketType { get; set; }
+        public EthernetPacketType EthernetPacketType { get; set; } = 0;
 
         public override byte[] Export()
         {
             // Auto Types
-            if (PayloadPacket != null && EthernetPacketType == EthernetPacketType.None)
+            if (PayloadPacket != null && EthernetPacketType == 0)
             {
                 if (PayloadPacket is IP)
                 {

@@ -5,7 +5,7 @@ namespace Router.Packets
 {
     sealed class ICMP : GeneratorPayload
     {
-        public ICMPv4TypeCodes TypeCode { get; set; }
+        public ICMPv4TypeCodes TypeCode { get; set; } = 0;
 
         public ushort ID { get; set; } = 0;
         public ushort Sequence { get; set; } = 0;

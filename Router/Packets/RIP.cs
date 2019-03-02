@@ -8,13 +8,11 @@ namespace Router.Packets
     // TODO: Payload
     sealed class RIP : GeneratorPacket
     {
-        public RIPCommandType CommandType { get; set; }
-
-        public byte Version { get; set; }
+        public RIPCommandType CommandType { get; set; } = 0;
+        public byte Version { get; set; } = 0;
+        public List<RIPRoute> Routes { get; set; } = new List<RIPRoute>();
 
         public RIP() { }
-
-        public List<RIPRoute> Routes { get; set; } = new List<RIPRoute>();
 
         public void AddRoute(IPNetwork IPNetwork, IPAddress NextHop, uint Metric)
         {

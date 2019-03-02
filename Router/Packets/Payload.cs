@@ -4,7 +4,7 @@
     {
         public string String
         {
-            get
+            /*get
             {
                 try
                 {
@@ -14,7 +14,7 @@
                 {
                     return null;
                 }
-            }
+            }*/
             set
             {
                 try

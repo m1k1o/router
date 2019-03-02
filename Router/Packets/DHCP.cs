@@ -1,7 +1,4 @@
-﻿using Newtonsoft.Json;
-using Newtonsoft.Json.Converters;
-using Router.Protocols;
-using Router.Protocols.DHCPOptions;
+﻿using Router.Protocols;
 using System.Net;
 using System.Net.NetworkInformation;
 
@@ -10,15 +7,13 @@ namespace Router.Packets
     // TODO: Payload
     sealed class DHCP : GeneratorPacket
     {
-        [JsonConverter(typeof(StringEnumConverter))]
-        public DHCPOperatonCode OperationCode { get; set; }
-        public uint TransactionID { get; set; }
-        public IPAddress YourClientIPAddress { get; set; }
-        public IPAddress NextServerIPAddress { get; set; }
-        public PhysicalAddress ClientMACAddress { get; set; }
+        public DHCPOperatonCode OperationCode { get; set; } = 0;
+        public uint TransactionID { get; set; } = 0;
+        public IPAddress YourClientIPAddress { get; set; } = IPAddress.Parse("0.0.0.0");
+        public IPAddress NextServerIPAddress { get; set; } = IPAddress.Parse("0.0.0.0");
+        public PhysicalAddress ClientMACAddress { get; set; } = PhysicalAddress.Parse("00-00-00-00-00-00");
 
-        [JsonConverter(typeof(StringEnumConverter))]
-        public DHCPMessageType MessageType => Options == null ? 0 : Options.MessageType;
+        public string MessageType => Options == null ? "BOOTP" : "DHCP " + Options.MessageType.ToString();
         public DHCPOptionCollection Options { get; set; } = new DHCPOptionCollection();
 
         public DHCP() { }
