@@ -100,6 +100,9 @@ namespace Router
         private static void Main(string[] args)
         {
             var Preload = Interfaces.Instance;
+
+            WebSockets.Start();
+
             Start("http://localhost:7000/");
         }
     }
