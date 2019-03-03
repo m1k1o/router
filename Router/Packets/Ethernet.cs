@@ -1,6 +1,4 @@
-﻿using Newtonsoft.Json;
-using Newtonsoft.Json.Converters;
-using PacketDotNet;
+﻿using PacketDotNet;
 using PacketDotNet.Utils;
 using System.Net.NetworkInformation;
 
@@ -8,16 +6,15 @@ namespace Router.Packets
 {
     sealed class Ethernet : GeneratorPayload
     {
-        public PhysicalAddress SourceHwAddress { get; set; }
-        public PhysicalAddress DestinationHwAddress { get; set; }
+        public PhysicalAddress SourceHwAddress { get; set; } = PhysicalAddress.Parse("00-00-00-00-00-00");
+        public PhysicalAddress DestinationHwAddress { get; set; } = PhysicalAddress.Parse("00-00-00-00-00-00");
 
-        [JsonConverter(typeof(StringEnumConverter))]
-        public EthernetPacketType EthernetPacketType { get; set; }
+        public EthernetPacketType EthernetPacketType { get; set; } = 0;
 
         public override byte[] Export()
         {
             // Auto Types
-            if (PayloadPacket != null && EthernetPacketType == EthernetPacketType.None)
+            if (PayloadPacket != null && EthernetPacketType == 0)
             {
                 if (PayloadPacket is IP)
                 {
@@ -62,7 +59,8 @@ namespace Router.Packets
             else
             {
                 // TODO: is PayloadData valid?
-                Payload = EthernetPacket.PayloadData;
+                PayloadPacket = new Payload();
+                PayloadPacket.Import(EthernetPacket.PayloadData);
             }
         }
     }

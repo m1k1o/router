@@ -1,13 +1,10 @@
-﻿using Newtonsoft.Json;
-using Newtonsoft.Json.Converters;
-using System;
+﻿using System;
 using System.Collections.Generic;
 
 namespace Router.Protocols.DHCPOptions
 {
     class DHCPParameterRequestListOption : DHCPOption
     {
-        [JsonProperty(ItemConverterType = typeof(StringEnumConverter))]
         public List<DHCPOptionCode> Codes { get; set; }
 
         public DHCPParameterRequestListOption() : base(DHCPOptionCode.ParameterRequestList)

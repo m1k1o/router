@@ -2,17 +2,8 @@
 
 namespace Router.Protocols.DHCPOptions
 {
-    class DHCPIPAddressLeaseTimeOption : DHCPUIntOption
+    class DHCPIPAddressLeaseTimeOption : DHCPTimeValueOption
     {
-        public TimeSpan TimeSpan
-        {
-            get => TimeSpan.FromSeconds(Value);
-            set
-            {
-                Value = (uint)value.TotalSeconds;
-            }
-        }
-
         public DHCPIPAddressLeaseTimeOption() : base(DHCPOptionCode.IPAddressLeaseTime) { }
 
         public DHCPIPAddressLeaseTimeOption(byte[] Bytes) : base(DHCPOptionCode.IPAddressLeaseTime, Bytes) { }

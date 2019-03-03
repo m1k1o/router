@@ -113,6 +113,7 @@
     <Compile Include="Packets\IP.cs" />
     <Compile Include="Packets\RIP.cs" />
     <Compile Include="Packets\TCP.cs" />
+    <Compile Include="Packets\Payload.cs" />
     <Compile Include="Packets\UDP.cs" />
     <Compile Include="Handler.cs" />
     <Compile Include="Helpers\Device.cs" />
@@ -149,7 +150,7 @@
     <Compile Include="Protocols\DHCPOptions\DHCPMessageTypeOption.cs" />
     <Compile Include="Protocols\DHCPOptions\DHCPClientIdentifierOption.cs" />
     <Compile Include="Protocols\DHCPOptions\DHCPUnknownOption.cs" />
-    <Compile Include="Protocols\DHCPOptions\DHCPUIntOption.cs" />
+    <Compile Include="Protocols\DHCPOptions\DHCPTimeValueOption.cs" />
     <Compile Include="Protocols\DHCPOptions\DHCPOption.cs" />
     <Compile Include="Protocols\DHCPOptions\DHCPOptionCode.cs" />
     <Compile Include="Protocols\DHCPOptions\DHCPEndOption.cs" />

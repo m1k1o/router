@@ -5,10 +5,8 @@ namespace Router.Packets
 {
     sealed class TCP : GeneratorPayload
     {
-        public static IPProtocolType IPProtocolType = IPProtocolType.TCP;
-
-        public ushort SourcePort { get; set; }
-        public ushort DestinationPort { get; set; }
+        public ushort SourcePort { get; set; } = 0;
+        public ushort DestinationPort { get; set; } = 0;
 
         public ushort Flags { get; set; } = 0;
 
@@ -38,7 +36,9 @@ namespace Router.Packets
             SourcePort = TcpPacket.SourcePort;
             DestinationPort = TcpPacket.DestinationPort;
             Flags = TcpPacket.AllFlags;
-            Payload = TcpPacket.PayloadData;
+
+            PayloadPacket = new Payload();
+            PayloadPacket.Import(TcpPacket.PayloadData);
         }
     }
 }

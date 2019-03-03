@@ -1,5 +1,4 @@
 ﻿using Newtonsoft.Json;
-using Newtonsoft.Json.Converters;
 using System;
 
 namespace Router.Protocols.DHCPOptions
@@ -8,8 +7,8 @@ namespace Router.Protocols.DHCPOptions
     {
         public static Type GetType(DHCPOptionCode OptionType) => Factory((byte)OptionType);
 
-        [JsonConverter(typeof(StringEnumConverter))] // Serialize enums by name rather than numerical value
-        public DHCPOptionCode Type { get; private set; }
+        public DHCPOptionCode Type { get; set; }
+        // TODO: Integrity issue: set should be private, but UnknownOption must be supported as well
 
         [JsonIgnore]
         public abstract byte[] Bytes { get; }
@@ -21,6 +20,7 @@ namespace Router.Protocols.DHCPOptions
 
         public static DHCPOption Factory(byte OptionType, byte[] OptionValue = null)
         {
+            // TODO: Refactor
             var OptionName = ((DHCPOptionCode)OptionType).ToString();
             var OptionFound = OptionName != OptionType.ToString();
             if (!OptionFound)
@@ -39,11 +39,12 @@ namespace Router.Protocols.DHCPOptions
 
         public static Type Factory(byte OptionType)
         {
+            // TODO: Refactor
             var OptionName = ((DHCPOptionCode)OptionType).ToString();
             var OptionFound = OptionName != OptionType.ToString();
             if (!OptionFound)
             {
-                throw new Exception("Unknown Option '" + OptionName + "'");
+                return typeof(DHCPUnknownOption);
             }
 
             Type Type = Type.GetType("Router.Protocols.DHCPOptions.DHCP" + OptionName + "Option");

@@ -1,11 +1,7 @@
-﻿using Newtonsoft.Json;
-using Newtonsoft.Json.Converters;
-
-namespace Router.Protocols.DHCPOptions
+﻿namespace Router.Protocols.DHCPOptions
 {
     class DHCPMessageTypeOption : DHCPOption
     {
-        [JsonConverter(typeof(StringEnumConverter))] // Serialize enums by name rather than numerical value
         public DHCPMessageType MessageType { get; set; }
 
         public DHCPMessageTypeOption() : base(DHCPOptionCode.MessageType)

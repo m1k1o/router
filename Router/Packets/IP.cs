@@ -1,6 +1,4 @@
-﻿using Newtonsoft.Json;
-using Newtonsoft.Json.Converters;
-using PacketDotNet;
+﻿using PacketDotNet;
 using PacketDotNet.Utils;
 using System.Net;
 
@@ -8,19 +6,18 @@ namespace Router.Packets
 {
     sealed class IP : GeneratorPayload
     {
-        public IPAddress SourceAddress { get; set; }
-        public IPAddress DestinationAddress { get; set; }
-        public int TimeToLive { get; set; } = 128;
+        public IPAddress SourceAddress { get; set; } = IPAddress.Parse("0.0.0.0");
+        public IPAddress DestinationAddress { get; set; } = IPAddress.Parse("0.0.0.0");
+        public int TimeToLive { get; set; } = 0;
 
-        [JsonConverter(typeof(StringEnumConverter))]
-        public IPProtocolType IPProtocolType { get; set; }
+        public IPProtocolType IPProtocolType { get; set; } = 0;
 
         public IP() { }
 
         public override byte[] Export()
         {
             // Auto Types
-            if (PayloadPacket != null)
+            if (PayloadPacket != null && IPProtocolType == 0)
             {
                 if (PayloadPacket is ICMP)
                 {
@@ -82,7 +79,8 @@ namespace Router.Packets
             else
             {
                 // TODO: is PayloadData valid?
-                Payload = IPv4Packet.PayloadData;
+                PayloadPacket = new Payload();
+                PayloadPacket.Import(IPv4Packet.PayloadData);
             }
         }
     }
