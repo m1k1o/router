@@ -11,36 +11,49 @@ namespace Router.Helpers
     abstract class Device
     {
         private ICaptureDevice ICaptureDevice;
+
         public string Name { get => ICaptureDevice.Name; }
         public string FriendlyName { get => ICaptureDevice.ToString().Split('\n')[1].Substring(14); }
         public string Description { get => ICaptureDevice.Description; }
+
         public PhysicalAddress PhysicalAddress { get; private set; }
         public IPAddress DeviceIP { get; private set; } = null;
-        public bool Running { get; set; } = false;
+        public bool Running { get; private set; } = false;
+        public bool Valid { get; private set; } = false;
 
         protected Device(ICaptureDevice ICaptureDevice)
         {
             this.ICaptureDevice = ICaptureDevice;
 
-            // Get MAC from only opened device
-            this.ICaptureDevice.Open();
-            PhysicalAddress = this.ICaptureDevice.MacAddress;
-
-            var ZeroIp = IPAddress.Parse("0.0.0.0");
-            foreach (PcapAddress addr in (this.ICaptureDevice as WinPcapDevice).Addresses)
+            try
             {
-                if (
-                    addr.Addr != null &&
-                    addr.Addr.ipAddress != null &&
-                    addr.Addr.ipAddress.AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork &&
-                    !Equals(addr.Addr.ipAddress, ZeroIp)
-                )
-                {
-                    DeviceIP = addr.Addr.ipAddress;
-                }
-            }
+                this.ICaptureDevice.Open();
 
-            this.ICaptureDevice.Close();
+                // Get Device MAC
+                PhysicalAddress = this.ICaptureDevice.MacAddress;
+
+                // Get Device IP
+                var ZeroIp = IPAddress.Parse("0.0.0.0");
+                foreach (PcapAddress addr in (this.ICaptureDevice as WinPcapDevice).Addresses)
+                {
+                    if (
+                        addr.Addr != null &&
+                        addr.Addr.ipAddress != null &&
+                        addr.Addr.ipAddress.AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork &&
+                        !Equals(addr.Addr.ipAddress, ZeroIp)
+                    )
+                    {
+                        DeviceIP = addr.Addr.ipAddress;
+                    }
+                }
+
+                this.ICaptureDevice.Close();
+                Valid = true;
+            }
+            catch
+            {
+                return;
+            }
         }
 
         protected Action<RawCapture> PacketArrival;

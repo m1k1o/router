@@ -23,7 +23,12 @@ namespace Router
             var i = 0;
             foreach (var Device in CaptureDeviceList.Instance)
             {
-                Available.Add(new Interface(Device, i++));
+                var Interface = new Interface(Device, i);
+                if(Interface.Valid)
+                {
+                    Available.Add(Interface);
+                    i++;
+                }
             }
         }
 
