@@ -52,6 +52,8 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Analyzer\Scenario.cs" />
+    <Compile Include="Analyzer\TestCase.cs" />
     <Compile Include="ARP\ARPMiddleware.cs" />
     <Compile Include="ARP\ARPEntry.cs" />
     <Compile Include="ARP\ARPService.cs" />
