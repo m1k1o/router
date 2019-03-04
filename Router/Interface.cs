@@ -14,10 +14,10 @@ namespace Router
     {
         public int ID { get; private set; }
 
-        private InterfaceEvent OnStarted { get; set; } = new InterfaceEvent(I => { });
-        private InterfaceEvent OnStopped { get; set; } = new InterfaceEvent(I => { });
-        private InterfaceEvent OnChanged { get; set; } = new InterfaceEvent(I => { });
-        private PacketArrival OnPacketArrival { get; set; } = new PacketArrival(H => { });
+        public event InterfaceEvent OnStarted;
+        public event InterfaceEvent OnStopped;
+        public event InterfaceEvent OnChanged;
+        public event PacketArrival OnPacketArrival;
 
         public IPAddress IPAddress { get; private set; }
         public IPNetwork IPNetwork { get; private set; }
