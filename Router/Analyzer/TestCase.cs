@@ -6,7 +6,7 @@ namespace Router.Analyzer
     {
         public readonly TimeSpan Timeout = TimeSpan.FromSeconds(25);
 
-        public TestResult Result { get; private set; }
+        public bool Success { get; private set; } = false;
 
         public byte[] Generate()
         {
@@ -16,8 +16,10 @@ namespace Router.Analyzer
 
         public bool Analyze(Handler Handler)
         {
+            Success = true;
+            
             // Analyze received packet.
-            return false;
+            return true;
         }
     }
 }

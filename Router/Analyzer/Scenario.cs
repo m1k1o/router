@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Collections.Generic;
 using System.Threading;
-using System.Threading.Tasks;
 
 namespace Router.Analyzer
 {
@@ -13,7 +9,6 @@ namespace Router.Analyzer
         public Interface TargetInterface { get; set; }
 
         public List<TestCase> TestCases { get; set; } = new List<TestCase>();
-        public List<TestResult> TestResults { get; set; } = new List<TestResult>();
 
         private void Execute(TestCase TestCase)
         {
@@ -28,7 +23,6 @@ namespace Router.Analyzer
                     BlocingWaiting.Set();
 
                     // Save results
-                    //TestResults.Add(TestCase.Results);
                 }
             }
 
@@ -45,7 +39,6 @@ namespace Router.Analyzer
             if(BlocingWaiting.WaitOne(TestCase.Timeout))
             {
                 // Timeout expired
-                //TestResults.Add(new TestResultTimeout());
             }
 
             // Unregister callback.

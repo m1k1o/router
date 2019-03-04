@@ -54,8 +54,6 @@
   <ItemGroup>
     <Compile Include="Analyzer\Scenario.cs" />
     <Compile Include="Analyzer\TestCase.cs" />
-    <Compile Include="Analyzer\TestResult.cs" />
-    <Compile Include="Analyzer\TestResultTimeout.cs" />
     <Compile Include="ARP\ARPMiddleware.cs" />
     <Compile Include="ARP\ARPEntry.cs" />
     <Compile Include="ARP\ARPService.cs" />
