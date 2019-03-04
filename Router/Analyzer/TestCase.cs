@@ -1,14 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Router.Analyzer
 {
     class TestCase
     {
-        // LOG
+        public readonly TimeSpan Timeout = TimeSpan.FromSeconds(25);
+
+        public TestResult Result { get; private set; }
 
         public byte[] Generate()
         {
