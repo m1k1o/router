@@ -5,6 +5,12 @@ namespace Router.Analyzer
 {
     abstract class TestCase
     {
+        abstract public string Name { get; }
+        abstract public string Description { get; }
+
+        abstract public void Generate(Interface Interface);
+        abstract public void Analyze(Handler Handler);
+
         public TimeSpan Timeout { get; protected set; } = TimeSpan.FromSeconds(25);
         public bool Success { get; protected set; } = false;
         public bool Continue { get; protected set; } = true;
@@ -12,9 +18,6 @@ namespace Router.Analyzer
 
         public bool Timeouted { get; private set; } = false;
         public bool Running { get; private set; } = false;
-
-        abstract public void Generate(Interface Interface);
-        abstract public void Analyze(Handler Handler);
 
         public void Execute(Interface GeneratorInterface, Interface AnalyzerInterface)
         {
