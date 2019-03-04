@@ -1,56 +1,49 @@
-﻿using System.Collections.Generic;
-using System.Threading;
+﻿using System;
+using System.Collections.Generic;
 
 namespace Router.Analyzer
 {
-    class Scenario
+    class Scenario : List<TestCase>
     {
-        public Interface SourceInterface { get; set; }
-        public Interface TargetInterface { get; set; }
+        public int Total => Count;
+        public int Successful { get; private set; }
+        public int Percentage => Successful / Total * 100;
 
-        public List<TestCase> TestCases { get; set; } = new List<TestCase>();
+        public DateTime TimeStarted { get; private set; }
+        public DateTime TimeStopped { get; private set; }
 
-        private void Execute(TestCase TestCase)
+        public TimeSpan TimeEpalsed
         {
-            ManualResetEvent BlocingWaiting = new ManualResetEvent(false);
-
-            // Callback
-            void OnPacketArrival(Handler Handler)
+            get
             {
-                if (TestCase.Analyze(Handler))
+                if (Running)
                 {
-                    // Test is successfull
-                    BlocingWaiting.Set();
-
-                    // Save results
+                    return DateTime.Now - TimeStarted;
+                } else
+                {
+                    return TimeStopped - TimeStarted;
                 }
             }
-
-            // Register callback
-            SourceInterface.OnPacketArrival += OnPacketArrival;
-
-            // Generate packet.
-            SourceInterface.SendPacket(TestCase.Generate());
-
-            // Reset Waiting,
-            BlocingWaiting.Reset();
-
-            // Wait for response.
-            if(BlocingWaiting.WaitOne(TestCase.Timeout))
-            {
-                // Timeout expired
-            }
-
-            // Unregister callback.
-            SourceInterface.OnPacketArrival -= OnPacketArrival;
         }
 
-        public void Execute()
+        public bool Running => TimeStopped == DateTime.MinValue;
+        public string Log { get; private set; }
+
+        public void Execute(Interface GeneratorInterface, Interface AnalyzerInterface)
         {
-            foreach (var TestCase in TestCases)
+            TimeStarted = DateTime.Now;
+            TimeStopped = DateTime.MinValue;
+            Successful = 0;
+
+            foreach (var TestCase in this)
             {
-                Execute(TestCase);
+                TestCase.Execute(GeneratorInterface, AnalyzerInterface);
+                Log += TestCase.Log;
+
+                if (TestCase.Success) Successful++;
             }
+
+            TimeStopped = DateTime.Now;
         }
     }
 }
