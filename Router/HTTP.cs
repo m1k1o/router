@@ -1,25 +1,18 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Net;
+using System.Net.WebSockets;
 using System.Reflection;
 using System.Text;
+using System.Threading;
 using Router.Helpers;
 
 namespace Router
 {
-    class HTTP
+    static class HTTP
     {
-        private HttpListener httpListener = new HttpListener();
-
-        private HTTP(String URL)
-        {
-            Console.WriteLine("Starting server...");
-            httpListener.Prefixes.Add(URL);
-            httpListener.Start();
-            Console.WriteLine("Server started.");
-        }
-
-        private void Request(HttpListenerContext context)
+        private static void Request(HttpListenerContext context)
         {
             var Request = context.Request;
             string Data;
@@ -30,8 +23,8 @@ namespace Router
 
             if (context.Response.OutputStream.CanWrite)
             {
-                string Response = this.Response(context.Request.RawUrl, Data);
-                byte[] ResponseBytes = Encoding.UTF8.GetBytes(Response);
+                string ResponseString = Response(context.Request.RawUrl, Data);
+                byte[] ResponseBytes = Encoding.UTF8.GetBytes(ResponseString);
 
                 context.Response.Headers.Add("Access-Control-Allow-Origin", "*");
                 context.Response.OutputStream.Write(ResponseBytes, 0, ResponseBytes.Length);
@@ -45,7 +38,7 @@ namespace Router
             catch { };
         }
 
-        private string Response(string URL, string Data)
+        private static string Response(string URL, string Data)
         {
             // Process Request
             String[] Args = URL.Split('/');
@@ -91,22 +84,77 @@ namespace Router
                 return JSON.SerializeObject(JSON.Error(e.Message));
             }
         }
-
-        private void Listen()
+        
+        private static void Start(String URL)
         {
+            var httpListener = new HttpListener();
+            Console.WriteLine("Starting server...");
+            httpListener.Prefixes.Add(URL);
+            httpListener.Start();
+            Console.WriteLine("Server started.");
+
             while (true)
             {
                 HttpListenerContext context = httpListener.GetContext();
-                Request(context);
+
+                if (context.Request.IsWebSocketRequest)
+                {
+                    WebSocket(context);
+                }
+                else
+                {
+                    Request(context);
+                }
             }
+        }
+
+        private static List<WebSocket> WebSocketClients = new List<WebSocket>();
+
+        public static void WebSocketSend(string Data)
+        {
+            var DataBytes = Encoding.UTF8.GetBytes(Data);
+            var Segment = new ArraySegment<byte>(DataBytes);
+            foreach (var Client in WebSocketClients)
+            {
+                Client.SendAsync(Segment, WebSocketMessageType.Text, true, CancellationToken.None);
+            }
+        }
+
+        private static async void WebSocket(HttpListenerContext context)
+        {
+            Console.WriteLine("New WS Session.");
+            var ws = (await context.AcceptWebSocketAsync(subProtocol: null)).WebSocket;
+            WebSocketClients.Add(ws);
+
+            while (ws.State == WebSocketState.Open)
+            {
+                try
+                {
+                    var buf = new ArraySegment<byte>(new byte[1024]);
+                    var ret = await ws.ReceiveAsync(buf, CancellationToken.None);
+
+                    if (ret.MessageType == WebSocketMessageType.Close)
+                    {
+                        Console.WriteLine("WS Session Close.");
+                        break;
+                    }
+
+                    Console.WriteLine("WS Got Message.");
+                }
+                catch
+                {
+                    break;
+                }
+            }
+
+            WebSocketClients.Remove(ws);
+            ws.Dispose();
         }
 
         private static void Main(string[] args)
         {
             var Preload = Interfaces.Instance;
-
-            var HTTP = new HTTP("http://localhost:7000/");
-            HTTP.Listen();
+            Start("http://localhost:7000/");
         }
     }
 }

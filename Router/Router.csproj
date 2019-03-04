@@ -32,14 +32,14 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="PacketDotNet">
-      <HintPath>Libraries\PacketDotNet.dll</HintPath>
+    <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.12.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
-    <Reference Include="SharpPcap">
-      <HintPath>Libraries\SharpPcap.dll</HintPath>
+    <Reference Include="PacketDotNet, Version=0.16.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\PacketDotNet.0.16.0\lib\PacketDotNet.dll</HintPath>
     </Reference>
-    <Reference Include="Newtonsoft.Json">
-      <HintPath>Libraries\Newtonsoft.Json.dll</HintPath>
+    <Reference Include="SharpPcap, Version=4.5.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\SharpPcap.4.5.0\lib\netstandard2.0\SharpPcap.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -49,6 +49,7 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Xml" />
+    <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ARP\ARPMiddleware.cs" />
@@ -72,6 +73,7 @@
     <Compile Include="Controllers\Executable.cs" />
     <Compile Include="Controllers\Controller.cs" />
     <Compile Include="Controllers\Global\Initialize.cs" />
+    <Compile Include="Controllers\Global\UpdateTables.cs" />
     <Compile Include="Controllers\Interfaces\Edit.cs" />
     <Compile Include="Controllers\Interfaces\Initialize.cs" />
     <Compile Include="Controllers\Interfaces\Toggle.cs" />
@@ -179,12 +181,12 @@
     <Compile Include="InterfaceService.cs" />
     <Compile Include="Sniffing\SniffingList.cs" />
     <Compile Include="Sniffing\SniffingService.cs" />
+    <Compile Include="WebSocketServer.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.config">
+    <None Include="packages.config">
       <SubType>Designer</SubType>
     </None>
-    <Compile Include="Controllers\Global\UpdateTables.cs" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
