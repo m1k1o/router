@@ -1,8 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Net;
+using System.Net.WebSockets;
 using System.Reflection;
 using System.Text;
+using System.Threading;
 using Router.Helpers;
 
 namespace Router
@@ -93,16 +96,64 @@ namespace Router
             while (true)
             {
                 HttpListenerContext context = httpListener.GetContext();
-                Request(context);
+
+                if (context.Request.IsWebSocketRequest)
+                {
+                    WebSocket(context);
+                }
+                else
+                {
+                    Request(context);
+                }
             }
+        }
+
+        private static List<WebSocket> WebSocketClients = new List<WebSocket>();
+
+        public static void WebSocketSend(string Data)
+        {
+            var DataBytes = Encoding.UTF8.GetBytes(Data);
+            var Segment = new ArraySegment<byte>(DataBytes);
+            foreach (var Client in WebSocketClients)
+            {
+                Client.SendAsync(Segment, WebSocketMessageType.Text, true, CancellationToken.None);
+            }
+        }
+
+        private static async void WebSocket(HttpListenerContext context)
+        {
+            Console.WriteLine("New WS Session.");
+            var ws = (await context.AcceptWebSocketAsync(subProtocol: null)).WebSocket;
+            WebSocketClients.Add(ws);
+
+            while (ws.State == WebSocketState.Open)
+            {
+                try
+                {
+                    var buf = new ArraySegment<byte>(new byte[1024]);
+                    var ret = await ws.ReceiveAsync(buf, CancellationToken.None);
+
+                    if (ret.MessageType == WebSocketMessageType.Close)
+                    {
+                        Console.WriteLine("WS Session Close.");
+                        break;
+                    }
+
+                    Console.WriteLine("WS Got Message.");
+                }
+                catch
+                {
+                    break;
+                }
+            }
+
+            WebSocketClients.Remove(ws);
+            ws.Dispose();
         }
 
         private static void Main(string[] args)
         {
             var Preload = Interfaces.Instance;
-
-            WebSockets.Start();
-
             Start("http://localhost:7000/");
         }
     }
