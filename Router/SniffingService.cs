@@ -47,16 +47,17 @@ namespace Router
 
         public void OnMessage(WebSocket Client, string Message)
         {
-            var Response = new
-            {
-                Key = (string)null,
-                Action = (string)null,
-                Interface = (Interface)null
-            };
-
             try
             {
-                JSON.PopulateObject(Message, Response);
+                Console.WriteLine(Message);
+                var Response = JSON.DeserializeAnonymousType(Message, new
+                {
+                    Key = (string)null,
+                    Action = (string)null,
+                    Interface = (Interface)null
+                });
+
+                Console.WriteLine(Response);
                 if (Response.Key == "sniffing" && Response.Action == "start" && Response.Interface != null)
                 {
                     Start(Client, Response.Interface);

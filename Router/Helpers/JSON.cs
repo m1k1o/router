@@ -45,6 +45,11 @@ namespace Router.Helpers
             JsonConvert.PopulateObject(String, Object, Settings);
         }
 
+        public static T DeserializeAnonymousType<T>(string String, T Definition)
+        {
+            return JsonConvert.DeserializeAnonymousType<T>(String, Definition, Settings);
+        }
+
         public static string SerializeObject(object Object)
         {
             return JsonConvert.SerializeObject(Object, Settings);

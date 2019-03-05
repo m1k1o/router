@@ -19,11 +19,16 @@ namespace Router
             new SniffingService()
         };
 
-        public event WebSocketEvent OnConnect;
-        public event WebSocketEvent OnDisconnect;
-        public event WebSocketMessage OnMessage;
+        public event WebSocketEvent OnConnect = delegate { };
+        public event WebSocketEvent OnDisconnect = delegate { };
+        public event WebSocketMessage OnMessage = delegate { };
 
         private List<WebSocket> WebSocketClients = new List<WebSocket>();
+
+        public WebSockets()
+        {
+            ServicesInitialize();
+        }
 
         private ArraySegment<byte> MessageToSegment(string Key, object Data)
         {
@@ -85,6 +90,16 @@ namespace Router
             WebSocketClients.Remove(ws);
             OnDisconnect(ws);
             ws.Dispose();
+        }
+
+        private void ServicesInitialize()
+        {
+            foreach (var Service in Services)
+            {
+                OnConnect += Service.OnConnect;
+                OnDisconnect += Service.OnDisconnect;
+                OnMessage += Service.OnMessage;
+            }
         }
     }
 
