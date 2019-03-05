@@ -110,13 +110,21 @@ namespace Router
 
         private static List<WebSocket> WebSocketClients = new List<WebSocket>();
 
-        public static void WebSocketSend(string Data)
+        public static void WebSocketSend(string Key, object Data)
         {
-            var DataBytes = Encoding.UTF8.GetBytes(Data);
-            var Segment = new ArraySegment<byte>(DataBytes);
-            foreach (var Client in WebSocketClients)
+            var DataString = JSON.SerializeObject(new
             {
-                Client.SendAsync(Segment, WebSocketMessageType.Text, true, CancellationToken.None);
+                key = Key,
+                data = Data
+            });
+
+            var DataBytes = Encoding.UTF8.GetBytes(DataString);
+            var DataSegment = new ArraySegment<byte>(DataBytes);
+
+            var Clients = WebSocketClients.ToArray();
+            foreach (var Client in Clients)
+            {
+                Client.SendAsync(DataSegment, WebSocketMessageType.Text, true, CancellationToken.None);
             }
         }
 
