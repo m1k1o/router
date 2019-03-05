@@ -1,73 +1,15 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Net;
-using System.Net.WebSockets;
 using System.Reflection;
 using System.Text;
-using System.Threading;
 using Router.Helpers;
 
 namespace Router
 {
-    delegate void WebsocketMessage(WebSocket Socket, string Message);
-
     static class HTTP
     {
-        public static event WebsocketMessage OnWebsocketMessage;
-
-        private static List<WebSocket> WebSocketClients = new List<WebSocket>();
-
-        public static void WebSocketSend(string Key, object Data)
-        {
-            var DataString = JSON.SerializeObject(new
-            {
-                key = Key,
-                data = Data
-            });
-
-            var DataBytes = Encoding.UTF8.GetBytes(DataString);
-            var DataSegment = new ArraySegment<byte>(DataBytes);
-
-            var Clients = WebSocketClients.ToArray();
-            foreach (var Client in Clients)
-            {
-                Client.SendAsync(DataSegment, WebSocketMessageType.Text, true, CancellationToken.None);
-            }
-        }
-
-        private static async void WebSocket(HttpListenerContext context)
-        {
-            Console.WriteLine("New WS Session.");
-            var ws = (await context.AcceptWebSocketAsync(subProtocol: null)).WebSocket;
-            WebSocketClients.Add(ws);
-
-            while (ws.State == WebSocketState.Open)
-            {
-                try
-                {
-                    var ReceiveBuffer = new byte[1024];
-                    var Response = await ws.ReceiveAsync(new ArraySegment<byte>(ReceiveBuffer), CancellationToken.None);
-
-                    if (Response.MessageType == WebSocketMessageType.Close)
-                    {
-                        Console.WriteLine("WS Session Close.");
-                        break;
-                    }
-
-                    Console.WriteLine("WS Got Message.");
-                    var ReceiveString = Encoding.ASCII.GetString(ReceiveBuffer);
-                    OnWebsocketMessage(ws, ReceiveString);
-                }
-                catch
-                {
-                    break;
-                }
-            }
-
-            WebSocketClients.Remove(ws);
-            ws.Dispose();
-        }
+        public static readonly WebSockets WebSockets = new WebSockets();
 
         private static void Request(HttpListenerContext context)
         {
@@ -156,7 +98,7 @@ namespace Router
 
                 if (context.Request.IsWebSocketRequest)
                 {
-                    WebSocket(context);
+                    WebSockets.Session(context);
                 }
                 else
                 {

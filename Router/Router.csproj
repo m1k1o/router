@@ -104,6 +104,7 @@
     <Compile Include="DHCP\DHCPTable.cs" />
     <Compile Include="Helpers\JSONConverters\DHCPOptionConverter.cs" />
     <Compile Include="Helpers\JSONConverters\GeneratorPacketConverter.cs" />
+    <Compile Include="WebSockets.cs" />
     <Compile Include="Packets\ARP.cs" />
     <Compile Include="Packets\DHCP.cs" />
     <Compile Include="Packets\Ethernet.cs" />
