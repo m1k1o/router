@@ -82,7 +82,6 @@ namespace Router
             new ARP.ARPService(),
             new RIP.RIPService(),
             new LLDP.LLDPService(),
-            new Sniffing.SniffingService(),
             new DHCP.DHCPService(),
             new ICMPEchoReplyService()
         };

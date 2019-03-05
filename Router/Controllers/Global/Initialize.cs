@@ -9,8 +9,6 @@
         public object LLDP => new LLDP.Initialize().Export();
         public object DHCP => new DHCP.Initialize().Export();
 
-        public object Sniffing => new Sniffing.Initialize().Export();
-
         public object Export() => this;
     }
 }

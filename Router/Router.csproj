@@ -94,10 +94,6 @@
     <Compile Include="Controllers\Routing\Lookup.cs" />
     <Compile Include="Controllers\Routing\RemoveStatic.cs" />
     <Compile Include="Controllers\Routing\Table.cs" />
-    <Compile Include="Controllers\Sniffing\Inject.cs" />
-    <Compile Include="Controllers\Sniffing\Pop.cs" />
-    <Compile Include="Controllers\Sniffing\Initialize.cs" />
-    <Compile Include="Controllers\Sniffing\Interface.cs" />
     <Compile Include="DHCP\DHCPLease.cs" />
     <Compile Include="DHCP\DHCPPool.cs" />
     <Compile Include="DHCP\DHCPServer.cs" />
@@ -182,14 +178,15 @@
     <Compile Include="RoutingTable.cs" />
     <Compile Include="RoutingEntry.cs" />
     <Compile Include="RIP\RIPService.cs" />
-    <Compile Include="Sniffing\SniffingList.cs" />
-    <Compile Include="Sniffing\SniffingService.cs" />
+    <Compile Include="SniffingService.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config">
       <SubType>Designer</SubType>
     </None>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Sniffing\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

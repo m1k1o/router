@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Router.Helpers;
+using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Net.WebSockets;
@@ -15,7 +16,7 @@ namespace Router
     {
         private static List<WebSocketService> Services = new List<WebSocketService>
         {
-            new Sniffing.SniffingService()
+            new SniffingService()
         };
 
         public event WebSocketEvent OnConnect;
