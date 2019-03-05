@@ -5,6 +5,8 @@ namespace Router.Analyzer
 {
     abstract class TestCase
     {
+        const string NS_PREFIX = "Router.Analyzer.TestCases.";
+
         abstract public string Name { get; }
         abstract public string Description { get; }
 
@@ -45,6 +47,28 @@ namespace Router.Analyzer
 
             Running = false;
             AnalyzerInterface.OnPacketArrival -= OnPacketArrival;
+        }
+
+        public static Type Factory(string TestCaseName)
+        {
+            Type Type = Type.GetType(NS_PREFIX + TestCaseName);
+            if (Type == null)
+            {
+                throw new Exception("TestCase not found.");
+            }
+
+            return Type;
+        }
+
+        public static string Factory(Type TestCaseType)
+        {
+            var Name = TestCaseType.Name;
+            if (Type.GetType(NS_PREFIX + Name) == null)
+            {
+                throw new Exception("TestCase not found.");
+            }
+
+            return Name;
         }
     }
 }
