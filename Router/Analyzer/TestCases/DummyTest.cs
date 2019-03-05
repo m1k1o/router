@@ -17,8 +17,10 @@ namespace Router.Analyzer.TestCases
 
         public override void Analyze(Handler Handler)
         {
+            Log += "Received Packet\n";
             if (Handler.UdpPacket != null && Handler.UdpPacket.SourcePort == 50 && Handler.UdpPacket.DestinationPort == 50)
             {
+                Log += "Success!\n";
                 Continue = false;
                 Success = true;
             }
@@ -52,6 +54,7 @@ namespace Router.Analyzer.TestCases
 
             // Send
             Interface.SendPacket(Ethernet_Packet.Export());
+            Log += "Sent packet.\n";
         }
     }
 }

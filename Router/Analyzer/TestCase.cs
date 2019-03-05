@@ -13,7 +13,7 @@ namespace Router.Analyzer
         abstract public void Generate(Interface Interface);
         abstract public void Analyze(Handler Handler);
 
-        public TimeSpan Timeout { get; protected set; } = TimeSpan.FromSeconds(25);
+        public TimeSpan Timeout { get; protected set; } = TimeSpan.FromSeconds(5);
         public bool Success { get; protected set; } = false;
         public bool Continue { get; protected set; } = true;
         public string Log { get; protected set; } = String.Empty;
