@@ -49,7 +49,9 @@ namespace Router.Analyzer
             AnalyzerInterface.OnPacketArrival -= OnPacketArrival;
         }
 
-        public static Type Factory(string TestCaseName)
+        public string Type => GetType().Name;
+
+        public static Type GetType(string TestCaseName)
         {
             Type Type = Type.GetType(NS_PREFIX + TestCaseName);
             if (Type == null)
@@ -58,17 +60,6 @@ namespace Router.Analyzer
             }
 
             return Type;
-        }
-
-        public static string Factory(Type TestCaseType)
-        {
-            var Name = TestCaseType.Name;
-            if (Type.GetType(NS_PREFIX + Name) == null)
-            {
-                throw new Exception("TestCase not found.");
-            }
-
-            return Name;
         }
     }
 }
