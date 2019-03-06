@@ -34,7 +34,7 @@ namespace Router.Analyzer
             TimeStarted = DateTime.Now;
             TimeStopped = DateTime.MinValue;
             Successful = 0;
-
+            /*
             foreach (var TestCase in this)
             {
                 TestCase.Execute(GeneratorInterface, AnalyzerInterface);
@@ -42,7 +42,7 @@ namespace Router.Analyzer
 
                 if (TestCase.Success) Successful++;
             }
-
+            */
             TimeStopped = DateTime.Now;
         }
     }

@@ -1,11 +1,6 @@
 ﻿using Router.Packets;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net;
 using System.Net.NetworkInformation;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Router.Analyzer.TestCases
 {
@@ -15,23 +10,18 @@ namespace Router.Analyzer.TestCases
 
         public override string Description => "Sample test demostrating functionality.";
 
-        public override void Analyze(Handler Handler)
+        protected override void Analyze(Handler Handler)
         {
-            Log += "Received Packet\n";
+            Log("Received Packet.");
             if (Handler.UdpPacket != null && Handler.UdpPacket.SourcePort == 50 && Handler.UdpPacket.DestinationPort == 50)
             {
-                Log += "Success!\n";
-                Continue = false;
-                Success = true;
+                Log("Success!");
+                Success();
             }
         }
 
-        public override void Generate(Interface Interface)
+        protected override void Generate(Interface Interface)
         {
-            //var Interface = Interfaces.Instance.GetInterfaceById("1");
-            //Interface.SetIP(IPAddress.Parse("192.168.1.5"), IPSubnetMask.Parse("255.255.0.0"));
-            //Interface.Start();
-            
             var Ethernet_Packet = new Ethernet
             {
                 SourceHwAddress = Interface.PhysicalAddress,
@@ -54,7 +44,7 @@ namespace Router.Analyzer.TestCases
 
             // Send
             Interface.SendPacket(Ethernet_Packet.Export());
-            Log += "Sent packet.\n";
+            Log("Sent packet!");
         }
     }
 }
