@@ -25,7 +25,7 @@ namespace Router.Helpers.JSONConverters
             var typeToken = token["type"];
             if (typeToken == null)
             {
-                throw new InvalidOperationException("Invalid DHCPOption object.");
+                throw new InvalidOperationException("Invalid TestCase object.");
             }
 
             var actualType = TestCase.GetType(typeToken.ToObject<string>(serializer));

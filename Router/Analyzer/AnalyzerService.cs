@@ -46,7 +46,8 @@ namespace Router.Analyzer
             {
                 HTTP.WebSockets.Send(Client, "analyzer", new {
                     Error = true,
-                    Message = e.Message
+                    Running = false,
+                    e.Message
                 });
             }
         }
@@ -57,6 +58,13 @@ namespace Router.Analyzer
             {
                 Instances[Client].Stop();
                 Instances.Remove(Client);
+            }
+            else
+            {
+                HTTP.WebSockets.Send(Client, "analyzer", new
+                {
+                    Running = false
+                });
             }
         }
 
