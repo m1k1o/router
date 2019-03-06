@@ -55,6 +55,7 @@
     <Compile Include="Analyzer\AnalyzerService.cs" />
     <Compile Include="Analyzer\Scenario.cs" />
     <Compile Include="Analyzer\TestCase.cs" />
+    <Compile Include="Analyzer\TestCases\ARPRequest.cs" />
     <Compile Include="Analyzer\TestCases\DummyTest.cs" />
     <Compile Include="ARP\ARPMiddleware.cs" />
     <Compile Include="ARP\ARPEntry.cs" />
