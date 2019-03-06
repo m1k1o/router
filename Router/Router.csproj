@@ -52,6 +52,7 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Analyzer\AnalyzerService.cs" />
     <Compile Include="Analyzer\Scenario.cs" />
     <Compile Include="Analyzer\TestCase.cs" />
     <Compile Include="Analyzer\TestCases\DummyTest.cs" />
@@ -86,6 +87,7 @@
     <Compile Include="Controllers\LLDP\Initialize.cs" />
     <Compile Include="Controllers\LLDP\Table.cs" />
     <Compile Include="Controllers\LLDP\Settings.cs" />
+    <Compile Include="Controllers\Packets\Send.cs" />
     <Compile Include="Controllers\RIP\Initialize.cs" />
     <Compile Include="Controllers\RIP\Table.cs" />
     <Compile Include="Controllers\RIP\Timers.cs" />
@@ -98,6 +100,7 @@
     <Compile Include="DHCP\DHCPPool.cs" />
     <Compile Include="DHCP\DHCPServer.cs" />
     <Compile Include="DHCP\DHCPTable.cs" />
+    <Compile Include="Helpers\JSONConverters\TestCaseConverter.cs" />
     <Compile Include="Helpers\JSONConverters\DHCPOptionConverter.cs" />
     <Compile Include="Helpers\JSONConverters\GeneratorPacketConverter.cs" />
     <Compile Include="WebSockets.cs" />

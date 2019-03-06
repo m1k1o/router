@@ -16,7 +16,8 @@ namespace Router
     {
         private static List<WebSocketService> Services = new List<WebSocketService>
         {
-            new SniffingService()
+            new SniffingService(),
+            new Analyzer.AnalyzerService()
         };
 
         public event WebSocketEvent OnConnect = delegate { };
@@ -42,9 +43,14 @@ namespace Router
             return new ArraySegment<byte>(DataBytes);
         }
 
+        object Lock = new object { };
+
         public void Send(WebSocket Client, string Key, object Data)
         {
-            Client.SendAsync(MessageToSegment(Key, Data), WebSocketMessageType.Text, true, CancellationToken.None);
+            lock(Lock)
+            {
+                Client.SendAsync(MessageToSegment(Key, Data), WebSocketMessageType.Text, true, CancellationToken.None);
+            }
         }
 
         public void Send(string Key, object Data)
@@ -54,7 +60,10 @@ namespace Router
             var Clients = WebSocketClients.ToArray();
             foreach (var Client in Clients)
             {
-                Client.SendAsync(DataSegment, WebSocketMessageType.Text, true, CancellationToken.None);
+                lock (Lock)
+                {
+                    Client.SendAsync(DataSegment, WebSocketMessageType.Text, true, CancellationToken.None);
+                }
             }
         }
 

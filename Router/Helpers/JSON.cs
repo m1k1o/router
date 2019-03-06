@@ -20,7 +20,8 @@ namespace Router.Helpers
                 // Custom objects
                 new InterfaceConverter(),
                 new GeneratorPacketConverter(),
-                new DHCPOptionConverter()
+                new DHCPOptionConverter(),
+                new TestCaseConverter()
             },
             Formatting = Formatting.Indented,
             ContractResolver = new DefaultContractResolver

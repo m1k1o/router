@@ -49,7 +49,6 @@ namespace Router
         {
             try
             {
-                Console.WriteLine(Message);
                 var Response = JSON.DeserializeAnonymousType(Message, new
                 {
                     Key = (string)null,
@@ -57,7 +56,6 @@ namespace Router
                     Interface = (Interface)null
                 });
 
-                Console.WriteLine(Response);
                 if (Response.Key == "sniffing" && Response.Action == "start" && Response.Interface != null)
                 {
                     Start(Client, Response.Interface);
