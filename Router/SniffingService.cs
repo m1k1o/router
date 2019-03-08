@@ -1,53 +1,45 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Net.WebSockets;
 using Router.Helpers;
 using Router.Packets;
 
 namespace Router
 {
+    // TODO: Custom sniffing for each Connection.
     class SniffingService : WebSocketService
     {
         object Lock = new object { };
 
-        private Dictionary<WebSocket, Action<bool>> Instances = new Dictionary<WebSocket, Action<bool>>();
+        private PacketArrival PacketArrival = new PacketArrival((Handler Handler) =>
+        {
+            var Ethernet = new Ethernet();
+            Ethernet.Import(Handler.EthernetPacket.Bytes);
+
+            HTTP.WebSockets.Send("sniffing", Ethernet);
+        });
+
+        private Interface ActiveInterface = null;
 
         private void Start(WebSocket Client, Interface Interface)
         {
-            if (Instances.ContainsKey(Client))
+            if (ActiveInterface != null)
             {
-                Instances[Client](false);
+                Console.WriteLine("Unsubscribe");
+                ActiveInterface.OnPacketArrival -= PacketArrival;
             }
 
-            void Action(bool Subscribe) {
-                var EventHandler = new PacketArrival((Handler Handler) =>
-                {
-                    var Ethernet = new Ethernet();
-                    Ethernet.Import(Handler.EthernetPacket.Bytes);
-
-                    HTTP.WebSockets.Send(Client, "sniffing", Ethernet);
-                });
-
-                if (Subscribe)
-                {
-                    Interface.OnPacketArrival += EventHandler;
-                }
-                else
-                {
-                    Interface.OnPacketArrival -= EventHandler;
-                }
-            };
-
-            Action(true);
-            Instances.Add(Client, Action);
+            Console.WriteLine("Subscribe");
+            Interface.OnPacketArrival += PacketArrival;
+            ActiveInterface = Interface;
         }
 
         private void Stop(WebSocket Client)
         {
-            if (Instances.ContainsKey(Client))
+            if (ActiveInterface != null)
             {
-                Instances[Client](false);
-                Instances.Remove(Client);
+                Console.WriteLine("Unsubscribe");
+                ActiveInterface.OnPacketArrival -= PacketArrival;
+                ActiveInterface = null;
             }
         }
 
