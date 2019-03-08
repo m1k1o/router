@@ -8,32 +8,45 @@ namespace Router
 {
     class SniffingService : WebSocketService
     {
-        private Dictionary<WebSocket, Action> Instances = new Dictionary<WebSocket, Action>();
+        object Lock = new object { };
+
+        private Dictionary<WebSocket, Action<bool>> Instances = new Dictionary<WebSocket, Action<bool>>();
 
         private void Start(WebSocket Client, Interface Interface)
         {
-            void OnPacketArrival(Handler Handler)
+            if (Instances.ContainsKey(Client))
             {
-                var Ethernet = new Ethernet();
-                Ethernet.Import(Handler.EthernetPacket.Bytes);
-
-                HTTP.WebSockets.Send(Client, "sniffing", Ethernet);
+                Instances[Client](false);
             }
 
-            // Subscribe
-            Interface.OnPacketArrival += OnPacketArrival;
+            void Action(bool Subscribe) {
+                var EventHandler = new PacketArrival((Handler Handler) =>
+                {
+                    var Ethernet = new Ethernet();
+                    Ethernet.Import(Handler.EthernetPacket.Bytes);
 
-            // Unsubscribe
-            void Unsubscribe() => Interface.OnPacketArrival -= OnPacketArrival;
+                    HTTP.WebSockets.Send(Client, "sniffing", Ethernet);
+                });
 
-            Instances.Add(Client, Unsubscribe);
+                if (Subscribe)
+                {
+                    Interface.OnPacketArrival += EventHandler;
+                }
+                else
+                {
+                    Interface.OnPacketArrival -= EventHandler;
+                }
+            };
+
+            Action(true);
+            Instances.Add(Client, Action);
         }
 
         private void Stop(WebSocket Client)
         {
             if (Instances.ContainsKey(Client))
             {
-                Instances[Client]();
+                Instances[Client](false);
                 Instances.Remove(Client);
             }
         }
@@ -58,13 +71,19 @@ namespace Router
 
                 if (Response.Key == "sniffing" && Response.Action == "start" && Response.Interface != null)
                 {
-                    Start(Client, Response.Interface);
+                    lock (Lock)
+                    {
+                        Start(Client, Response.Interface);
+                    }
                     return;
                 }
 
                 if (Response.Key == "sniffing" && Response.Action == "stop")
                 {
-                    Stop(Client);
+                    lock (Lock)
+                    {
+                        Stop(Client);
+                    }
                     return;
                 }
             }
