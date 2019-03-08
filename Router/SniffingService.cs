@@ -24,11 +24,9 @@ namespace Router
         {
             if (ActiveInterface != null)
             {
-                Console.WriteLine("Unsubscribe");
                 ActiveInterface.OnPacketArrival -= PacketArrival;
             }
-
-            Console.WriteLine("Subscribe");
+            
             Interface.OnPacketArrival += PacketArrival;
             ActiveInterface = Interface;
         }
@@ -37,7 +35,6 @@ namespace Router
         {
             if (ActiveInterface != null)
             {
-                Console.WriteLine("Unsubscribe");
                 ActiveInterface.OnPacketArrival -= PacketArrival;
                 ActiveInterface = null;
             }
