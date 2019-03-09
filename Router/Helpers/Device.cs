@@ -65,6 +65,7 @@ namespace Router.Helpers
 
         private void SetFilter()
         {
+            /* STRICT
             var DeviceMac = BitConverter.ToString(PhysicalAddress.GetAddressBytes()).Replace("-", ":");
 
             String Filter = "(" +
@@ -83,6 +84,12 @@ namespace Router.Helpers
             }
 
             ICaptureDevice.Filter = Filter;
+            */
+
+            if (DeviceIP != null)
+            {
+                ICaptureDevice.Filter = "((not dst host " + DeviceIP + ") and (not src host " + DeviceIP + ")) or arp";
+            }
         }
 
         public void Start()
