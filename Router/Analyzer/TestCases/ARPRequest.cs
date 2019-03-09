@@ -9,9 +9,9 @@ namespace Router.Analyzer.TestCases
         public IPAddress RequestedIP { get; set; }
         public PhysicalAddress ExpectedMAC { get; set; } = null;
 
-        public override string Name => "ARP Request";
+        public override string Default_Name => "ARP Request";
 
-        public override string Description => "Testing ARP.";
+        public override string Default_Description => "Testing ARP.";
 
         protected override void Analyze(Handler Handler)
         {

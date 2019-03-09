@@ -1,4 +1,5 @@
 ﻿using Router.Helpers;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -59,6 +60,11 @@ namespace Router.Analyzer
             return Index++;
         }
 
+        internal static void Edit(int Index, TestCase TestCase)
+        {
+            Instances[Index] = TestCase;
+        }
+
         public static void Remove(int Index)
         {
             Instances.Remove(Index);
@@ -75,10 +81,12 @@ namespace Router.Analyzer
             return Instances[Index];
         }
 
-        public static void Import(List<TestCase> List)
+        public static Dictionary<int, TestCase> Import(List<TestCase> List)
         {
+            var NewEntries = new Dictionary<int, TestCase>();
             foreach (var TestCase in List)
             {
+                NewEntries.Add(Index, TestCase);
                 Instances.Add(Index++, TestCase);
             }
 
@@ -86,6 +94,8 @@ namespace Router.Analyzer
                 SaveToFile();
             }
             catch { }
+
+            return NewEntries;
         }
 
         public static List<TestCase> Export()

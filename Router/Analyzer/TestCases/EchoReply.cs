@@ -10,9 +10,9 @@ namespace Router.Analyzer.TestCases
         public IPAddress IP { get; set; }
         public PhysicalAddress MAC { get; set; }
         
-        public override string Name => "Echo Reply";
+        public override string Default_Name => "Echo Reply";
 
-        public override string Description => "Testing ICMP Echo Reply.";
+        public override string Default_Description => "Testing ICMP Echo Reply.";
         
         protected override void Analyze(Handler Handler)
         {

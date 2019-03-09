@@ -6,9 +6,9 @@ namespace Router.Analyzer.TestCases
 {
     class DummyTest : TestCase
     {
-        public override string Name => "Dummy Test";
+        public override string Default_Name => "Dummy Test";
 
-        public override string Description => "Sample test demostrating functionality.";
+        public override string Default_Description => "Sample test demostrating functionality.";
 
         protected override void Analyze(Handler Handler)
         {

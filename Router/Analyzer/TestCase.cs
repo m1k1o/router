@@ -14,8 +14,23 @@ namespace Router.Analyzer
         public Interface GeneratorInterface { get; set; }
         public Interface AnalyzerInterface { get; set; }
 
-        abstract public string Name { get; }
-        abstract public string Description { get; }
+        abstract public string Default_Name { get; }
+        abstract public string Default_Description { get; }
+
+        private string Custom_Name;
+        private string Custom_Description;
+
+        public string Name
+        {
+            get => String.IsNullOrEmpty(Custom_Name) ? Default_Name : Custom_Name;
+            set => Custom_Name = value;
+        }
+
+        public string Description
+        {
+            get => String.IsNullOrEmpty(Custom_Description) ? Default_Description : Custom_Description;
+            set => Custom_Description = value;
+        }
 
         abstract protected void Generate(Interface Interface);
         abstract protected void Analyze(Handler Handler);
