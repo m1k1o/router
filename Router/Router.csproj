@@ -88,6 +88,7 @@
     <Compile Include="Controllers\Global\UpdateTables.cs" />
     <Compile Include="Controllers\Interfaces\Edit.cs" />
     <Compile Include="Controllers\Interfaces\Initialize.cs" />
+    <Compile Include="Controllers\Interfaces\Refresh.cs" />
     <Compile Include="Controllers\Interfaces\Toggle.cs" />
     <Compile Include="Controllers\Interfaces\ToggleService.cs" />
     <Compile Include="Controllers\Interfaces\Services.cs" />
