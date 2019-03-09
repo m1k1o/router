@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Threading;
 
 namespace Router.Analyzer
@@ -11,10 +12,16 @@ namespace Router.Analyzer
 
         const string NS_PREFIX = "Router.Analyzer.TestCases.";
 
+        [JsonIgnore]
         public Interface GeneratorInterface { get; set; }
+
+        [JsonIgnore]
         public Interface AnalyzerInterface { get; set; }
 
+        [JsonIgnore]
         abstract public string Default_Name { get; }
+
+        [JsonIgnore]
         abstract public string Default_Description { get; }
 
         private string Custom_Name;
@@ -35,8 +42,12 @@ namespace Router.Analyzer
         abstract protected void Generate(Interface Interface);
         abstract protected void Analyze(Handler Handler);
 
+        [JsonIgnore]
         public TimeSpan Timeout { get; protected set; } = TimeSpan.FromSeconds(5);
 
+        public double TimeoutSec => Timeout.TotalSeconds;
+
+        [JsonIgnore]
         public TestCaseStatus Status { get; private set; } = TestCaseStatus.Idle;
 
         private ManualResetEvent BlocingWaiting = new ManualResetEvent(false);
