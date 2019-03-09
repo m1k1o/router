@@ -6,6 +6,8 @@ namespace Router.Controllers.Analyzer
 {
     class ImportTestCase : Controller, Executable
     {
+        private Dictionary<int, TestCase> NewEntries;
+
         public List<TestCase> TestCases { get; set; }
 
         public void Execute()
@@ -15,13 +17,9 @@ namespace Router.Controllers.Analyzer
                 throw new Exception("Expected TestCase.");
             }
 
-            TestCaseStorage.Import(TestCases);
+            NewEntries = TestCaseStorage.Import(TestCases);
         }
 
-        public object Export() => new
-        {
-            Success = true,
-            AddedTotal = TestCases.Count
-        };
+        public object Export() => NewEntries;
     }
 }

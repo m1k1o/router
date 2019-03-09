@@ -3,6 +3,8 @@
     class Initialize : Controller
     {
         public object Interfaces => new Interfaces.Initialize().Export();
+        public object TestCases => new Analyzer.GetAllTestCases().Export();
+
         public object ARP => new ARP.Initialize().Export();
         public object Routing => new Routing.Initialize().Export();
         public object RIP => new RIP.Initialize().Export();

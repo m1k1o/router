@@ -2,8 +2,10 @@
 
 namespace Router.Controllers.Analyzer
 {
-    class AllTestCases : Controller
+    class GetTestCase : Controller
     {
-        public object Export() => TestCaseStorage.GetAll();
+        public int? Index { get; set; }
+
+        public object Export() => TestCaseStorage.Get((int)Index);
     }
 }

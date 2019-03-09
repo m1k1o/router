@@ -63,11 +63,12 @@
     <Compile Include="ARP\ARPEntry.cs" />
     <Compile Include="ARP\ARPService.cs" />
     <Compile Include="ARP\ARPTable.cs" />
+    <Compile Include="Controllers\Analyzer\ExportTestCases.cs" />
     <Compile Include="Controllers\Analyzer\ImportTestCases.cs" />
-    <Compile Include="Controllers\Analyzer\AllTestCases.cs" />
     <Compile Include="Controllers\Analyzer\GetTestCase.cs" />
+    <Compile Include="Controllers\Analyzer\GetAllTestCases.cs" />
     <Compile Include="Controllers\Analyzer\RemoveTestCase.cs" />
-    <Compile Include="Controllers\Analyzer\AddTestCase.cs" />
+    <Compile Include="Controllers\Analyzer\PutTestCase.cs" />
     <Compile Include="Controllers\ARP\Initialize.cs" />
     <Compile Include="Controllers\ARP\Lookup.cs" />
     <Compile Include="Controllers\ARP\Proxy.cs" />

@@ -3,9 +3,9 @@ using System;
 
 namespace Router.Controllers.Analyzer
 {
-    class AddTestCase : Controller, Executable
+    class PutTestCase : Controller, Executable
     {
-        private int Index;
+        public int? Index { get; set; }
 
         public TestCase TestCase { get; set; }
 
@@ -16,12 +16,20 @@ namespace Router.Controllers.Analyzer
                 throw new Exception("Expected TestCase.");
             }
 
-            Index = TestCaseStorage.Insert(TestCase);
+            if (Index == null)
+            {
+                Index = TestCaseStorage.Insert(TestCase);
+            }
+            else
+            {
+                TestCaseStorage.Edit((int)Index, TestCase);
+            }
         }
 
         public object Export() => new
         {
-            Index
+            Index,
+            TestCase
         };
     }
 }
