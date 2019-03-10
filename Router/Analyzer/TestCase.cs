@@ -42,10 +42,22 @@ namespace Router.Analyzer
         abstract protected void Generate(Interface Interface);
         abstract protected void Analyze(Handler Handler);
 
+        public TestCaseStatus TimeoutStatus { get; set; } = TestCaseStatus.Timeout;
+
         [JsonIgnore]
         public TimeSpan Timeout { get; protected set; } = TimeSpan.FromSeconds(5);
 
-        public double TimeoutSec => Timeout.TotalSeconds;
+        public double TimeoutSec
+        {
+            set
+            {
+                Timeout = TimeSpan.FromSeconds(value);
+            }
+            get
+            {
+                return Timeout.TotalSeconds;
+            }
+        }
 
         [JsonIgnore]
         public TestCaseStatus Status { get; private set; } = TestCaseStatus.Idle;
@@ -113,7 +125,7 @@ namespace Router.Analyzer
             Thread = new Thread(() => {
                 if (!BlocingWaiting.WaitOne(Timeout))
                 {
-                    Stop(TestCaseStatus.Timeout);
+                    Stop(TimeoutStatus);
                 }
             });
             Thread.Start();

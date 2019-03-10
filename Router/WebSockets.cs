@@ -17,7 +17,8 @@ namespace Router
         private static List<WebSocketService> Services = new List<WebSocketService>
         {
             new SniffingService(),
-            new Analyzer.AnalyzerService()
+            new Analyzer.TestCaseService(),
+            new Analyzer.ScenarioService()
         };
 
         public event WebSocketEvent OnConnect = delegate { };

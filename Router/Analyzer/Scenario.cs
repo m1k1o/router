@@ -1,10 +1,17 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 
 namespace Router.Analyzer
 {
     class Scenario : List<TestCase>
     {
+        [JsonIgnore]
+        public Interface GeneratorInterface { get; set; }
+        [JsonIgnore]
+        public Interface AnalyzerInterface { get; set; }
+        
+        /*
         public int Total => Count;
         public int Successful { get; private set; }
         public int Percentage => Successful / Total * 100;
@@ -34,7 +41,6 @@ namespace Router.Analyzer
             TimeStarted = DateTime.Now;
             TimeStopped = DateTime.MinValue;
             Successful = 0;
-            /*
             foreach (var TestCase in this)
             {
                 TestCase.Execute(GeneratorInterface, AnalyzerInterface);
@@ -42,8 +48,8 @@ namespace Router.Analyzer
 
                 if (TestCase.Success) Successful++;
             }
-            */
             TimeStopped = DateTime.Now;
         }
-    }
+        */
+     }
 }

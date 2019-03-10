@@ -5,7 +5,7 @@ using System.Net.WebSockets;
 
 namespace Router.Analyzer
 {
-    class AnalyzerService : WebSocketService
+    class TestCaseService : WebSocketService
     {
         private Dictionary<WebSocket, TestCase> Instances = new Dictionary<WebSocket, TestCase>();
 
@@ -13,7 +13,7 @@ namespace Router.Analyzer
         {
             TestCase.OnStarted += () =>
             {
-                HTTP.WebSockets.Send(Client, "analyzer", new
+                HTTP.WebSockets.Send(Client, "test_case", new
                 {
                     Running = true,
                     Status = TestCase.Status.ToString(),
@@ -22,7 +22,7 @@ namespace Router.Analyzer
             };
 
             TestCase.OnStopped += () => {
-                HTTP.WebSockets.Send(Client, "analyzer", new
+                HTTP.WebSockets.Send(Client, "test_case", new
                 {
                     Running = false,
                     Status = TestCase.Status.ToString()
@@ -31,7 +31,7 @@ namespace Router.Analyzer
             };
 
             TestCase.OnLogMessage += (Message) => {
-                HTTP.WebSockets.Send(Client, "analyzer", new
+                HTTP.WebSockets.Send(Client, "test_case", new
                 {
                     Log = Message
                 });
@@ -44,7 +44,7 @@ namespace Router.Analyzer
             }
             catch (Exception e)
             {
-                HTTP.WebSockets.Send(Client, "analyzer", new {
+                HTTP.WebSockets.Send(Client, "test_case", new {
                     Error = true,
                     Running = false,
                     e.Message
@@ -61,7 +61,7 @@ namespace Router.Analyzer
             }
             else
             {
-                HTTP.WebSockets.Send(Client, "analyzer", new
+                HTTP.WebSockets.Send(Client, "test_case", new
                 {
                     Running = false
                 });
@@ -83,25 +83,28 @@ namespace Router.Analyzer
                 {
                     Key = (string)null,
                     Action = (string)null,
+                    GeneratorInterface = (Interface)null,
+                    AnalyzerInterface = (Interface)null,
                     TestCase = (TestCase)null
                 });
 
-                if (Response.Key == "analyzer" && Response.Action == "start" && Response.TestCase != null)
+                if (Response.Key == "test_case" && Response.Action == "start" && Response.TestCase != null)
                 {
+                    // Set Interfaces
+                    Response.TestCase.GeneratorInterface = Response.GeneratorInterface;
+                    Response.TestCase.AnalyzerInterface = Response.AnalyzerInterface;
+                    
+                    // Start
                     Start(Client, Response.TestCase);
                     return;
                 }
 
-                if (Response.Key == "analyzer" && Response.Action == "stop")
+                if (Response.Key == "test_case" && Response.Action == "stop")
                 {
                     Stop(Client);
                     return;
                 }
-            }
-            catch (Exception e)
-            {
-
-            }
+            } catch { }
         }
     }
 }
