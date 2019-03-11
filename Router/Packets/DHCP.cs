@@ -1,4 +1,5 @@
 ﻿using Router.Protocols;
+using Router.Protocols.DHCPOptions;
 using System.Net;
 using System.Net.NetworkInformation;
 
@@ -20,6 +21,12 @@ namespace Router.Packets
 
         public override byte[] Export()
         {
+            // Trailing END option
+            if (Options.Count != 0 && Options[Options.Count - 1].Type != DHCPOptionCode.End)
+            {
+                Options.Add(new DHCPEndOption());
+            }
+
             var DHCPPacket = new DHCPPacket(OperationCode, TransactionID, Options);
 
             if (YourClientIPAddress != null)
