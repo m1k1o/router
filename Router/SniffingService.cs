@@ -1,42 +1,37 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Net.WebSockets;
 using Router.Helpers;
 using Router.Packets;
 
 namespace Router
 {
-    // TODO: Custom sniffing for each Connection.
     class SniffingService : WebSocketService
     {
         object Lock = new object { };
 
-        private PacketArrival PacketArrival = new PacketArrival((Handler Handler) =>
-        {
-            var Ethernet = new Ethernet();
-            Ethernet.Import(Handler.EthernetPacket.Bytes);
-
-            HTTP.WebSockets.Send("sniffing", Ethernet);
-        });
-
-        private Interface ActiveInterface = null;
+        private Dictionary<WebSocket, SniffingInstance> Instances = new Dictionary<WebSocket, SniffingInstance>();
 
         private void Start(WebSocket Client, Interface Interface)
         {
-            if (ActiveInterface != null)
+            if (Instances.ContainsKey(Client))
             {
-                ActiveInterface.OnPacketArrival -= PacketArrival;
+                Instances[Client].Unsubscribe();
             }
-            
-            Interface.OnPacketArrival += PacketArrival;
-            ActiveInterface = Interface;
+            else
+            {
+                Instances.Add(Client, new SniffingInstance(Client));
+            }
+
+            Instances[Client].Interface = Interface;
+            Instances[Client].Subscribe();
         }
 
         private void Stop(WebSocket Client)
         {
-            if (ActiveInterface != null)
+            if (Instances.ContainsKey(Client))
             {
-                ActiveInterface.OnPacketArrival -= PacketArrival;
-                ActiveInterface = null;
+                Instances[Client].Unsubscribe();
             }
         }
 
@@ -45,6 +40,7 @@ namespace Router
         public void OnDisconnect(WebSocket Client)
         {
             Stop(Client);
+            Instances.Remove(Client);
         }
 
         public void OnMessage(WebSocket Client, string Message)
@@ -80,6 +76,35 @@ namespace Router
             {
 
             }
+        }
+    }
+
+    class SniffingInstance
+    {
+        public Interface Interface { get; set; }
+        public WebSocket WebSocket { get; set; }
+
+        public SniffingInstance(WebSocket WebSocket)
+        {
+            this.WebSocket = WebSocket;
+        }
+
+        public void OnPacketArrival(Handler Handler)
+        {
+            var Ethernet = new Ethernet();
+            Ethernet.Import(Handler.EthernetPacket.Bytes);
+
+            HTTP.WebSockets.Send(WebSocket, "sniffing", Ethernet);
+        }
+
+        public void Subscribe()
+        {
+            Interface.OnPacketArrival += OnPacketArrival;
+        }
+
+        public void Unsubscribe()
+        {
+            Interface.OnPacketArrival -= OnPacketArrival;
         }
     }
 }
