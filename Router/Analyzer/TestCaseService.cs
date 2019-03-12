@@ -16,7 +16,7 @@ namespace Router.Analyzer
                 HTTP.WebSockets.Send(Client, "test_case", new
                 {
                     Running = true,
-                    Status = TestCase.Status.ToString(),
+                    TestCase.Status,
                     TimeOut = TestCase.Timeout.TotalSeconds
                 });
             };
@@ -25,7 +25,7 @@ namespace Router.Analyzer
                 HTTP.WebSockets.Send(Client, "test_case", new
                 {
                     Running = false,
-                    Status = TestCase.Status.ToString()
+                    TestCase.Status
                 });
                 Stop(Client);
             };
