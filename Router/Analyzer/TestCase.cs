@@ -14,13 +14,11 @@ namespace Router.Analyzer
 
         [JsonIgnore]
         public Interface GeneratorInterface { get; set; }
-
         [JsonIgnore]
         public Interface AnalyzerInterface { get; set; }
 
         [JsonIgnore]
         abstract public string Default_Name { get; }
-
         [JsonIgnore]
         abstract public string Default_Description { get; }
 
@@ -32,7 +30,6 @@ namespace Router.Analyzer
             get => String.IsNullOrEmpty(Custom_Name) ? Default_Name : Custom_Name;
             set => Custom_Name = value;
         }
-
         public string Description
         {
             get => String.IsNullOrEmpty(Custom_Description) ? Default_Description : Custom_Description;
@@ -64,7 +61,18 @@ namespace Router.Analyzer
 
         private ManualResetEvent BlocingWaiting = new ManualResetEvent(false);
         private Thread Thread;
-        private Action Unsubscribe;
+
+        private void OnPacketArrival(Handler Handler)
+        {
+            if (Status == TestCaseStatus.Running)
+            {
+                Analyze(Handler);
+            }
+            else
+            {
+                BlocingWaiting.Set();
+            }
+        }
 
         private void Stop(TestCaseStatus Status)
         {
@@ -73,62 +81,12 @@ namespace Router.Analyzer
                 this.Status = Status;
                 BlocingWaiting.Set();
 
-                Unsubscribe?.Invoke();
+                // Unsubscribe
+                AnalyzerInterface.OnPacketArrival -= OnPacketArrival;
+
                 OnStopped();
                 Log("Test finished with status: " + Status);
             }
-        }
-
-        public void Start()
-        {
-            if(GeneratorInterface == null || AnalyzerInterface == null)
-            {
-                throw new Exception("No Interfaces set.");
-            }
-
-            if (!GeneratorInterface.Running || !AnalyzerInterface.Running)
-            {
-                throw new Exception("Interfaces must be running.");
-            }
-
-            // Started
-            BlocingWaiting.Reset();
-            Status = TestCaseStatus.Running;
-            Log("Test '" + Name + "' started with timeout " + Timeout.TotalSeconds + " sec.");
-            OnStarted();
-
-            void OnPacketArrival(Handler Handler)
-            {
-                if (Status == TestCaseStatus.Running)
-                {
-                    Analyze(Handler);
-                }
-                else
-                {
-                    BlocingWaiting.Set();
-                }
-            }
-
-            // Subscribe
-            AnalyzerInterface.OnPacketArrival += OnPacketArrival;
-
-            // Unsubscribe
-            Unsubscribe = () =>
-            {
-                AnalyzerInterface.OnPacketArrival -= OnPacketArrival;
-            };
-
-            // Generate
-            Generate(GeneratorInterface);
-
-            // Wait for result
-            Thread = new Thread(() => {
-                if (!BlocingWaiting.WaitOne(Timeout))
-                {
-                    Stop(TimeoutStatus);
-                }
-            });
-            Thread.Start();
         }
         
         protected void Success()
@@ -144,6 +102,40 @@ namespace Router.Analyzer
         protected void Log(string Message)
         {
             OnLogMessage(Message);
+        }
+
+        public void Start()
+        {
+            if (GeneratorInterface == null || AnalyzerInterface == null)
+            {
+                throw new Exception("No Interfaces set.");
+            }
+
+            if (!GeneratorInterface.Running || !AnalyzerInterface.Running)
+            {
+                throw new Exception("Interfaces must be running.");
+            }
+
+            // Started
+            BlocingWaiting.Reset();
+            Status = TestCaseStatus.Running;
+            Log("Test '" + Name + "' started with timeout " + Timeout.TotalSeconds + " sec.");
+            OnStarted();
+
+            // Subscribe
+            AnalyzerInterface.OnPacketArrival += OnPacketArrival;
+
+            // Generate
+            Generate(GeneratorInterface);
+
+            // Wait for result
+            Thread = new Thread(() => {
+                if (!BlocingWaiting.WaitOne(Timeout))
+                {
+                    Stop(TimeoutStatus);
+                }
+            });
+            Thread.Start();
         }
 
         public void Stop()
