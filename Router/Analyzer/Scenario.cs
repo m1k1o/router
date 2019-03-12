@@ -15,6 +15,9 @@ namespace Router.Analyzer
         public Interface GeneratorInterface { get; set; }
         [JsonIgnore]
         public Interface AnalyzerInterface { get; set; }
+        
+        public string Name { get; set; }
+        public string Description { get; set; }
 
         public int Total => Count;
         public int Successful { get; private set; }
