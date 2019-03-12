@@ -7,40 +7,24 @@ namespace Router.Analyzer
 {
     class TestCaseService : WebSocketService
     {
-        private Dictionary<WebSocket, TestCase> Instances = new Dictionary<WebSocket, TestCase>();
+        private Dictionary<WebSocket, TestCaseInstance> Instances = new Dictionary<WebSocket, TestCaseInstance>();
 
         private void Start(WebSocket Client, TestCase TestCase)
         {
-            TestCase.OnStarted += () =>
+            if (Instances.ContainsKey(Client))
             {
-                HTTP.WebSockets.Send(Client, "test_case", new
-                {
-                    Running = true,
-                    TestCase.Status,
-                    TimeOut = TestCase.Timeout.TotalSeconds
-                });
-            };
-
-            TestCase.OnStopped += () => {
-                HTTP.WebSockets.Send(Client, "test_case", new
-                {
-                    Running = false,
-                    TestCase.Status
-                });
-                Stop(Client);
-            };
-
-            TestCase.OnLogMessage += (Message) => {
-                HTTP.WebSockets.Send(Client, "test_case", new
-                {
-                    Log = Message
-                });
-            };
+                Instances[Client].Unsubscribe();
+            }
+            else
+            {
+                Instances.Add(Client, new TestCaseInstance(Client));
+            }
 
             try
             {
+                Instances[Client].TestCase = TestCase;
+                Instances[Client].Subscribe();
                 TestCase.Start();
-                Instances.Add(Client, TestCase);
             }
             catch (Exception e)
             {
@@ -56,8 +40,8 @@ namespace Router.Analyzer
         {
             if (Instances.ContainsKey(Client))
             {
-                Instances[Client].Stop();
-                Instances.Remove(Client);
+                Instances[Client].TestCase.Stop();
+                Instances[Client].Unsubscribe();
             }
             else
             {
@@ -73,6 +57,7 @@ namespace Router.Analyzer
         public void OnDisconnect(WebSocket Client)
         {
             Stop(Client);
+            Instances.Remove(Client);
         }
 
         public void OnMessage(WebSocket Client, string Message)
@@ -116,6 +101,58 @@ namespace Router.Analyzer
                     return;
                 }
             } catch { }
+        }
+    }
+
+    class TestCaseInstance
+    {
+        public TestCase TestCase { get; set; }
+        public WebSocket WebSocket { get; set; }
+
+        public TestCaseInstance(WebSocket WebSocket)
+        {
+            this.WebSocket = WebSocket;
+        }
+
+        void OnStarted()
+        {
+            HTTP.WebSockets.Send(WebSocket, "test_case", new
+            {
+                Running = true,
+                TestCase.Status,
+                TimeOut = TestCase.Timeout.TotalSeconds
+            });
+        }
+
+        void OnStopped()
+        {
+            HTTP.WebSockets.Send(WebSocket, "test_case", new
+            {
+                Running = false,
+                TestCase.Status
+            });
+        }
+
+        void OnLogMessage(string Log)
+        {
+            HTTP.WebSockets.Send(WebSocket, "test_case", new
+            {
+                Log
+            });
+        }
+
+        public void Subscribe()
+        {
+            TestCase.OnStarted += OnStarted;
+            TestCase.OnStopped += OnStopped;
+            TestCase.OnLogMessage += OnLogMessage;
+        }
+
+        public void Unsubscribe()
+        {
+            TestCase.OnStarted -= OnStarted;
+            TestCase.OnStopped -= OnStopped;
+            TestCase.OnLogMessage -= OnLogMessage;
         }
     }
 }
