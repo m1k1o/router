@@ -85,17 +85,28 @@ namespace Router.Analyzer
                     Action = (string)null,
                     GeneratorInterface = (Interface)null,
                     AnalyzerInterface = (Interface)null,
+                    TestCaseId = (int?)null,
                     TestCase = (TestCase)null
                 });
 
-                if (Response.Key == "test_case" && Response.Action == "start" && Response.TestCase != null)
+                if (Response.Key == "test_case" && Response.Action == "start" && (Response.TestCase != null || Response.TestCaseId != null))
                 {
+                    TestCase TestCase;
+                    if (Response.TestCaseId != null)
+                    {
+                        TestCase = TestCaseStorage.Get((int)Response.TestCaseId);
+                    }
+                    else
+                    {
+                        TestCase = Response.TestCase;
+                    }
+
                     // Set Interfaces
-                    Response.TestCase.GeneratorInterface = Response.GeneratorInterface;
-                    Response.TestCase.AnalyzerInterface = Response.AnalyzerInterface;
+                    TestCase.GeneratorInterface = Response.GeneratorInterface;
+                    TestCase.AnalyzerInterface = Response.AnalyzerInterface;
                     
                     // Start
-                    Start(Client, Response.TestCase);
+                    Start(Client, TestCase);
                     return;
                 }
 
