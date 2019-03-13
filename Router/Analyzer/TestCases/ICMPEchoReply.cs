@@ -5,14 +5,15 @@ using System.Net.NetworkInformation;
 
 namespace Router.Analyzer.TestCases
 {
-    class EchoReply : TestCase
+    class ICMPEchoReply : TestCase
     {
-        public IPAddress IP { get; set; }
-        public PhysicalAddress MAC { get; set; }
+        public IPAddress DestinationIP { get; set; }
+        public PhysicalAddress DestinationMAC { get; set; }
         
-        public override string Default_Name => "Echo Reply";
+        public override string Default_Name => "ICMP Echo Reply";
 
-        public override string Default_Description => "Testing ICMP Echo Reply.";
+        public override string Default_Description =>
+            "Test case will send ICMP Echo Request und will be evaluated as succesful after Echo Reply arrival.";
         
         protected override void Analyze(Handler Handler)
         {
@@ -46,11 +47,23 @@ namespace Router.Analyzer.TestCases
             }
 
             Log("Got ICMP Reply.");
+
+            if (!Handler.IPv4Packet.ValidChecksum)
+            {
+                Log("WARNING: ICMP Checksum is NOT valid");
+            }
+            else
+            {
+                Log("ICMP Checksum is valid");
+            }
+
             Success();
         }
 
         protected override void Generate(Interface Interface)
         {
+            Log("ICMP Echo Request sent.");
+
             var ICMP = new ICMP()
             {
                 TypeCode = ICMPv4TypeCodes.EchoRequest,
@@ -60,13 +73,13 @@ namespace Router.Analyzer.TestCases
             var IP = new IP()
             {
                 SourceAddress = Interface.IPAddress,
-                DestinationAddress = this.IP,
+                DestinationAddress = this.DestinationIP,
                 PayloadPacket = ICMP
             };
             var Ethernet = new Ethernet()
             {
                 SourceHwAddress = Interface.PhysicalAddress,
-                DestinationHwAddress = MAC,
+                DestinationHwAddress = DestinationMAC,
                 PayloadPacket = IP
             };
 
