@@ -73,8 +73,9 @@ namespace Router.Analyzer.TestCases
             var IP = new IP()
             {
                 SourceAddress = Interface.IPAddress,
-                DestinationAddress = this.DestinationIP,
-                PayloadPacket = ICMP
+                DestinationAddress = DestinationIP,
+                PayloadPacket = ICMP,
+                TimeToLive = 255
             };
             var Ethernet = new Ethernet()
             {

@@ -102,7 +102,7 @@ namespace Router.Analyzer.TestCases
 
         protected override void Generate(Interface Interface)
         {
-            var Str = "Waiting for ICMP Echo Reequest.";
+            var Str = "Waiting for ICMP Echo Request.";
             Str += "\n\tDestination MAC: " + Interface.PhysicalAddress;
             Str += "\n\tDestination IP: " + Interface.IPAddress;
 
