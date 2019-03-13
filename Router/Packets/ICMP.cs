@@ -39,6 +39,7 @@ namespace Router.Packets
 
             TypeCode = ICMPv4Packet.TypeCode;
             ID = ICMPv4Packet.ID;
+            Sequence = ICMPv4Packet.Sequence;
 
             // Some Types contains IP Header
             var Type = (byte)((ushort)TypeCode >> 8);

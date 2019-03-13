@@ -64,7 +64,7 @@ namespace Router.Packets
             if (IPProtocolType == IPProtocolType.ICMP)
             {
                 PayloadPacket = new ICMP();
-                PayloadPacket.Import(IPv4Packet.PayloadData);
+                PayloadPacket.Import(IPv4Packet.PayloadPacket.Bytes);
             }
             else if (IPProtocolType == IPProtocolType.UDP)
             {
