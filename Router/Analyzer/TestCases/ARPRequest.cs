@@ -6,54 +6,81 @@ namespace Router.Analyzer.TestCases
 {
     class ARPRequest : TestCase
     {
-        public IPAddress RequestedIP { get; set; }
-        public PhysicalAddress ExpectedMAC { get; set; } = null;
+        static PhysicalAddress BroadcastMAC = PhysicalAddress.Parse("FF-FF-FF-FF-FF-FF");
+        static PhysicalAddress ZeroMAC = PhysicalAddress.Parse("00-00-00-00-00-00");
+
+        public PhysicalAddress DeviceMAC { get; set; } = null;
+        public IPAddress ExpectedIP { get; set; } = null;
 
         public override string Default_Name => "ARP Request";
 
-        public override string Default_Description => "Testing ARP.";
+        public override string Default_Description =>
+            "Test case will wait for ARP Request from expected device.";
 
         protected override void Analyze(Handler Handler)
         {
-            if (!Handler.CheckEtherType(EthernetPacketType.Arp))
+            // Is ARP and relevant for me?
+            if (
+                !Handler.CheckEtherType(EthernetPacketType.Arp) &&
+                !Equals(Handler.EthernetPacket.DestinationHwAddress, Handler.Interface.PhysicalAddress) &&
+                !Equals(Handler.EthernetPacket.DestinationHwAddress, BroadcastMAC)
+            )
             {
                 return;
             }
 
-            Log("Received ARP.");
             var ARPPacket = (ARPPacket)Handler.InternetLinkLayerPacket.PayloadPacket;
 
-            // Is packet valid response for me?
-            if (
-                Equals(Handler.EthernetPacket.DestinationHwAddress, Handler.Interface.PhysicalAddress) &&
-                Equals(ARPPacket.TargetHardwareAddress, Handler.Interface.PhysicalAddress) &&
-                Equals(ARPPacket.TargetProtocolAddress, Handler.Interface.IPAddress)
-            )
+            if (!Equals(ARPPacket.TargetHardwareAddress, ZeroMAC))
             {
-                Log(
-                    "ARP Response is for me:\n" +
-                    "\tSender IP: " + ARPPacket.SenderProtocolAddress + "\n" +
-                    "\tSender MAC: " + ARPPacket.SenderHardwareAddress
-                );
+                Log("Received ARP. Target MAC must be 00:00:00:00:00:00.");
+                return;
+            }
 
-                if (ExpectedMAC == null && Equals(ARPPacket.SenderProtocolAddress, RequestedIP))
+            Log(
+                "Received ARP:\n" +
+                "\tSender MAC: " + ARPPacket.SenderHardwareAddress + "\n" +
+                "\tTarget IP: " + ARPPacket.TargetProtocolAddress + "\n"
+            );
+
+            // Any ARP Request is success
+            if (DeviceMAC == null && ExpectedIP == null)
+            {
+                Success();
+                return;
+            }
+
+            // ARP Request asking ExpectedIP is success
+            if (DeviceMAC == null)
+            {
+                if (Equals(ARPPacket.TargetProtocolAddress, ExpectedIP))
                 {
                     Success();
-                    return;
                 }
 
-                if (
-                    Equals(ARPPacket.SenderProtocolAddress, RequestedIP) &&
-                    Equals(ARPPacket.SenderHardwareAddress, ExpectedMAC)
-                )
+                return;
+            }
+
+            // ARP Request from DeviceMAC is success
+            if (ExpectedIP == null)
+            {
+                if (Equals(ARPPacket.SenderHardwareAddress, DeviceMAC) && Equals(Handler.EthernetPacket.SourceHwAddress, DeviceMAC))
                 {
                     Success();
                 }
 
-                if (
-                    (Equals(ARPPacket.SenderProtocolAddress, RequestedIP) && !Equals(ARPPacket.SenderHardwareAddress, ExpectedMAC)) ||
-                    (!Equals(ARPPacket.SenderProtocolAddress, RequestedIP) && Equals(ARPPacket.SenderHardwareAddress, ExpectedMAC))
-                )
+                return;
+            }
+
+            // Only ARP Request from DeviceMAC can be evaluated
+            if (Equals(ARPPacket.SenderHardwareAddress, DeviceMAC) && Equals(Handler.EthernetPacket.SourceHwAddress, DeviceMAC))
+            {
+                // Only asking ExpectedIP is success
+                if (Equals(ARPPacket.TargetProtocolAddress, ExpectedIP))
+                {
+                    Success();
+                }
+                else
                 {
                     Error();
                 }
@@ -62,15 +89,19 @@ namespace Router.Analyzer.TestCases
 
         protected override void Generate(Interface Interface)
         {
-            Protocols.ARP.SendRequest(RequestedIP, Interface);
-            if (ExpectedMAC == null)
+            var Str = "Waiting for ARP Request.";
+
+            if(DeviceMAC != null)
             {
-                Log("Who has " + RequestedIP + "? Tell me.");
+                Str += "\n\tFrom: " + DeviceMAC;
             }
-            else
+
+            if (ExpectedIP != null)
             {
-                Log("Who has " + RequestedIP + "? " + ExpectedMAC + " should.");
+                Str += "\n\tExpected IP: " + ExpectedIP;
             }
+
+            Log(Str);
         }
     }
 }

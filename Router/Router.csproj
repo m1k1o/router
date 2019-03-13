@@ -58,8 +58,9 @@
     <Compile Include="Analyzer\ScenarioStorage.cs" />
     <Compile Include="Analyzer\TestCaseStorage.cs" />
     <Compile Include="Analyzer\TestCase.cs" />
-    <Compile Include="Analyzer\TestCases\EchoReply.cs" />
     <Compile Include="Analyzer\TestCases\ARPRequest.cs" />
+    <Compile Include="Analyzer\TestCases\EchoReply.cs" />
+    <Compile Include="Analyzer\TestCases\ARPResponse.cs" />
     <Compile Include="Analyzer\TestCases\DummyTest.cs" />
     <Compile Include="ARP\ARPMiddleware.cs" />
     <Compile Include="ARP\ARPEntry.cs" />
