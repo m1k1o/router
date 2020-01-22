@@ -1,3 +1,3 @@
-[submodule "Router-gui"]
-	path = Router-gui
-	url = https://github.com/m1k1o/router-gui.git
+[submodule "router-gui"]
+	path = router-gui
+	url = https://github.com/m1k1o/router-gui
